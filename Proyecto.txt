@@ -1,0 +1,29 @@
+REQUISITOS TECNICOS
+Desarrollar un software en la web , utilizando python, pandas, flask y Postgres como gestor de la BD, 
+tenemos varios proyectos desarrollado con Postgres importante no mezclas las BD, esta es completamente
+nueva.  
+
+
+REQUISITOS DE DESARROLLO Y DEL APLICATIVO
+Siempre se trabaja en ambiente virtual para el desarrollo, no se utiliza código hardcodeado, solo se 
+trabaja con las rutas y la bd oficial, no utilizamos otras bd. El software debe ser 100% responsive ya
+que se puede usar mucho desde celular o tablet, debe ser intuitivo, amigable, práctico, debe marcar la
+diferencia frente a los otros que hagan lo mismo, debe tener un módulo gerencial, con un dashboard dinámico
+que le permita a los usuarios dueños tener la información disponible de una mamera amigable, confiable que
+permita tomar decisiones a tiempo.
+
+
+OBJETIVO DEL APLICATIVO.
+Generar un aplicativo que apoye a las empresas de intermediación, se necesita un manejo muy completo de los
+productos, proveedores, precios de compra y para poder generar cotizaciones de manera práctica y segura y 
+asegurar ventas, junto con todo esto debemos tener controladas las cuantas por pagar, las cuentas por cobrar 
+los saldos de inventario, si los productos tienen vencimiento tener un control total de los vencimientos, 
+debemos poder conocer los proveedores frecuentes de los productos y cuales pueden ser ocasionales, tener 
+comunicación fácil, a la mano y oportuna con todos y cada uno de ellos para elaborar la cotización, la empresa
+intermediadora debe conocer en tiempo real los estados de cuenta por pagar y por cobrar , además sobre la 
+cartera por cobrar tener la opción de un seguimiento oportuno y detallado. Debemos manejar roles de usuario
+a nivel de opción, las búsquedas deben ser dinámicas, la opción de eliminar en algunos casos se debe comportar
+como anular y cualquier caso se debe tener una trazabilidad. Debe ser capaz de generar prefacturas como apoyo
+al sistema de facturación     
+
+       

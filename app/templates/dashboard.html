@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Intermediación{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="card-grid metrics-grid" aria-label="Indicadores principales">
+    {% for item in indicadores %}
+    <article class="card metric-card">
+        <p>{{ item.titulo }}</p>
+        <strong>{{ item.valor }}</strong>
+        <span>{{ item.detalle }}</span>
+    </article>
+    {% endfor %}
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <h2>Accesos de trabajo</h2>
+        <p>Los módulos se activarán por permisos de usuario.</p>
+    </div>
+
+    <div class="card-grid action-grid">
+        {% for item in accesos %}
+        <article class="card action-card">
+            <h3>{{ item.nombre }}</h3>
+            <p>{{ item.descripcion }}</p>
+            <a href="#">Abrir</a>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
