@@ -184,6 +184,21 @@ def proveedor_anular(proveedor_id):
 
 @main_bp.route("/productos")
 def productos():
+    opciones = [
+        {"nombre": "Catalogo", "detalle": "Productos base", "icono": "box", "url": "main.productos_catalogo"},
+        {"nombre": "Unidades", "detalle": "Medidas y equivalencias", "icono": "ruler"},
+        {"nombre": "Presentaciones", "detalle": "Empaques, tallas y colores", "icono": "layers"},
+        {"nombre": "Proveedores", "detalle": "Precios y condiciones", "icono": "truck"},
+        {"nombre": "Lotes", "detalle": "Vencimientos y trazabilidad", "icono": "calendar"},
+        {"nombre": "Inventario", "detalle": "Saldos y movimientos", "icono": "warehouse"},
+        {"nombre": "Historial", "detalle": "Ultimas compras", "icono": "history"},
+        {"nombre": "Alertas", "detalle": "Minimos y vencimientos", "icono": "alert"},
+    ]
+    return render_template("productos/modulo.html", opciones=opciones)
+
+
+@main_bp.route("/productos/catalogo")
+def productos_catalogo():
     busqueda = request.args.get("q", "").strip()
     estado = request.args.get("estado", "activos")
 
@@ -221,7 +236,7 @@ def producto_nuevo():
         db.session.commit()
         registrar_auditoria("productos", producto.id, "crear", f"Producto creado: {producto.nombre}")
         flash("Producto creado correctamente.", "success")
-        return redirect(url_for("main.productos"))
+        return redirect(url_for("main.productos_catalogo"))
 
     return render_template("productos/form.html", producto=producto, modo="Crear")
 
@@ -234,7 +249,7 @@ def producto_editar(producto_id):
         db.session.commit()
         registrar_auditoria("productos", producto.id, "editar", f"Producto editado: {producto.nombre}")
         flash("Producto actualizado correctamente.", "success")
-        return redirect(url_for("main.productos"))
+        return redirect(url_for("main.productos_catalogo"))
 
     return render_template("productos/form.html", producto=producto, modo="Editar")
 
@@ -250,7 +265,7 @@ def producto_anular(producto_id):
     db.session.commit()
     registrar_auditoria("productos", producto.id, "anular", motivo)
     flash("Producto anulado correctamente.", "success")
-    return redirect(url_for("main.productos"))
+    return redirect(url_for("main.productos_catalogo"))
 
 
 def guardar_cliente(cliente):
@@ -279,6 +294,8 @@ def guardar_producto(producto):
     producto.nombre = request.form.get("nombre", "").strip()
     producto.unidad = request.form.get("unidad", "").strip() or "unidad"
     producto.maneja_vencimiento = request.form.get("maneja_vencimiento") == "on"
+    producto.maneja_lotes = request.form.get("maneja_lotes") == "on"
+    producto.maneja_presentaciones = request.form.get("maneja_presentaciones") == "on"
     producto.stock_minimo = request.form.get("stock_minimo", "0").strip() or 0
 
 

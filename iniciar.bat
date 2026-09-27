@@ -37,6 +37,14 @@ if errorlevel 1 (
     exit /b 1
 )
 
+echo Actualizando esquema de base de datos...
+".venv\Scripts\python.exe" ".\scripts\update_schema.py"
+if errorlevel 1 (
+    echo Error actualizando el esquema de base de datos.
+    pause
+    exit /b 1
+)
+
 echo.
 echo Aplicativo disponible en http://127.0.0.1:5000
 echo Presione Ctrl+C para detener el servidor.

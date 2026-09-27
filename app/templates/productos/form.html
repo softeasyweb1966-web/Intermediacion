@@ -4,30 +4,76 @@
 {% block page_title %}{{ modo }} producto{% endblock %}
 
 {% block content %}
-<form class="form-card" method="post">
-    <div class="form-grid">
-        <label>
-            Código
-            <input name="codigo" value="{{ producto.codigo or '' }}" required maxlength="60">
-        </label>
-        <label>
-            Nombre
-            <input name="nombre" value="{{ producto.nombre or '' }}" required maxlength="180">
-        </label>
-        <label>
-            Unidad
-            <input name="unidad" value="{{ producto.unidad or 'unidad' }}" required maxlength="40">
-        </label>
-        <label>
-            Stock mínimo
-            <input type="number" step="0.01" min="0" name="stock_minimo" value="{{ producto.stock_minimo or 0 }}">
-        </label>
-        <label class="checkbox-field span-2">
-            <input type="checkbox" name="maneja_vencimiento" {% if producto.maneja_vencimiento %}checked{% endif %}>
-            <span>Maneja fecha de vencimiento</span>
-        </label>
-    </div>
-    <div class="form-actions">
+<form class="product-sheet" method="post">
+    <section class="form-card product-section">
+        <div class="section-title">
+            <h2>Datos generales</h2>
+        </div>
+        <div class="form-grid">
+            <label>
+                Código
+                <input name="codigo" value="{{ producto.codigo or '' }}" required maxlength="60">
+            </label>
+            <label>
+                Nombre
+                <input name="nombre" value="{{ producto.nombre or '' }}" required maxlength="180">
+            </label>
+            <label>
+                Unidad principal
+                <input name="unidad" value="{{ producto.unidad or 'unidad' }}" required maxlength="40">
+            </label>
+            <label>
+                Stock mínimo
+                <input type="number" step="0.01" min="0" name="stock_minimo" value="{{ producto.stock_minimo or 0 }}">
+            </label>
+        </div>
+    </section>
+
+    <section class="form-card product-section">
+        <div class="section-title">
+            <h2>Configuración</h2>
+        </div>
+        <div class="option-grid">
+            <label class="option-card">
+                <input type="checkbox" name="maneja_vencimiento" {% if producto.maneja_vencimiento %}checked{% endif %}>
+                <span>
+                    <strong>Vencimientos</strong>
+                    <small>Las fechas se registran en compras o lotes.</small>
+                </span>
+            </label>
+            <label class="option-card">
+                <input type="checkbox" name="maneja_lotes" {% if producto.maneja_lotes %}checked{% endif %}>
+                <span>
+                    <strong>Lotes</strong>
+                    <small>Permite trazabilidad por lote.</small>
+                </span>
+            </label>
+            <label class="option-card">
+                <input type="checkbox" name="maneja_presentaciones" {% if producto.maneja_presentaciones %}checked{% endif %}>
+                <span>
+                    <strong>Presentaciones</strong>
+                    <small>Empaques, tallas, colores o variantes.</small>
+                </span>
+            </label>
+        </div>
+    </section>
+
+    <section class="form-card product-section">
+        <div class="section-title">
+            <h2>Proveedores</h2>
+        </div>
+        <div class="info-strip">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10 17H6V5h9v12h-1"></path>
+                <path d="M15 8h3l4 4v5h-3"></path>
+                <circle cx="7.5" cy="17.5" r="2.5"></circle>
+                <circle cx="16.5" cy="17.5" r="2.5"></circle>
+            </svg>
+            <p>Los proveedores, precios, forma de pago, tiempos de entrega e historial se alimentarán automáticamente desde Compras.</p>
+        </div>
+    </section>
+
+    <div class="form-actions sticky-actions">
         <a class="icon-button" href="{{ url_for('main.dashboard') }}">
             <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m3 11 9-8 9 8"></path>
@@ -36,7 +82,7 @@
             </svg>
             <span>Menú</span>
         </a>
-        <a href="{{ url_for('main.productos') }}">Cancelar</a>
+        <a href="{{ url_for('main.productos_catalogo') }}">Cancelar</a>
         <button class="icon-button" type="submit">
             <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>

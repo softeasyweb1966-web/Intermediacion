@@ -61,6 +61,8 @@ class Producto(db.Model, TimestampMixin, EstadoMixin):
     nombre = db.Column(db.String(180), nullable=False, index=True)
     unidad = db.Column(db.String(40), nullable=False, default="unidad")
     maneja_vencimiento = db.Column(db.Boolean, default=False, nullable=False)
+    maneja_lotes = db.Column(db.Boolean, default=False, nullable=False)
+    maneja_presentaciones = db.Column(db.Boolean, default=False, nullable=False)
     stock_minimo = db.Column(db.Numeric(12, 2), default=0, nullable=False)
 
 
