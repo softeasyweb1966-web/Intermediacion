@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Clientes | Intermediación{% endblock %}
+{% block page_title %}Clientes{% endblock %}
+
+{% block content %}
+<section class="toolbar">
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar cliente, documento, contacto o ciudad">
+        <select name="estado">
+            <option value="activos" {% if estado == "activos" %}selected{% endif %}>Activos</option>
+            <option value="anulados" {% if estado == "anulados" %}selected{% endif %}>Anulados</option>
+            <option value="todos" {% if estado == "todos" %}selected{% endif %}>Todos</option>
+        </select>
+        <button type="submit">Buscar</button>
+    </form>
+    <a class="primary-action" href="{{ url_for('main.cliente_nuevo') }}">Nuevo cliente</a>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<section class="data-card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Documento</th>
+                    <th>Contacto</th>
+                    <th>Teléfono</th>
+                    <th>Ciudad</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td>
+                        <strong>{{ cliente.nombre }}</strong>
+                        {% if cliente.email %}<small>{{ cliente.email }}</small>{% endif %}
+                    </td>
+                    <td>{{ cliente.documento or "-" }}</td>
+                    <td>{{ cliente.contacto or "-" }}</td>
+                    <td>{{ cliente.telefono or "-" }}</td>
+                    <td>{{ cliente.ciudad or "-" }}</td>
+                    <td>
+                        <span class="status-pill {{ 'ok' if cliente.activo else 'off' }}">
+                            {{ "Activo" if cliente.activo else "Anulado" }}
+                        </span>
+                    </td>
+                    <td class="row-actions">
+                        <a href="{{ url_for('main.cliente_editar', cliente_id=cliente.id) }}">Editar</a>
+                        {% if cliente.activo %}
+                        <form method="post" action="{{ url_for('main.cliente_anular', cliente_id=cliente.id) }}">
+                            <input type="hidden" name="motivo_anulacion" value="Anulacion solicitada desde listado">
+                            <button type="submit">Anular</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="empty-state">No hay clientes para mostrar.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

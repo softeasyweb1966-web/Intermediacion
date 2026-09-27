@@ -294,6 +294,218 @@ h1 {
     font: inherit;
 }
 
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.search-form {
+    display: grid;
+    flex: 1;
+    grid-template-columns: minmax(220px, 1fr) 150px auto;
+    gap: 10px;
+}
+
+.search-form input,
+.search-form select,
+.form-card input,
+.form-card textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+}
+
+.search-form input,
+.search-form select {
+    min-height: 42px;
+    padding: 10px 12px;
+}
+
+.search-form button,
+.primary-action,
+.form-actions button {
+    min-height: 42px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--primary);
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+.search-form button,
+.primary-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+}
+
+.data-card,
+.form-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+}
+
+td small {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.status-pill.ok {
+    background: #e2f4ee;
+    color: var(--primary-dark);
+}
+
+.status-pill.off {
+    background: #f6e5e5;
+    color: var(--danger);
+}
+
+.row-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.row-actions a,
+.row-actions button {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    padding: 8px 10px;
+}
+
+.row-actions button {
+    color: var(--danger);
+}
+
+.row-actions form {
+    margin: 0;
+}
+
+.empty-state {
+    padding: 26px 16px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.flash-list {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.flash {
+    margin-bottom: 0;
+    border-radius: 8px;
+    padding: 11px 14px;
+}
+
+.flash.success {
+    background: #e2f4ee;
+    color: var(--primary-dark);
+}
+
+.form-card {
+    max-width: 920px;
+    padding: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.form-grid label {
+    display: grid;
+    gap: 7px;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.form-card input,
+.form-card textarea {
+    padding: 12px;
+}
+
+.form-card textarea {
+    resize: vertical;
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.form-actions a,
+.form-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 10px 14px;
+}
+
+.form-actions a {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+}
+
 @media (max-width: 1100px) {
     .metrics-grid,
     .action-grid {
@@ -340,6 +552,31 @@ h1 {
     .metrics-grid,
     .action-grid {
         grid-template-columns: 1fr;
+    }
+
+    .toolbar,
+    .row-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .search-form,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .span-2 {
+        grid-column: auto;
+    }
+
+    .primary-action,
+    .form-actions a,
+    .form-actions button {
+        width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
     }
 
     h1 {

@@ -18,7 +18,7 @@
         <h2>Accesos de trabajo</h2>
         <div class="quick-actions" aria-label="Accesos de trabajo">
             {% for item in accesos %}
-            <a class="quick-action {{ item.clase }}" href="#" title="{{ item.nombre }}" aria-label="{{ item.nombre }}">
+            <a class="quick-action {{ item.clase }}" href="{{ url_for(item.url) if item.url is defined else '#' }}" title="{{ item.nombre }}" aria-label="{{ item.nombre }}">
                 {% if item.icono == "box" %}
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M21 8.5 12 3 3 8.5l9 5.5 9-5.5Z"></path>

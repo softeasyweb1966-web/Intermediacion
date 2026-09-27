@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ modo }} cliente | Intermediación{% endblock %}
+{% block page_title %}{{ modo }} cliente{% endblock %}
+
+{% block content %}
+<form class="form-card" method="post">
+    <div class="form-grid">
+        <label>
+            Nombre
+            <input name="nombre" value="{{ cliente.nombre or '' }}" required maxlength="160">
+        </label>
+        <label>
+            Documento
+            <input name="documento" value="{{ cliente.documento or '' }}" maxlength="40">
+        </label>
+        <label>
+            Contacto
+            <input name="contacto" value="{{ cliente.contacto or '' }}" maxlength="120">
+        </label>
+        <label>
+            Teléfono
+            <input name="telefono" value="{{ cliente.telefono or '' }}" maxlength="60">
+        </label>
+        <label>
+            Correo
+            <input type="email" name="email" value="{{ cliente.email or '' }}" maxlength="160">
+        </label>
+        <label>
+            Ciudad
+            <input name="ciudad" value="{{ cliente.ciudad or '' }}" maxlength="100">
+        </label>
+        <label class="span-2">
+            Dirección
+            <input name="direccion" value="{{ cliente.direccion or '' }}" maxlength="180">
+        </label>
+        <label class="span-2">
+            Notas
+            <textarea name="notas" rows="4">{{ cliente.notas or '' }}</textarea>
+        </label>
+    </div>
+    <div class="form-actions">
+        <a href="{{ url_for('main.clientes') }}">Cancelar</a>
+        <button type="submit">Guardar</button>
+    </div>
+</form>
+{% endblock %}

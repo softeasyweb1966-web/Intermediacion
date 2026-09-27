@@ -39,6 +39,20 @@ class Proveedor(db.Model, TimestampMixin, EstadoMixin):
     notas = db.Column(db.Text)
 
 
+class Cliente(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "clientes"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(160), nullable=False, index=True)
+    documento = db.Column(db.String(40), unique=True)
+    contacto = db.Column(db.String(120))
+    telefono = db.Column(db.String(60))
+    email = db.Column(db.String(160))
+    ciudad = db.Column(db.String(100))
+    direccion = db.Column(db.String(180))
+    notas = db.Column(db.Text)
+
+
 class Producto(db.Model, TimestampMixin, EstadoMixin):
     __tablename__ = "productos"
 
