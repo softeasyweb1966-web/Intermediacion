@@ -53,17 +53,84 @@ class Cliente(db.Model, TimestampMixin, EstadoMixin):
     notas = db.Column(db.Text)
 
 
+class Unidad(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "unidades"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(80), unique=True, nullable=False, index=True)
+    abreviatura = db.Column(db.String(20), unique=True, nullable=False)
+
+
 class Producto(db.Model, TimestampMixin, EstadoMixin):
     __tablename__ = "productos"
 
     id = db.Column(db.Integer, primary_key=True)
     codigo = db.Column(db.String(60), unique=True, nullable=False, index=True)
     nombre = db.Column(db.String(180), nullable=False, index=True)
+    unidad_id = db.Column(db.Integer, db.ForeignKey("unidades.id"))
     unidad = db.Column(db.String(40), nullable=False, default="unidad")
     maneja_vencimiento = db.Column(db.Boolean, default=False, nullable=False)
     maneja_lotes = db.Column(db.Boolean, default=False, nullable=False)
     maneja_presentaciones = db.Column(db.Boolean, default=False, nullable=False)
     stock_minimo = db.Column(db.Numeric(12, 2), default=0, nullable=False)
+
+    unidad_principal = db.relationship("Unidad")
+
+
+class ProductoProveedor(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "producto_proveedores"
+
+    id = db.Column(db.Integer, primary_key=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedores.id"), nullable=False, index=True)
+    referencia_proveedor = db.Column(db.String(100))
+    unidad_compra_id = db.Column(db.Integer, db.ForeignKey("unidades.id"))
+    presentacion = db.Column(db.String(120))
+    precio_compra = db.Column(db.Numeric(14, 2))
+    forma_pago = db.Column(db.String(20))
+    dias_credito = db.Column(db.Integer, default=0, nullable=False)
+    tiempo_entrega_dias = db.Column(db.Integer, default=0, nullable=False)
+    es_frecuente = db.Column(db.Boolean, default=False, nullable=False)
+    ultima_compra_en = db.Column(db.Date)
+    ultimo_precio_compra = db.Column(db.Numeric(14, 2))
+    origen = db.Column(db.String(30), default="manual", nullable=False)
+
+    producto = db.relationship("Producto")
+    proveedor = db.relationship("Proveedor")
+    unidad_compra = db.relationship("Unidad")
+
+
+class ProductoPresentacion(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "producto_presentaciones"
+
+    id = db.Column(db.Integer, primary_key=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    nombre = db.Column(db.String(120), nullable=False, index=True)
+    unidad_id = db.Column(db.Integer, db.ForeignKey("unidades.id"))
+    factor = db.Column(db.Numeric(14, 4), default=1, nullable=False)
+    talla = db.Column(db.String(60))
+    color = db.Column(db.String(60))
+    referencia_interna = db.Column(db.String(80))
+
+    producto = db.relationship("Producto")
+    unidad = db.relationship("Unidad")
+
+
+class ProductoLote(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "producto_lotes"
+
+    id = db.Column(db.Integer, primary_key=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    presentacion_id = db.Column(db.Integer, db.ForeignKey("producto_presentaciones.id"))
+    proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedores.id"))
+    numero_lote = db.Column(db.String(100), nullable=False, index=True)
+    fecha_vencimiento = db.Column(db.Date)
+    cantidad_actual = db.Column(db.Numeric(14, 4), default=0, nullable=False)
+    observaciones = db.Column(db.Text)
+
+    producto = db.relationship("Producto")
+    presentacion = db.relationship("ProductoPresentacion")
+    proveedor = db.relationship("Proveedor")
 
 
 class Auditoria(db.Model):

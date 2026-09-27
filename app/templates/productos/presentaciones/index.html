@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Productos | Intermediación{% endblock %}
-{% block page_title %}Productos{% endblock %}
+{% block title %}Presentaciones | Intermediación{% endblock %}
+{% block page_title %}Presentaciones{% endblock %}
 
 {% block content %}
 <section class="toolbar">
     <form class="search-form" method="get">
-        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar producto, código o unidad">
+        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar producto, presentación, talla, color o referencia">
         <select name="estado">
             <option value="activos" {% if estado == "activos" %}selected{% endif %}>Activos</option>
             <option value="anulados" {% if estado == "anulados" %}selected{% endif %}>Anulados</option>
@@ -20,6 +20,12 @@
             <span>Buscar</span>
         </button>
     </form>
+    <a class="secondary-action icon-button" href="{{ url_for('main.productos') }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18 9 12l6-6"></path>
+        </svg>
+        <span>Productos</span>
+    </a>
     <a class="secondary-action icon-button" href="{{ url_for('main.dashboard') }}">
         <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="m3 11 9-8 9 8"></path>
@@ -28,15 +34,14 @@
         </svg>
         <span>Menú</span>
     </a>
-    <a class="primary-action icon-button" href="{{ url_for('main.producto_nuevo') }}">
+    <a class="primary-action icon-button" href="{{ url_for('main.presentacion_nueva') }}">
         <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M21 8.5 12 3 3 8.5l9 5.5 9-5.5Z"></path>
-            <path d="M3 8.5v7L12 21l9-5.5v-7"></path>
-            <path d="M12 14v7"></path>
-            <path d="M19 2v4"></path>
-            <path d="M17 4h4"></path>
+            <path d="m12 2 9 5-9 5-9-5 9-5Z"></path>
+            <path d="m3 12 9 5 9-5"></path>
+            <path d="M19 14v6"></path>
+            <path d="M22 17h-6"></path>
         </svg>
-        <span>Nuevo producto</span>
+        <span>Nueva presentación</span>
     </a>
 </section>
 
@@ -55,39 +60,46 @@
         <table>
             <thead>
                 <tr>
-                    <th>Código</th>
                     <th>Producto</th>
+                    <th>Presentación</th>
                     <th>Unidad</th>
-                    <th>Stock mínimo</th>
-                    <th>Vencimiento</th>
+                    <th>Factor</th>
+                    <th>Talla</th>
+                    <th>Color</th>
+                    <th>Referencia</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                {% for producto in productos %}
+                {% for presentacion in presentaciones %}
                 <tr>
-                    <td>{{ producto.codigo }}</td>
-                    <td><strong>{{ producto.nombre }}</strong></td>
-                    <td>{{ producto.unidad_principal.nombre if producto.unidad_principal else producto.unidad }}</td>
-                    <td>{{ producto.stock_minimo }}</td>
-                    <td>{{ "Sí" if producto.maneja_vencimiento else "No" }}</td>
                     <td>
-                        <span class="status-pill {{ 'ok' if producto.activo else 'off' }}">
-                            {{ "Activo" if producto.activo else "Anulado" }}
+                        <strong>{{ presentacion.producto.nombre }}</strong>
+                        <small>{{ presentacion.producto.codigo }}</small>
+                    </td>
+                    <td>{{ presentacion.nombre }}</td>
+                    <td>{{ presentacion.unidad.nombre if presentacion.unidad else "-" }}</td>
+                    <td>{{ presentacion.factor }}</td>
+                    <td>{{ presentacion.talla or "-" }}</td>
+                    <td>{{ presentacion.color or "-" }}</td>
+                    <td>{{ presentacion.referencia_interna or "-" }}</td>
+                    <td>
+                        <span class="status-pill {{ 'ok' if presentacion.activo else 'off' }}">
+                            {{ "Activo" if presentacion.activo else "Anulado" }}
                         </span>
                     </td>
                     <td class="row-actions">
-                        <a class="table-action" href="{{ url_for('main.producto_editar', producto_id=producto.id) }}" title="Editar producto" aria-label="Editar producto">
+                        <a class="table-action" href="{{ url_for('main.presentacion_editar', presentacion_id=presentacion.id) }}" title="Editar presentación" aria-label="Editar presentación">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 20h9"></path>
                                 <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
                             </svg>
                         </a>
-                        {% if producto.activo %}
-                        <form method="post" action="{{ url_for('main.producto_anular', producto_id=producto.id) }}">
+                        {% if presentacion.activo %}
+                        <form method="post" action="{{ url_for('main.presentacion_anular', presentacion_id=presentacion.id) }}">
                             <input type="hidden" name="motivo_anulacion" value="Anulacion solicitada desde listado">
-                            <button class="table-action danger" type="submit" title="Anular producto" aria-label="Anular producto">
+                            <button class="table-action danger" type="submit" title="Anular presentación" aria-label="Anular presentación">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <path d="m15 9-6 6"></path>
@@ -100,7 +112,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="7" class="empty-state">No hay productos para mostrar.</td>
+                    <td colspan="9" class="empty-state">No hay presentaciones para mostrar.</td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{{ modo }} presentación | Intermediación{% endblock %}
+{% block page_title %}{{ modo }} presentación{% endblock %}
+
+{% block content %}
+<form class="form-card" method="post">
+    <div class="form-grid">
+        <label class="span-2">
+            Producto
+            <select name="producto_id" required>
+                <option value="">Seleccione un producto</option>
+                {% for producto in productos %}
+                <option value="{{ producto.id }}" {% if presentacion.producto_id == producto.id %}selected{% endif %}>
+                    {{ producto.nombre }} - {{ producto.codigo }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Presentación
+            <input name="nombre" value="{{ presentacion.nombre or '' }}" required maxlength="120" placeholder="Caja x 100, bolsa 25 kg">
+        </label>
+        <label>
+            Unidad
+            <select name="unidad_id">
+                <option value="">Seleccione una unidad</option>
+                {% for unidad in unidades %}
+                <option value="{{ unidad.id }}" {% if presentacion.unidad_id == unidad.id %}selected{% endif %}>
+                    {{ unidad.nombre }}{% if unidad.abreviatura %} ({{ unidad.abreviatura }}){% endif %}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Factor
+            <input type="number" step="0.0001" min="0" name="factor" value="{{ presentacion.factor or 1 }}">
+        </label>
+        <label>
+            Talla
+            <input name="talla" value="{{ presentacion.talla or '' }}" maxlength="60">
+        </label>
+        <label>
+            Color
+            <input name="color" value="{{ presentacion.color or '' }}" maxlength="60">
+        </label>
+        <label>
+            Referencia interna
+            <input name="referencia_interna" value="{{ presentacion.referencia_interna or '' }}" maxlength="80">
+        </label>
+    </div>
+    <div class="form-actions">
+        <a class="icon-button" href="{{ url_for('main.productos') }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 18 9 12l6-6"></path>
+            </svg>
+            <span>Productos</span>
+        </a>
+        <a href="{{ url_for('main.presentaciones') }}">Cancelar</a>
+        <button class="icon-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                <path d="M17 21v-8H7v8"></path>
+                <path d="M7 3v5h8"></path>
+            </svg>
+            <span>Guardar</span>
+        </button>
+    </div>
+</form>
+{% endblock %}

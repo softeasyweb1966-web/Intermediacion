@@ -4,6 +4,16 @@
 {% block page_title %}{{ modo }} producto{% endblock %}
 
 {% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
 <form class="product-sheet" method="post">
     <section class="form-card product-section">
         <div class="section-title">
@@ -20,7 +30,14 @@
             </label>
             <label>
                 Unidad principal
-                <input name="unidad" value="{{ producto.unidad or 'unidad' }}" required maxlength="40">
+                <select name="unidad_id" required>
+                    <option value="">Seleccione una unidad</option>
+                    {% for unidad in unidades %}
+                    <option value="{{ unidad.id }}" {% if producto.unidad_id == unidad.id %}selected{% endif %}>
+                        {{ unidad.nombre }}{% if unidad.abreviatura %} ({{ unidad.abreviatura }}){% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
             </label>
             <label>
                 Stock mínimo

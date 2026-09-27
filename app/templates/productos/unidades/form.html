@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ modo }} unidad | Intermediación{% endblock %}
+{% block page_title %}{{ modo }} unidad{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<form class="form-card" method="post">
+    <div class="form-grid">
+        <label>
+            Nombre
+            <input name="nombre" value="{{ unidad.nombre or '' }}" required maxlength="80">
+        </label>
+        <label>
+            Abreviatura
+            <input name="abreviatura" value="{{ unidad.abreviatura or '' }}" required maxlength="20">
+        </label>
+    </div>
+    <div class="form-actions">
+        <a class="icon-button" href="{{ url_for('main.productos') }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 18 9 12l6-6"></path>
+            </svg>
+            <span>Productos</span>
+        </a>
+        <a href="{{ url_for('main.unidades') }}">Cancelar</a>
+        <button class="icon-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                <path d="M17 21v-8H7v8"></path>
+                <path d="M7 3v5h8"></path>
+            </svg>
+            <span>Guardar</span>
+        </button>
+    </div>
+</form>
+{% endblock %}

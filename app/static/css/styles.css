@@ -329,6 +329,7 @@ h1 {
 .search-form input,
 .search-form select,
 .form-card input,
+.form-card select,
 .form-card textarea {
     width: 100%;
     border: 1px solid var(--line);
@@ -490,6 +491,11 @@ td small {
     color: var(--primary-dark);
 }
 
+.flash.error {
+    background: #f6e5e5;
+    color: var(--danger);
+}
+
 .form-card {
     max-width: 920px;
     padding: 20px;
@@ -509,6 +515,7 @@ td small {
 }
 
 .form-card input,
+.form-card select,
 .form-card textarea {
     padding: 12px;
 }

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}{{ modo }} lote | Intermediación{% endblock %}
+{% block page_title %}{{ modo }} lote{% endblock %}
+
+{% block content %}
+<form class="form-card" method="post">
+    <div class="form-grid">
+        <label>
+            Producto
+            <select name="producto_id" required>
+                <option value="">Seleccione un producto</option>
+                {% for producto in productos %}
+                <option value="{{ producto.id }}" {% if lote.producto_id == producto.id %}selected{% endif %}>
+                    {{ producto.nombre }} - {{ producto.codigo }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Presentación
+            <select name="presentacion_id">
+                <option value="">Sin presentación</option>
+                {% for presentacion in presentaciones %}
+                <option value="{{ presentacion.id }}" {% if lote.presentacion_id == presentacion.id %}selected{% endif %}>
+                    {{ presentacion.producto.nombre }} - {{ presentacion.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Proveedor
+            <select name="proveedor_id">
+                <option value="">Sin proveedor</option>
+                {% for proveedor in proveedores %}
+                <option value="{{ proveedor.id }}" {% if lote.proveedor_id == proveedor.id %}selected{% endif %}>
+                    {{ proveedor.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Número de lote
+            <input name="numero_lote" value="{{ lote.numero_lote or '' }}" required maxlength="100">
+        </label>
+        <label>
+            Fecha de vencimiento
+            <input type="date" name="fecha_vencimiento" value="{{ lote.fecha_vencimiento.strftime('%Y-%m-%d') if lote.fecha_vencimiento else '' }}">
+        </label>
+        <label>
+            Cantidad actual
+            <input type="number" step="0.0001" min="0" name="cantidad_actual" value="{{ lote.cantidad_actual or 0 }}">
+        </label>
+        <label class="span-2">
+            Observaciones
+            <textarea name="observaciones" rows="3">{{ lote.observaciones or '' }}</textarea>
+        </label>
+    </div>
+    <div class="form-actions">
+        <a class="icon-button" href="{{ url_for('main.productos') }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 18 9 12l6-6"></path>
+            </svg>
+            <span>Productos</span>
+        </a>
+        <a href="{{ url_for('main.lotes') }}">Cancelar</a>
+        <button class="icon-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                <path d="M17 21v-8H7v8"></path>
+                <path d="M7 3v5h8"></path>
+            </svg>
+            <span>Guardar</span>
+        </button>
+    </div>
+</form>
+{% endblock %}
