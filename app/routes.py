@@ -13,10 +13,10 @@ def dashboard():
     ]
 
     accesos = [
-        {"nombre": "Productos", "descripcion": "Catálogo, unidades y vencimientos"},
-        {"nombre": "Proveedores", "descripcion": "Frecuentes, ocasionales y contactos"},
-        {"nombre": "Cotizaciones", "descripcion": "Precios de compra y prefacturas"},
-        {"nombre": "Cartera", "descripcion": "Seguimiento de cobros y pagos"},
+        {"nombre": "Productos", "icono": "box", "clase": "products"},
+        {"nombre": "Proveedores", "icono": "truck", "clase": "suppliers"},
+        {"nombre": "Cotizaciones", "icono": "quote", "clase": "quotes"},
+        {"nombre": "Cartera", "icono": "wallet", "clase": "wallet"},
     ]
 
     return render_template("dashboard.html", indicadores=indicadores, accesos=accesos)

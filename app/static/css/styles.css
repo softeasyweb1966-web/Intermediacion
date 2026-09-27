@@ -145,10 +145,6 @@ h1 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-.action-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .card {
     min-width: 0;
     border: 1px solid var(--line);
@@ -177,7 +173,6 @@ h1 {
     font-size: 1.9rem;
 }
 
-.action-card p,
 .section-heading p {
     color: var(--muted);
     line-height: 1.45;
@@ -189,30 +184,65 @@ h1 {
 
 .section-heading {
     display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 18px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
     margin-bottom: 14px;
 }
 
-.section-heading h2,
-.section-heading p {
+.section-heading h2 {
     margin-bottom: 0;
 }
 
-.action-card {
-    display: grid;
-    align-content: space-between;
-    min-height: 164px;
-    padding: 18px;
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
 }
 
-.action-card a {
-    display: inline-flex;
-    justify-content: center;
-    width: fit-content;
-    min-width: 86px;
-    padding: 9px 12px;
+.quick-action {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--text);
+    box-shadow: 0 8px 20px rgba(24, 33, 31, 0.06);
+}
+
+.quick-action:hover {
+    background: var(--panel-soft);
+    border-color: rgba(22, 116, 95, 0.38);
+    color: var(--primary-dark);
+}
+
+.quick-action svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: var(--primary);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+
+.quick-action.products svg {
+    stroke: #16745f;
+}
+
+.quick-action.suppliers svg {
+    stroke: #2f6fb0;
+}
+
+.quick-action.quotes svg {
+    stroke: #9b6a16;
+}
+
+.quick-action.wallet svg {
+    stroke: #8b4f9f;
 }
 
 .login-page {
@@ -292,6 +322,15 @@ h1 {
     .section-heading {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .quick-actions {
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .quick-action {
+        flex: 0 0 42px;
     }
 
     .metrics-grid,
