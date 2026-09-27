@@ -14,6 +14,7 @@ def dashboard():
 
     accesos = [
         {"nombre": "Productos", "icono": "box", "clase": "products"},
+        {"nombre": "Clientes", "icono": "client", "clase": "clients"},
         {"nombre": "Proveedores", "icono": "truck", "clase": "suppliers"},
         {"nombre": "Cotizaciones", "icono": "quote", "clase": "quotes"},
         {"nombre": "Cartera", "icono": "wallet", "clase": "wallet"},

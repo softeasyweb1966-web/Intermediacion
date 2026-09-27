@@ -237,6 +237,10 @@ h1 {
     stroke: #2f6fb0;
 }
 
+.quick-action.clients svg {
+    stroke: #6d7d20;
+}
+
 .quick-action.quotes svg {
     stroke: #9b6a16;
 }
