@@ -18,9 +18,9 @@
             </div>
             <nav class="nav-list" aria-label="Principal">
                 <a class="nav-item active" href="{{ url_for('main.dashboard') }}">Dashboard</a>
-                <a class="nav-item" href="#">Productos</a>
+                <a class="nav-item" href="{{ url_for('main.productos') }}">Productos</a>
                 <a class="nav-item" href="{{ url_for('main.clientes') }}">Clientes</a>
-                <a class="nav-item" href="#">Proveedores</a>
+                <a class="nav-item" href="{{ url_for('main.proveedores') }}">Proveedores</a>
                 <a class="nav-item" href="#">Cotizaciones</a>
                 <a class="nav-item" href="#">Inventario</a>
                 <a class="nav-item" href="#">Cartera</a>
@@ -33,7 +33,14 @@
                     <p class="eyebrow">Panel gerencial</p>
                     <h1>{% block page_title %}Dashboard{% endblock %}</h1>
                 </div>
-                <a class="user-chip" href="{{ url_for('main.login') }}">Ingresar</a>
+                <a class="user-chip icon-button" href="{{ url_for('main.login') }}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <path d="M10 17l5-5-5-5"></path>
+                        <path d="M15 12H3"></path>
+                    </svg>
+                    <span>Ingresar</span>
+                </a>
             </header>
 
             {% block content %}{% endblock %}

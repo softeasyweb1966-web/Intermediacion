@@ -1,42 +1,38 @@
 {% extends "base.html" %}
 
-{% block title %}{{ modo }} cliente | Intermediación{% endblock %}
-{% block page_title %}{{ modo }} cliente{% endblock %}
+{% block title %}{{ modo }} proveedor | Intermediación{% endblock %}
+{% block page_title %}{{ modo }} proveedor{% endblock %}
 
 {% block content %}
 <form class="form-card" method="post">
     <div class="form-grid">
         <label>
             Nombre
-            <input name="nombre" value="{{ cliente.nombre or '' }}" required maxlength="160">
+            <input name="nombre" value="{{ proveedor.nombre or '' }}" required maxlength="160">
         </label>
         <label>
-            Documento
-            <input name="documento" value="{{ cliente.documento or '' }}" maxlength="40">
+            NIT
+            <input name="nit" value="{{ proveedor.nit or '' }}" maxlength="40">
         </label>
         <label>
             Contacto
-            <input name="contacto" value="{{ cliente.contacto or '' }}" maxlength="120">
+            <input name="contacto" value="{{ proveedor.contacto or '' }}" maxlength="120">
         </label>
         <label>
             Teléfono
-            <input name="telefono" value="{{ cliente.telefono or '' }}" maxlength="60">
+            <input name="telefono" value="{{ proveedor.telefono or '' }}" maxlength="60">
         </label>
         <label>
             Correo
-            <input type="email" name="email" value="{{ cliente.email or '' }}" maxlength="160">
+            <input type="email" name="email" value="{{ proveedor.email or '' }}" maxlength="160">
         </label>
         <label>
             Ciudad
-            <input name="ciudad" value="{{ cliente.ciudad or '' }}" maxlength="100">
-        </label>
-        <label class="span-2">
-            Dirección
-            <input name="direccion" value="{{ cliente.direccion or '' }}" maxlength="180">
+            <input name="ciudad" value="{{ proveedor.ciudad or '' }}" maxlength="100">
         </label>
         <label class="span-2">
             Notas
-            <textarea name="notas" rows="4">{{ cliente.notas or '' }}</textarea>
+            <textarea name="notas" rows="4">{{ proveedor.notas or '' }}</textarea>
         </label>
     </div>
     <div class="form-actions">
@@ -48,7 +44,7 @@
             </svg>
             <span>Menú</span>
         </a>
-        <a href="{{ url_for('main.clientes') }}">Cancelar</a>
+        <a href="{{ url_for('main.proveedores') }}">Cancelar</a>
         <button class="icon-button" type="submit">
             <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>

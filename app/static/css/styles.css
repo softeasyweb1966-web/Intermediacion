@@ -136,6 +136,23 @@ h1 {
     white-space: nowrap;
 }
 
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.icon-button svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+
 .card-grid {
     display: grid;
     gap: 16px;
@@ -329,6 +346,7 @@ h1 {
 
 .search-form button,
 .primary-action,
+.secondary-action,
 .form-actions button {
     min-height: 42px;
     border: 0;
@@ -341,11 +359,18 @@ h1 {
 }
 
 .search-form button,
-.primary-action {
+.primary-action,
+.secondary-action {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 10px 14px;
+}
+
+.secondary-action {
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--text);
 }
 
 .data-card,
@@ -411,19 +436,31 @@ td small {
     gap: 8px;
 }
 
-.row-actions a,
-.row-actions button {
+.table-action {
+    display: inline-grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
     border: 1px solid var(--line);
     border-radius: 8px;
     background: #fff;
     color: var(--text);
     cursor: pointer;
     font: inherit;
-    padding: 8px 10px;
 }
 
-.row-actions button {
+.table-action.danger {
     color: var(--danger);
+}
+
+.table-action svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
 }
 
 .row-actions form {
@@ -478,6 +515,18 @@ td small {
 
 .form-card textarea {
     resize: vertical;
+}
+
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+}
+
+.checkbox-field input {
+    width: 18px;
+    height: 18px;
 }
 
 .span-2 {

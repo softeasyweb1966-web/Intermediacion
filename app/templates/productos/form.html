@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ modo }} producto | Intermediación{% endblock %}
+{% block page_title %}{{ modo }} producto{% endblock %}
+
+{% block content %}
+<form class="form-card" method="post">
+    <div class="form-grid">
+        <label>
+            Código
+            <input name="codigo" value="{{ producto.codigo or '' }}" required maxlength="60">
+        </label>
+        <label>
+            Nombre
+            <input name="nombre" value="{{ producto.nombre or '' }}" required maxlength="180">
+        </label>
+        <label>
+            Unidad
+            <input name="unidad" value="{{ producto.unidad or 'unidad' }}" required maxlength="40">
+        </label>
+        <label>
+            Stock mínimo
+            <input type="number" step="0.01" min="0" name="stock_minimo" value="{{ producto.stock_minimo or 0 }}">
+        </label>
+        <label class="checkbox-field span-2">
+            <input type="checkbox" name="maneja_vencimiento" {% if producto.maneja_vencimiento %}checked{% endif %}>
+            <span>Maneja fecha de vencimiento</span>
+        </label>
+    </div>
+    <div class="form-actions">
+        <a class="icon-button" href="{{ url_for('main.dashboard') }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m3 11 9-8 9 8"></path>
+                <path d="M5 10v10h14V10"></path>
+                <path d="M9 20v-6h6v6"></path>
+            </svg>
+            <span>Menú</span>
+        </a>
+        <a href="{{ url_for('main.productos') }}">Cancelar</a>
+        <button class="icon-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                <path d="M17 21v-8H7v8"></path>
+                <path d="M7 3v5h8"></path>
+            </svg>
+            <span>Guardar</span>
+        </button>
+    </div>
+</form>
+{% endblock %}
