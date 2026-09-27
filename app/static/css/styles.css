@@ -158,21 +158,25 @@ h1 {
 }
 
 .metric-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    min-height: 86px;
     padding: 18px;
 }
 
 .metric-card p {
-    margin-bottom: 14px;
+    margin-bottom: 0;
     color: var(--muted);
 }
 
 .metric-card strong {
     display: block;
-    margin-bottom: 8px;
-    font-size: 2rem;
+    flex: 0 0 auto;
+    font-size: 1.9rem;
 }
 
-.metric-card span,
 .action-card p,
 .section-heading p {
     color: var(--muted);
