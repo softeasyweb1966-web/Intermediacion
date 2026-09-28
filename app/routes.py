@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from sqlalchemy import or_
@@ -7,6 +8,7 @@ from .extensions import db
 from .models import (
     Auditoria,
     Cliente,
+    InventarioMovimiento,
     Producto,
     ProductoLote,
     ProductoPresentacion,
@@ -30,6 +32,7 @@ def dashboard():
         {"nombre": "Productos", "icono": "box", "clase": "products", "url": "main.productos"},
         {"nombre": "Clientes", "icono": "client", "clase": "clients", "url": "main.clientes"},
         {"nombre": "Proveedores", "icono": "truck", "clase": "suppliers", "url": "main.proveedores"},
+        {"nombre": "Despachos y recibos", "icono": "warehouse", "clase": "inventory", "url": "main.inventario_movimientos"},
         {"nombre": "Cotizaciones", "icono": "quote", "clase": "quotes"},
         {"nombre": "Cartera", "icono": "wallet", "clase": "wallet"},
     ]
@@ -198,7 +201,7 @@ def productos():
         {"nombre": "Presentaciones", "detalle": "Empaques, tallas y colores", "icono": "layers", "url": "main.presentaciones"},
         {"nombre": "Proveedores", "detalle": "Precios y condiciones", "icono": "truck"},
         {"nombre": "Lotes", "detalle": "Vencimientos y trazabilidad", "icono": "calendar", "url": "main.lotes"},
-        {"nombre": "Inventario", "detalle": "Saldos y movimientos", "icono": "warehouse"},
+        {"nombre": "Inventario", "detalle": "Saldos y movimientos", "icono": "warehouse", "url": "main.inventario_movimientos"},
         {"nombre": "Historial", "detalle": "Ultimas compras", "icono": "history"},
         {"nombre": "Alertas", "detalle": "Minimos y vencimientos", "icono": "alert"},
     ]
@@ -573,6 +576,97 @@ def lote_anular(lote_id):
     return redirect(url_for("main.lotes"))
 
 
+@main_bp.route("/inventario/movimientos")
+def inventario_movimientos():
+    busqueda = request.args.get("q", "").strip()
+    tipo = request.args.get("tipo", "todos")
+
+    consulta = InventarioMovimiento.query.join(Producto).join(ProductoLote)
+    if tipo != "todos":
+        consulta = consulta.filter(InventarioMovimiento.tipo == tipo)
+
+    if busqueda:
+        patron = f"%{busqueda}%"
+        consulta = consulta.outerjoin(Cliente).outerjoin(Proveedor).filter(
+            or_(
+                Producto.nombre.ilike(patron),
+                Producto.codigo.ilike(patron),
+                ProductoLote.numero_lote.ilike(patron),
+                InventarioMovimiento.documento.ilike(patron),
+                InventarioMovimiento.responsable.ilike(patron),
+                Cliente.nombre.ilike(patron),
+                Proveedor.nombre.ilike(patron),
+            )
+        )
+
+    movimientos = consulta.order_by(
+        InventarioMovimiento.fecha.desc(),
+        InventarioMovimiento.id.desc(),
+    ).all()
+    return render_template(
+        "inventario/index.html",
+        movimientos=movimientos,
+        busqueda=busqueda,
+        tipo=tipo,
+    )
+
+
+@main_bp.route("/inventario/recibo", methods=["GET", "POST"])
+def inventario_recibo():
+    movimiento = InventarioMovimiento(tipo="RECIBO")
+    if request.method == "POST":
+        lote = ProductoLote.query.get_or_404(int(request.form.get("lote_id")))
+        cantidad = obtener_decimal("cantidad")
+        if cantidad <= 0:
+            flash("La cantidad recibida debe ser mayor que cero.", "error")
+            return render_template_movimiento(movimiento, "Recibo de mercancia")
+
+        guardar_movimiento(movimiento, lote, "RECIBO", cantidad)
+        lote.cantidad_actual = Decimal(lote.cantidad_actual or 0) + cantidad
+        db.session.add(movimiento)
+        db.session.commit()
+        registrar_auditoria(
+            "inventario_movimientos",
+            movimiento.id,
+            "recibo",
+            f"Recibo {movimiento.documento or ''} - {lote.numero_lote}",
+        )
+        flash("Recibo registrado correctamente.", "success")
+        return redirect(url_for("main.inventario_movimientos"))
+
+    return render_template_movimiento(movimiento, "Recibo de mercancia")
+
+
+@main_bp.route("/inventario/despacho", methods=["GET", "POST"])
+def inventario_despacho():
+    movimiento = InventarioMovimiento(tipo="DESPACHO")
+    if request.method == "POST":
+        lote = ProductoLote.query.get_or_404(int(request.form.get("lote_id")))
+        cantidad = obtener_decimal("cantidad")
+        disponible = Decimal(lote.cantidad_actual or 0)
+        if cantidad <= 0:
+            flash("La cantidad despachada debe ser mayor que cero.", "error")
+            return render_template_movimiento(movimiento, "Despacho de mercancia")
+        if cantidad > disponible:
+            flash("No hay saldo suficiente en el lote seleccionado.", "error")
+            return render_template_movimiento(movimiento, "Despacho de mercancia")
+
+        guardar_movimiento(movimiento, lote, "DESPACHO", cantidad)
+        lote.cantidad_actual = disponible - cantidad
+        db.session.add(movimiento)
+        db.session.commit()
+        registrar_auditoria(
+            "inventario_movimientos",
+            movimiento.id,
+            "despacho",
+            f"Despacho {movimiento.documento or ''} - {lote.numero_lote}",
+        )
+        flash("Despacho registrado correctamente.", "success")
+        return redirect(url_for("main.inventario_movimientos"))
+
+    return render_template_movimiento(movimiento, "Despacho de mercancia")
+
+
 def guardar_cliente(cliente):
     cliente.nombre = request.form.get("nombre", "").strip()
     cliente.documento = request.form.get("documento", "").strip() or None
@@ -640,6 +734,41 @@ def guardar_lote(lote):
     lote.observaciones = request.form.get("observaciones", "").strip() or None
 
 
+def guardar_movimiento(movimiento, lote, tipo, cantidad):
+    fecha = request.form.get("fecha", "").strip()
+    proveedor_id = request.form.get("proveedor_id", "").strip()
+    cliente_id = request.form.get("cliente_id", "").strip()
+
+    movimiento.tipo = tipo
+    movimiento.fecha = datetime.strptime(fecha, "%Y-%m-%d").date() if fecha else datetime.utcnow().date()
+    movimiento.producto_id = lote.producto_id
+    movimiento.lote_id = lote.id
+    movimiento.presentacion_id = lote.presentacion_id
+    movimiento.proveedor_id = int(proveedor_id) if proveedor_id else lote.proveedor_id
+    movimiento.cliente_id = int(cliente_id) if cliente_id else None
+    movimiento.cantidad = cantidad
+    movimiento.costo_unitario = request.form.get("costo_unitario", "").strip() or None
+    movimiento.documento = request.form.get("documento", "").strip() or None
+    movimiento.responsable = request.form.get("responsable", "").strip() or None
+    movimiento.observaciones = request.form.get("observaciones", "").strip() or None
+
+
+def obtener_decimal(campo):
+    valor = request.form.get(campo, "0").strip() or "0"
+    return Decimal(valor)
+
+
+def render_template_movimiento(movimiento, modo):
+    return render_template(
+        "inventario/form.html",
+        movimiento=movimiento,
+        modo=modo,
+        lotes=obtener_lotes(),
+        proveedores=obtener_proveedores(),
+        clientes=obtener_clientes(),
+    )
+
+
 def obtener_unidades():
     return Unidad.query.filter_by(activo=True).order_by(Unidad.nombre.asc()).all()
 
@@ -656,6 +785,17 @@ def obtener_presentaciones():
 
 def obtener_proveedores():
     return Proveedor.query.filter_by(activo=True).order_by(Proveedor.nombre.asc()).all()
+
+
+def obtener_clientes():
+    return Cliente.query.filter_by(activo=True).order_by(Cliente.nombre.asc()).all()
+
+
+def obtener_lotes():
+    return ProductoLote.query.filter_by(activo=True).join(Producto).order_by(
+        Producto.nombre.asc(),
+        ProductoLote.numero_lote.asc(),
+    ).all()
 
 
 def unidad_duplicada(nombre, abreviatura, unidad_id=None):

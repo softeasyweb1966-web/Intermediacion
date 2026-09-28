@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Inventario | Intermediacion{% endblock %}
+{% block page_title %}Despachos y recibos{% endblock %}
+
+{% block content %}
+<section class="toolbar">
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar producto, lote, tercero o documento">
+        <select name="tipo">
+            <option value="todos" {% if tipo == "todos" %}selected{% endif %}>Todos</option>
+            <option value="RECIBO" {% if tipo == "RECIBO" %}selected{% endif %}>Recibos</option>
+            <option value="DESPACHO" {% if tipo == "DESPACHO" %}selected{% endif %}>Despachos</option>
+        </select>
+        <button class="icon-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <span>Buscar</span>
+        </button>
+    </form>
+    <a class="secondary-action icon-button" href="{{ url_for('main.dashboard') }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m3 11 9-8 9 8"></path>
+            <path d="M5 10v10h14V10"></path>
+            <path d="M9 20v-6h6v6"></path>
+        </svg>
+        <span>Menu</span>
+    </a>
+    <a class="secondary-action icon-button" href="{{ url_for('main.inventario_recibo') }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v12"></path>
+            <path d="m7 10 5 5 5-5"></path>
+            <path d="M5 21h14"></path>
+        </svg>
+        <span>Recibo</span>
+    </a>
+    <a class="primary-action icon-button" href="{{ url_for('main.inventario_despacho') }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 21V9"></path>
+            <path d="m7 14 5-5 5 5"></path>
+            <path d="M5 3h14"></path>
+        </svg>
+        <span>Despacho</span>
+    </a>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<section class="data-card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Producto</th>
+                    <th>Lote</th>
+                    <th>Tercero</th>
+                    <th>Documento</th>
+                    <th>Cantidad</th>
+                    <th>Responsable</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movimiento in movimientos %}
+                <tr>
+                    <td>{{ movimiento.fecha.strftime("%Y-%m-%d") }}</td>
+                    <td>
+                        <span class="status-pill {{ 'ok' if movimiento.tipo == 'RECIBO' else 'info' }}">
+                            {{ movimiento.tipo.title() }}
+                        </span>
+                    </td>
+                    <td>
+                        <strong>{{ movimiento.producto.nombre }}</strong>
+                        <small>{{ movimiento.producto.codigo }}</small>
+                    </td>
+                    <td>{{ movimiento.lote.numero_lote }}</td>
+                    <td>
+                        {% if movimiento.tipo == "RECIBO" %}
+                            {{ movimiento.proveedor.nombre if movimiento.proveedor else "-" }}
+                        {% else %}
+                            {{ movimiento.cliente.nombre if movimiento.cliente else "-" }}
+                        {% endif %}
+                    </td>
+                    <td>{{ movimiento.documento or "-" }}</td>
+                    <td>{{ movimiento.cantidad }}</td>
+                    <td>{{ movimiento.responsable or "-" }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="empty-state">No hay movimientos para mostrar.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -266,6 +266,10 @@ h1 {
     stroke: #8b4f9f;
 }
 
+.quick-action.inventory svg {
+    stroke: #16745f;
+}
+
 .login-page {
     display: grid;
     place-items: center;
@@ -429,6 +433,11 @@ td small {
 .status-pill.off {
     background: #f6e5e5;
     color: var(--danger);
+}
+
+.status-pill.info {
+    background: #e5eef8;
+    color: #2f6fb0;
 }
 
 .row-actions {

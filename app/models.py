@@ -133,6 +133,30 @@ class ProductoLote(db.Model, TimestampMixin, EstadoMixin):
     proveedor = db.relationship("Proveedor")
 
 
+class InventarioMovimiento(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "inventario_movimientos"
+
+    id = db.Column(db.Integer, primary_key=True)
+    tipo = db.Column(db.String(30), nullable=False, index=True)
+    fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    lote_id = db.Column(db.Integer, db.ForeignKey("producto_lotes.id"), nullable=False, index=True)
+    presentacion_id = db.Column(db.Integer, db.ForeignKey("producto_presentaciones.id"))
+    proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedores.id"))
+    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"))
+    cantidad = db.Column(db.Numeric(14, 4), nullable=False)
+    costo_unitario = db.Column(db.Numeric(14, 2))
+    documento = db.Column(db.String(100))
+    responsable = db.Column(db.String(120))
+    observaciones = db.Column(db.Text)
+
+    producto = db.relationship("Producto")
+    lote = db.relationship("ProductoLote")
+    presentacion = db.relationship("ProductoPresentacion")
+    proveedor = db.relationship("Proveedor")
+    cliente = db.relationship("Cliente")
+
+
 class Auditoria(db.Model):
     __tablename__ = "auditoria"
 

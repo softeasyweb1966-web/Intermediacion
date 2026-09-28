@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ modo }} | Intermediacion{% endblock %}
+{% block page_title %}{{ modo }}{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<form class="form-card" method="post">
+    <div class="form-grid">
+        <label>
+            Fecha
+            <input type="date" name="fecha" value="{{ movimiento.fecha.strftime('%Y-%m-%d') if movimiento.fecha else '' }}">
+        </label>
+        <label>
+            Lote
+            <select name="lote_id" required>
+                <option value="">Seleccione un lote</option>
+                {% for lote in lotes %}
+                <option value="{{ lote.id }}" {% if movimiento.lote_id == lote.id %}selected{% endif %}>
+                    {{ lote.producto.nombre }} - {{ lote.numero_lote }} - saldo {{ lote.cantidad_actual }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        {% if movimiento.tipo == "RECIBO" %}
+        <label>
+            Proveedor
+            <select name="proveedor_id">
+                <option value="">Usar proveedor del lote</option>
+                {% for proveedor in proveedores %}
+                <option value="{{ proveedor.id }}" {% if movimiento.proveedor_id == proveedor.id %}selected{% endif %}>
+                    {{ proveedor.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Costo unitario
+            <input type="number" step="0.01" min="0" name="costo_unitario" value="{{ movimiento.costo_unitario or '' }}">
+        </label>
+        {% else %}
+        <label>
+            Cliente
+            <select name="cliente_id">
+                <option value="">Sin cliente</option>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id }}" {% if movimiento.cliente_id == cliente.id %}selected{% endif %}>
+                    {{ cliente.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Documento
+            <input name="documento" value="{{ movimiento.documento or '' }}" maxlength="100" placeholder="Remision, prefactura o venta">
+        </label>
+        {% endif %}
+        <label>
+            Cantidad
+            <input type="number" step="0.0001" min="0.0001" name="cantidad" value="{{ movimiento.cantidad or '' }}" required>
+        </label>
+        {% if movimiento.tipo == "RECIBO" %}
+        <label>
+            Documento
+            <input name="documento" value="{{ movimiento.documento or '' }}" maxlength="100" placeholder="Factura, remision u orden">
+        </label>
+        {% endif %}
+        <label>
+            Responsable
+            <input name="responsable" value="{{ movimiento.responsable or '' }}" maxlength="120">
+        </label>
+        <label class="span-2">
+            Observaciones
+            <textarea name="observaciones" rows="3">{{ movimiento.observaciones or '' }}</textarea>
+        </label>
+    </div>
+    <div class="form-actions">
+        <a class="icon-button" href="{{ url_for('main.inventario_movimientos') }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 18 9 12l6-6"></path>
+            </svg>
+            <span>Inventario</span>
+        </a>
+        <button class="icon-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path>
+                <path d="M17 21v-8H7v8"></path>
+                <path d="M7 3v5h8"></path>
+            </svg>
+            <span>Guardar</span>
+        </button>
+    </div>
+</form>
+{% endblock %}
