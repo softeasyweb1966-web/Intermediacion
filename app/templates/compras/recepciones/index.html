@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Recepciones de compra | Intermediacion{% endblock %}
+{% block page_title %}Recepciones de compra{% endblock %}
+
+{% block content %}
+<section class="toolbar">
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar recepcion, factura, pedido o proveedor">
+        <select disabled><option>Todos</option></select>
+        <button class="icon-button" type="submit"><span>Buscar</span></button>
+    </form>
+    <a class="secondary-action icon-button" href="{{ url_for('main.compras') }}"><span>Compras</span></a>
+    <a class="primary-action icon-button" href="{{ url_for('main.compra_recepcion_nueva') }}"><span>Compra directa</span></a>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<section class="data-card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Numero</th>
+                    <th>Fecha</th>
+                    <th>Proveedor</th>
+                    <th>Pedido</th>
+                    <th>Documento</th>
+                    <th>Lineas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for recepcion in recepciones %}
+                <tr>
+                    <td><strong>{{ recepcion.numero }}</strong></td>
+                    <td>{{ recepcion.fecha.strftime("%Y-%m-%d") }}</td>
+                    <td>{{ recepcion.proveedor.nombre }}</td>
+                    <td>{{ recepcion.pedido.numero if recepcion.pedido else "Directa" }}</td>
+                    <td>{{ recepcion.documento or "-" }}</td>
+                    <td>{{ recepcion.detalles|length }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="empty-state">No hay recepciones para mostrar.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -100,6 +100,86 @@ class ProductoProveedor(db.Model, TimestampMixin, EstadoMixin):
     unidad_compra = db.relationship("Unidad")
 
 
+class CompraPedido(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "compra_pedidos"
+
+    id = db.Column(db.Integer, primary_key=True)
+    numero = db.Column(db.String(40), unique=True, nullable=False, index=True)
+    proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedores.id"), nullable=False, index=True)
+    fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
+    fecha_estimada = db.Column(db.Date)
+    estado = db.Column(db.String(20), default="BORRADOR", nullable=False, index=True)
+    observaciones = db.Column(db.Text)
+
+    proveedor = db.relationship("Proveedor")
+    detalles = db.relationship(
+        "CompraPedidoDetalle",
+        cascade="all, delete-orphan",
+        back_populates="pedido",
+        order_by="CompraPedidoDetalle.id",
+    )
+
+
+class CompraPedidoDetalle(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "compra_pedido_detalles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey("compra_pedidos.id"), nullable=False, index=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    presentacion_id = db.Column(db.Integer, db.ForeignKey("producto_presentaciones.id"))
+    cantidad_pedida = db.Column(db.Numeric(14, 4), nullable=False)
+    cantidad_recibida = db.Column(db.Numeric(14, 4), default=0, nullable=False)
+    costo_unitario = db.Column(db.Numeric(14, 2))
+    referencia_proveedor = db.Column(db.String(100))
+    observaciones = db.Column(db.Text)
+    estado = db.Column(db.String(20), default="ABIERTA", nullable=False, index=True)
+
+    pedido = db.relationship("CompraPedido", back_populates="detalles")
+    producto = db.relationship("Producto")
+    presentacion = db.relationship("ProductoPresentacion")
+
+
+class CompraRecepcion(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "compra_recepciones"
+
+    id = db.Column(db.Integer, primary_key=True)
+    numero = db.Column(db.String(40), unique=True, nullable=False, index=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey("compra_pedidos.id"), index=True)
+    proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedores.id"), nullable=False, index=True)
+    fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
+    documento = db.Column(db.String(100))
+    responsable = db.Column(db.String(120))
+    observaciones = db.Column(db.Text)
+
+    pedido = db.relationship("CompraPedido")
+    proveedor = db.relationship("Proveedor")
+    detalles = db.relationship(
+        "CompraRecepcionDetalle",
+        cascade="all, delete-orphan",
+        back_populates="recepcion",
+        order_by="CompraRecepcionDetalle.id",
+    )
+
+
+class CompraRecepcionDetalle(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "compra_recepcion_detalles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    recepcion_id = db.Column(db.Integer, db.ForeignKey("compra_recepciones.id"), nullable=False, index=True)
+    pedido_detalle_id = db.Column(db.Integer, db.ForeignKey("compra_pedido_detalles.id"))
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    lote_id = db.Column(db.Integer, db.ForeignKey("producto_lotes.id"), nullable=False, index=True)
+    presentacion_id = db.Column(db.Integer, db.ForeignKey("producto_presentaciones.id"))
+    cantidad = db.Column(db.Numeric(14, 4), nullable=False)
+    costo_unitario = db.Column(db.Numeric(14, 2))
+
+    recepcion = db.relationship("CompraRecepcion", back_populates="detalles")
+    pedido_detalle = db.relationship("CompraPedidoDetalle")
+    producto = db.relationship("Producto")
+    lote = db.relationship("ProductoLote")
+    presentacion = db.relationship("ProductoPresentacion")
+
+
 class ProductoPresentacion(db.Model, TimestampMixin, EstadoMixin):
     __tablename__ = "producto_presentaciones"
 

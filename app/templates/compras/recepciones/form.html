@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{{ modo }} | Intermediacion{% endblock %}
+{% block page_title %}{{ modo }}{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<form class="form-card wide-form" method="post">
+    <div class="form-grid">
+        <label>Numero<input name="numero" value="{{ recepcion.numero or '' }}" required></label>
+        <label>Proveedor
+            <select name="proveedor_id" required>
+                <option value="">Seleccione un proveedor</option>
+                {% for proveedor in proveedores %}
+                <option value="{{ proveedor.id }}" {% if recepcion.proveedor_id == proveedor.id %}selected{% endif %}>{{ proveedor.nombre }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Fecha<input type="date" name="fecha" value="{{ recepcion.fecha.strftime('%Y-%m-%d') if recepcion.fecha else '' }}"></label>
+        <label>Factura o remision<input name="documento" value="{{ recepcion.documento or '' }}"></label>
+        <label>Responsable<input name="responsable" value="{{ recepcion.responsable or '' }}"></label>
+        <label class="span-2">Observaciones<textarea name="observaciones" rows="3">{{ recepcion.observaciones or '' }}</textarea></label>
+    </div>
+
+    <h2 class="subsection-title">Productos recibidos</h2>
+    <div class="line-table-wrap">
+        <table class="line-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Presentacion</th>
+                    {% if pedido %}<th>Pendiente</th>{% endif %}
+                    <th>Cantidad</th>
+                    <th>Costo</th>
+                    <th>Lote</th>
+                    <th>Vence</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if pedido %}
+                    {% for detalle in pedido.detalles %}
+                    {% set i = loop.index %}
+                    {% set pendiente = cantidad_pendiente(detalle) %}
+                    <tr>
+                        <td>
+                            <strong>{{ detalle.producto.nombre }}</strong>
+                            <input type="hidden" name="producto_id_{{ i }}" value="{{ detalle.producto_id }}">
+                        </td>
+                        <td>{{ detalle.presentacion.nombre if detalle.presentacion else "-" }}</td>
+                        <td>{{ pendiente }}</td>
+                        <td><input type="number" step="0.0001" min="0" max="{{ pendiente }}" name="cantidad_{{ i }}"></td>
+                        <td><input type="number" step="0.01" min="0" name="costo_unitario_{{ i }}" value="{{ detalle.costo_unitario or '' }}"></td>
+                        <td><input name="numero_lote_{{ i }}" placeholder="Lote"></td>
+                        <td><input type="date" name="fecha_vencimiento_{{ i }}"></td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    {% for i in range(1, 9) %}
+                    <tr>
+                        <td>
+                            <select name="producto_id_{{ i }}">
+                                <option value="">Producto</option>
+                                {% for producto in productos %}
+                                <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <select name="presentacion_id_{{ i }}">
+                                <option value="">Sin presentacion</option>
+                                {% for presentacion in presentaciones %}
+                                <option value="{{ presentacion.id }}">{{ presentacion.producto.nombre }} - {{ presentacion.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td><input type="number" step="0.0001" min="0" name="cantidad_{{ i }}"></td>
+                        <td><input type="number" step="0.01" min="0" name="costo_unitario_{{ i }}"></td>
+                        <td><input name="numero_lote_{{ i }}" placeholder="Lote"></td>
+                        <td><input type="date" name="fecha_vencimiento_{{ i }}"></td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ url_for('main.compra_recepciones') if not pedido else url_for('main.compra_pedidos') }}">Cancelar</a>
+        <button type="submit">Recibir</button>
+    </div>
+</form>
+{% endblock %}

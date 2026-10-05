@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ modo }} pedido | Intermediacion{% endblock %}
+{% block page_title %}{{ modo }} pedido de compra{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<form class="form-card wide-form" method="post">
+    <div class="form-grid">
+        <label>Numero<input name="numero" value="{{ pedido.numero or '' }}" required></label>
+        <label>Proveedor
+            <select name="proveedor_id" required>
+                <option value="">Seleccione un proveedor</option>
+                {% for proveedor in proveedores %}
+                <option value="{{ proveedor.id }}" {% if pedido.proveedor_id == proveedor.id %}selected{% endif %}>{{ proveedor.nombre }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Fecha<input type="date" name="fecha" value="{{ pedido.fecha.strftime('%Y-%m-%d') if pedido.fecha else '' }}"></label>
+        <label>Fecha estimada<input type="date" name="fecha_estimada" value="{{ pedido.fecha_estimada.strftime('%Y-%m-%d') if pedido.fecha_estimada else '' }}"></label>
+        <label>Estado
+            <select name="estado">
+                {% for opcion in estados %}
+                <option value="{{ opcion }}" {% if pedido.estado == opcion %}selected{% endif %}>{{ opcion.title() }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label class="span-2">Observaciones<textarea name="observaciones" rows="3">{{ pedido.observaciones or '' }}</textarea></label>
+    </div>
+
+    <h2 class="subsection-title">Productos solicitados</h2>
+    <div class="line-table-wrap">
+        <table class="line-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Presentacion</th>
+                    <th>Cantidad</th>
+                    <th>Costo</th>
+                    <th>Referencia</th>
+                    <th>Nota</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(1, 9) %}
+                {% set detalle = pedido.detalles[i - 1] if pedido.detalles|length >= i else none %}
+                <tr>
+                    <td>
+                        <input type="hidden" name="detalle_id_{{ i }}" value="{{ detalle.id if detalle else '' }}">
+                        <select name="producto_id_{{ i }}">
+                            <option value="">Producto</option>
+                            {% for producto in productos %}
+                            <option value="{{ producto.id }}" {% if detalle and detalle.producto_id == producto.id %}selected{% endif %}>{{ producto.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select name="presentacion_id_{{ i }}">
+                            <option value="">Sin presentacion</option>
+                            {% for presentacion in presentaciones %}
+                            <option value="{{ presentacion.id }}" {% if detalle and detalle.presentacion_id == presentacion.id %}selected{% endif %}>{{ presentacion.producto.nombre }} - {{ presentacion.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><input type="number" step="0.0001" min="0" name="cantidad_{{ i }}" value="{{ detalle.cantidad_pedida if detalle else '' }}"></td>
+                    <td><input type="number" step="0.01" min="0" name="costo_unitario_{{ i }}" value="{{ detalle.costo_unitario if detalle else '' }}"></td>
+                    <td><input name="referencia_proveedor_{{ i }}" value="{{ detalle.referencia_proveedor if detalle else '' }}"></td>
+                    <td><input name="observaciones_{{ i }}" value="{{ detalle.observaciones if detalle else '' }}"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ url_for('main.compra_pedidos') }}">Cancelar</a>
+        <button type="submit">Guardar</button>
+    </div>
+</form>
+{% endblock %}

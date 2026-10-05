@@ -39,6 +39,9 @@ def main():
             "productos", "maneja_presentaciones", "boolean not null default false"
         )
         add_column_if_missing("productos", "unidad_id", "integer references unidades(id)")
+        add_column_if_missing("producto_proveedores", "ultima_compra_en", "date")
+        add_column_if_missing("producto_proveedores", "ultimo_precio_compra", "numeric(14, 2)")
+        add_column_if_missing("producto_proveedores", "origen", "varchar(30) not null default 'manual'")
         seed_unidades()
         db.session.commit()
         print("Esquema actualizado.")

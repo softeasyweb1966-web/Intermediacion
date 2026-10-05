@@ -8,10 +8,15 @@ from .extensions import db
 from .models import (
     Auditoria,
     Cliente,
+    CompraPedido,
+    CompraPedidoDetalle,
+    CompraRecepcion,
+    CompraRecepcionDetalle,
     InventarioMovimiento,
     Producto,
     ProductoLote,
     ProductoPresentacion,
+    ProductoProveedor,
     Proveedor,
     Unidad,
 )
@@ -33,6 +38,7 @@ def dashboard():
         {"nombre": "Clientes", "icono": "client", "clase": "clients", "url": "main.clientes"},
         {"nombre": "Proveedores", "icono": "truck", "clase": "suppliers", "url": "main.proveedores"},
         {"nombre": "Despachos y recibos", "icono": "warehouse", "clase": "inventory", "url": "main.inventario_movimientos"},
+        {"nombre": "Compras", "icono": "truck", "clase": "suppliers", "url": "main.compras"},
         {"nombre": "Cotizaciones", "icono": "quote", "clase": "quotes"},
         {"nombre": "Cartera", "icono": "wallet", "clase": "wallet"},
     ]
@@ -40,9 +46,145 @@ def dashboard():
     return render_template("dashboard.html", indicadores=indicadores, accesos=accesos)
 
 
+@main_bp.route("/compras")
+def compras():
+    opciones = [
+        {"nombre": "Pedidos", "detalle": "Solicitudes a proveedor", "icono": "truck", "url": "main.compra_pedidos"},
+        {"nombre": "Recepciones", "detalle": "Entradas parciales o directas", "icono": "warehouse", "url": "main.compra_recepciones"},
+        {"nombre": "Manual", "detalle": "Pendiente para pruebas", "icono": "history"},
+    ]
+    return render_template("compras/modulo.html", opciones=opciones)
+
+
 @main_bp.route("/login")
 def login():
     return render_template("login.html")
+
+
+@main_bp.route("/compras/pedidos")
+def compra_pedidos():
+    busqueda = request.args.get("q", "").strip()
+    estado = request.args.get("estado", "todos")
+
+    consulta = CompraPedido.query.join(Proveedor)
+    if estado != "todos":
+        consulta = consulta.filter(CompraPedido.estado == estado)
+    if busqueda:
+        patron = f"%{busqueda}%"
+        consulta = consulta.filter(
+            or_(
+                CompraPedido.numero.ilike(patron),
+                Proveedor.nombre.ilike(patron),
+                CompraPedido.observaciones.ilike(patron),
+            )
+        )
+
+    pedidos = consulta.order_by(CompraPedido.fecha.desc(), CompraPedido.id.desc()).all()
+    return render_template("compras/pedidos/index.html", pedidos=pedidos, busqueda=busqueda, estado=estado)
+
+
+@main_bp.route("/compras/pedidos/nuevo", methods=["GET", "POST"])
+def compra_pedido_nuevo():
+    pedido = CompraPedido(numero=siguiente_numero("PED", CompraPedido), fecha=datetime.utcnow().date())
+    if request.method == "POST":
+        guardar_pedido_compra(pedido)
+        if not pedido.detalles:
+            flash("Agregue al menos un producto al pedido.", "error")
+            return render_template_pedido(pedido, "Crear")
+        db.session.add(pedido)
+        db.session.commit()
+        registrar_auditoria("compra_pedidos", pedido.id, "crear", f"Pedido creado: {pedido.numero}")
+        flash("Pedido creado correctamente.", "success")
+        return redirect(url_for("main.compra_pedidos"))
+
+    return render_template_pedido(pedido, "Crear")
+
+
+@main_bp.route("/compras/pedidos/<int:pedido_id>/editar", methods=["GET", "POST"])
+def compra_pedido_editar(pedido_id):
+    pedido = CompraPedido.query.get_or_404(pedido_id)
+    if request.method == "POST":
+        guardar_pedido_compra(pedido)
+        if not pedido.detalles:
+            flash("Agregue al menos un producto al pedido.", "error")
+            return render_template_pedido(pedido, "Editar")
+        db.session.commit()
+        actualizar_estado_pedido(pedido)
+        registrar_auditoria("compra_pedidos", pedido.id, "editar", f"Pedido editado: {pedido.numero}")
+        flash("Pedido actualizado correctamente.", "success")
+        return redirect(url_for("main.compra_pedidos"))
+
+    return render_template_pedido(pedido, "Editar")
+
+
+@main_bp.route("/compras/pedidos/<int:pedido_id>/recibir", methods=["GET", "POST"])
+def compra_pedido_recibir(pedido_id):
+    pedido = CompraPedido.query.get_or_404(pedido_id)
+    recepcion = CompraRecepcion(
+        numero=siguiente_numero("REC", CompraRecepcion),
+        pedido=pedido,
+        proveedor=pedido.proveedor,
+        fecha=datetime.utcnow().date(),
+    )
+    if request.method == "POST":
+        try:
+            guardar_recepcion_compra(recepcion, pedido)
+        except ValueError as error:
+            db.session.rollback()
+            flash(str(error), "error")
+            return render_template_recepcion(recepcion, "Recibir pedido", pedido)
+        if not recepcion.detalles:
+            flash("Registre al menos una cantidad recibida.", "error")
+            return render_template_recepcion(recepcion, "Recibir pedido", pedido)
+        db.session.add(recepcion)
+        db.session.commit()
+        actualizar_estado_pedido(pedido)
+        db.session.commit()
+        registrar_auditoria("compra_recepciones", recepcion.id, "crear", f"Recepcion creada: {recepcion.numero}")
+        flash("Recepcion registrada correctamente.", "success")
+        return redirect(url_for("main.compra_pedidos"))
+
+    return render_template_recepcion(recepcion, "Recibir pedido", pedido)
+
+
+@main_bp.route("/compras/recepciones")
+def compra_recepciones():
+    busqueda = request.args.get("q", "").strip()
+    consulta = CompraRecepcion.query.join(Proveedor)
+    if busqueda:
+        patron = f"%{busqueda}%"
+        consulta = consulta.outerjoin(CompraPedido).filter(
+            or_(
+                CompraRecepcion.numero.ilike(patron),
+                CompraRecepcion.documento.ilike(patron),
+                Proveedor.nombre.ilike(patron),
+                CompraPedido.numero.ilike(patron),
+            )
+        )
+    recepciones = consulta.order_by(CompraRecepcion.fecha.desc(), CompraRecepcion.id.desc()).all()
+    return render_template("compras/recepciones/index.html", recepciones=recepciones, busqueda=busqueda)
+
+
+@main_bp.route("/compras/recepciones/nueva", methods=["GET", "POST"])
+def compra_recepcion_nueva():
+    recepcion = CompraRecepcion(numero=siguiente_numero("REC", CompraRecepcion), fecha=datetime.utcnow().date())
+    if request.method == "POST":
+        try:
+            guardar_recepcion_compra(recepcion)
+        except ValueError as error:
+            db.session.rollback()
+            flash(str(error), "error")
+            return render_template_recepcion(recepcion, "Compra directa")
+        if not recepcion.detalles:
+            flash("Registre al menos una cantidad recibida.", "error")
+            return render_template_recepcion(recepcion, "Compra directa")
+        db.session.add(recepcion)
+        db.session.commit()
+        registrar_auditoria("compra_recepciones", recepcion.id, "crear", f"Recepcion creada: {recepcion.numero}")
+        flash("Compra recibida correctamente.", "success")
+        return redirect(url_for("main.compra_recepciones"))
+
+    return render_template_recepcion(recepcion, "Compra directa")
 
 
 @main_bp.route("/clientes")
@@ -581,13 +723,21 @@ def inventario_movimientos():
     busqueda = request.args.get("q", "").strip()
     tipo = request.args.get("tipo", "todos")
 
-    consulta = InventarioMovimiento.query.join(Producto).join(ProductoLote)
+    consulta = InventarioMovimiento.query.join(
+        Producto, InventarioMovimiento.producto_id == Producto.id
+    ).join(
+        ProductoLote, InventarioMovimiento.lote_id == ProductoLote.id
+    )
     if tipo != "todos":
         consulta = consulta.filter(InventarioMovimiento.tipo == tipo)
 
     if busqueda:
         patron = f"%{busqueda}%"
-        consulta = consulta.outerjoin(Cliente).outerjoin(Proveedor).filter(
+        consulta = consulta.outerjoin(
+            Cliente, InventarioMovimiento.cliente_id == Cliente.id
+        ).outerjoin(
+            Proveedor, InventarioMovimiento.proveedor_id == Proveedor.id
+        ).filter(
             or_(
                 Producto.nombre.ilike(patron),
                 Producto.codigo.ilike(patron),
@@ -704,6 +854,89 @@ def guardar_producto(producto):
     producto.stock_minimo = request.form.get("stock_minimo", "0").strip() or 0
 
 
+def guardar_pedido_compra(pedido):
+    pedido.numero = request.form.get("numero", "").strip() or pedido.numero
+    pedido.proveedor_id = int(request.form.get("proveedor_id"))
+    pedido.fecha = obtener_fecha("fecha") or datetime.utcnow().date()
+    pedido.fecha_estimada = obtener_fecha("fecha_estimada")
+    pedido.estado = request.form.get("estado", "BORRADOR")
+    pedido.observaciones = request.form.get("observaciones", "").strip() or None
+
+    detalles_previos = {str(detalle.id): detalle for detalle in pedido.detalles if detalle.id}
+    nuevos_detalles = []
+    for indice in range(1, 9):
+        producto_id = request.form.get(f"producto_id_{indice}", "").strip()
+        cantidad = obtener_decimal_form(f"cantidad_{indice}")
+        if not producto_id or cantidad <= 0:
+            continue
+
+        detalle_id = request.form.get(f"detalle_id_{indice}", "").strip()
+        detalle = detalles_previos.get(detalle_id, CompraPedidoDetalle())
+        detalle.producto_id = int(producto_id)
+        presentacion_id = request.form.get(f"presentacion_id_{indice}", "").strip()
+        detalle.presentacion_id = int(presentacion_id) if presentacion_id else None
+        detalle.cantidad_pedida = cantidad
+        detalle.costo_unitario = request.form.get(f"costo_unitario_{indice}", "").strip() or None
+        detalle.referencia_proveedor = request.form.get(f"referencia_proveedor_{indice}", "").strip() or None
+        detalle.observaciones = request.form.get(f"observaciones_{indice}", "").strip() or None
+        actualizar_estado_detalle(detalle)
+        nuevos_detalles.append(detalle)
+
+    pedido.detalles = nuevos_detalles
+
+
+def guardar_recepcion_compra(recepcion, pedido=None):
+    recepcion.numero = request.form.get("numero", "").strip() or recepcion.numero
+    recepcion.proveedor_id = int(request.form.get("proveedor_id"))
+    recepcion.fecha = obtener_fecha("fecha") or datetime.utcnow().date()
+    recepcion.documento = request.form.get("documento", "").strip() or None
+    recepcion.responsable = request.form.get("responsable", "").strip() or None
+    recepcion.observaciones = request.form.get("observaciones", "").strip() or None
+    if pedido:
+        recepcion.pedido = pedido
+
+    filas = pedido.detalles if pedido else range(1, 9)
+    for indice, item in enumerate(filas, start=1):
+        detalle_pedido = item if pedido else None
+        producto_id = request.form.get(f"producto_id_{indice}", "").strip()
+        if detalle_pedido:
+            producto_id = str(detalle_pedido.producto_id)
+        cantidad = obtener_decimal_form(f"cantidad_{indice}")
+        if not producto_id or cantidad <= 0:
+            continue
+        if detalle_pedido and cantidad > cantidad_pendiente(detalle_pedido):
+            raise ValueError(f"La cantidad recibida de {detalle_pedido.producto.nombre} supera el pendiente.")
+
+        costo = request.form.get(f"costo_unitario_{indice}", "").strip() or None
+        presentacion_id = request.form.get(f"presentacion_id_{indice}", "").strip()
+        numero_lote = request.form.get(f"numero_lote_{indice}", "").strip()
+        fecha_vencimiento = obtener_fecha(f"fecha_vencimiento_{indice}")
+        lote = obtener_o_crear_lote(
+            int(producto_id),
+            int(presentacion_id) if presentacion_id else (detalle_pedido.presentacion_id if detalle_pedido else None),
+            recepcion.proveedor_id,
+            numero_lote,
+            fecha_vencimiento,
+        )
+        lote.cantidad_actual = Decimal(lote.cantidad_actual or 0) + cantidad
+
+        recepcion.detalles.append(
+            CompraRecepcionDetalle(
+                pedido_detalle=detalle_pedido,
+                producto_id=int(producto_id),
+                lote=lote,
+                presentacion_id=lote.presentacion_id,
+                cantidad=cantidad,
+                costo_unitario=costo,
+            )
+        )
+        if detalle_pedido:
+            detalle_pedido.cantidad_recibida = Decimal(detalle_pedido.cantidad_recibida or 0) + cantidad
+            actualizar_estado_detalle(detalle_pedido)
+        registrar_movimiento_recepcion(recepcion, lote, cantidad, costo)
+        actualizar_producto_proveedor(int(producto_id), recepcion.proveedor_id, costo, detalle_pedido)
+
+
 def guardar_unidad(unidad):
     unidad.nombre = request.form.get("nombre", "").strip()
     unidad.abreviatura = request.form.get("abreviatura", "").strip()
@@ -758,6 +991,112 @@ def obtener_decimal(campo):
     return Decimal(valor)
 
 
+def obtener_decimal_form(campo):
+    valor = request.form.get(campo, "0").strip() or "0"
+    return Decimal(valor)
+
+
+def obtener_fecha(campo):
+    valor = request.form.get(campo, "").strip()
+    return datetime.strptime(valor, "%Y-%m-%d").date() if valor else None
+
+
+def siguiente_numero(prefijo, modelo):
+    siguiente = (db.session.query(db.func.count(modelo.id)).scalar() or 0) + 1
+    return f"{prefijo}-{siguiente:05d}"
+
+
+def cantidad_pendiente(detalle):
+    return Decimal(detalle.cantidad_pedida or 0) - Decimal(detalle.cantidad_recibida or 0)
+
+
+def actualizar_estado_detalle(detalle):
+    pendiente = cantidad_pendiente(detalle)
+    if pendiente <= 0:
+        detalle.estado = "CERRADA"
+    elif Decimal(detalle.cantidad_recibida or 0) > 0:
+        detalle.estado = "PARCIAL"
+    else:
+        detalle.estado = "ABIERTA"
+
+
+def actualizar_estado_pedido(pedido):
+    for detalle in pedido.detalles:
+        actualizar_estado_detalle(detalle)
+    if not pedido.detalles:
+        pedido.estado = "BORRADOR"
+        return
+    cerradas = all(detalle.estado == "CERRADA" for detalle in pedido.detalles)
+    parciales = any(detalle.estado == "PARCIAL" for detalle in pedido.detalles)
+    recibidas = any(Decimal(detalle.cantidad_recibida or 0) > 0 for detalle in pedido.detalles)
+    if cerradas:
+        pedido.estado = "CERRADO"
+    elif parciales or recibidas:
+        pedido.estado = "PARCIAL"
+
+
+def obtener_o_crear_lote(producto_id, presentacion_id, proveedor_id, numero_lote, fecha_vencimiento):
+    numero = numero_lote or f"SIN-LOTE-{producto_id}"
+    lote = ProductoLote.query.filter_by(
+        producto_id=producto_id,
+        numero_lote=numero,
+        proveedor_id=proveedor_id,
+    ).first()
+    if not lote:
+        lote = ProductoLote(
+            producto_id=producto_id,
+            presentacion_id=presentacion_id,
+            proveedor_id=proveedor_id,
+            numero_lote=numero,
+            fecha_vencimiento=fecha_vencimiento,
+            cantidad_actual=0,
+        )
+        db.session.add(lote)
+    elif fecha_vencimiento and not lote.fecha_vencimiento:
+        lote.fecha_vencimiento = fecha_vencimiento
+    return lote
+
+
+def registrar_movimiento_recepcion(recepcion, lote, cantidad, costo):
+    movimiento = InventarioMovimiento(
+        tipo="RECIBO",
+        fecha=recepcion.fecha,
+        producto_id=lote.producto_id,
+        lote=lote,
+        presentacion_id=lote.presentacion_id,
+        proveedor_id=recepcion.proveedor_id,
+        cantidad=cantidad,
+        costo_unitario=costo,
+        documento=recepcion.documento or recepcion.numero,
+        responsable=recepcion.responsable,
+        observaciones=recepcion.observaciones,
+    )
+    db.session.add(movimiento)
+
+
+def actualizar_producto_proveedor(producto_id, proveedor_id, costo, detalle_pedido=None):
+    relacion = ProductoProveedor.query.filter_by(
+        producto_id=producto_id,
+        proveedor_id=proveedor_id,
+    ).first()
+    if not relacion:
+        relacion = ProductoProveedor(
+            producto_id=producto_id,
+            proveedor_id=proveedor_id,
+            origen="compras",
+        )
+        db.session.add(relacion)
+    if detalle_pedido and detalle_pedido.referencia_proveedor:
+        relacion.referencia_proveedor = detalle_pedido.referencia_proveedor
+    if detalle_pedido and detalle_pedido.presentacion:
+        relacion.presentacion = detalle_pedido.presentacion.nombre
+    if costo:
+        relacion.precio_compra = costo
+        relacion.ultimo_precio_compra = costo
+    relacion.ultima_compra_en = datetime.utcnow().date()
+    relacion.es_frecuente = True
+
+
 def render_template_movimiento(movimiento, modo):
     return render_template(
         "inventario/form.html",
@@ -766,6 +1105,31 @@ def render_template_movimiento(movimiento, modo):
         lotes=obtener_lotes(),
         proveedores=obtener_proveedores(),
         clientes=obtener_clientes(),
+    )
+
+
+def render_template_pedido(pedido, modo):
+    return render_template(
+        "compras/pedidos/form.html",
+        pedido=pedido,
+        modo=modo,
+        proveedores=obtener_proveedores(),
+        productos=obtener_productos(),
+        presentaciones=obtener_presentaciones(),
+        estados=["BORRADOR", "CONFIRMADO", "PARCIAL", "CERRADO"],
+    )
+
+
+def render_template_recepcion(recepcion, modo, pedido=None):
+    return render_template(
+        "compras/recepciones/form.html",
+        recepcion=recepcion,
+        pedido=pedido,
+        modo=modo,
+        proveedores=obtener_proveedores(),
+        productos=obtener_productos(),
+        presentaciones=obtener_presentaciones(),
+        cantidad_pendiente=cantidad_pendiente,
     )
 
 
