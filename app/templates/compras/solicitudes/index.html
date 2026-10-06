@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Solicitudes de cotizacion | Intermediacion{% endblock %}
+{% block page_title %}Solicitudes de cotizacion{% endblock %}
+
+{% block content %}
+<section class="toolbar">
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar solicitud u observacion">
+        <select name="estado">
+            {% for opcion in ["todos", "BORRADOR", "ENVIADA", "RESPONDIDA", "FINALIZADA", "CANCELADA"] %}
+            <option value="{{ opcion }}" {% if estado == opcion %}selected{% endif %}>{{ opcion.title() }}</option>
+            {% endfor %}
+        </select>
+        <button class="icon-button" type="submit"><span>Buscar</span></button>
+    </form>
+    <a class="secondary-action icon-button" href="{{ url_for('main.compras') }}"><span>Compras</span></a>
+    <a class="primary-action icon-button" href="{{ url_for('main.compra_solicitud_nueva') }}"><span>Nueva solicitud</span></a>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<section class="data-card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Numero</th>
+                    <th>Fecha</th>
+                    <th>Limite</th>
+                    <th>Estado</th>
+                    <th>Productos</th>
+                    <th>Proveedores</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitud in solicitudes %}
+                <tr>
+                    <td><strong>{{ solicitud.numero }}</strong></td>
+                    <td>{{ solicitud.fecha.strftime("%Y-%m-%d") }}</td>
+                    <td>{{ solicitud.fecha_limite.strftime("%Y-%m-%d") if solicitud.fecha_limite else "-" }}</td>
+                    <td><span class="status-pill info">{{ solicitud.estado.title() }}</span></td>
+                    <td>{{ solicitud.detalles|length }}</td>
+                    <td>{{ solicitud.proveedores|length }}</td>
+                    <td>
+                        <div class="row-actions">
+                            {% if solicitud.estado == "BORRADOR" %}
+                            <form method="post" action="{{ url_for('main.compra_solicitud_enviar', solicitud_id=solicitud.id) }}">
+                                <button class="table-action" type="submit">Enviar</button>
+                            </form>
+                            {% endif %}
+                            <a class="table-action" href="{{ url_for('main.compra_solicitud_comparativo', solicitud_id=solicitud.id) }}">Comparar</a>
+                            {% if solicitud.estado not in ["FINALIZADA", "CANCELADA"] %}
+                            <form method="post" action="{{ url_for('main.compra_solicitud_finalizar', solicitud_id=solicitud.id) }}">
+                                <button class="table-action" type="submit">Finalizar</button>
+                            </form>
+                            <form method="post" action="{{ url_for('main.compra_solicitud_cancelar', solicitud_id=solicitud.id) }}" data-confirm="Confirma que desea cancelar esta solicitud?">
+                                <button class="table-action danger" type="submit">Cancelar</button>
+                            </form>
+                            <form method="post" action="{{ url_for('main.compra_solicitud_eliminar', solicitud_id=solicitud.id) }}" data-confirm="Confirma que desea eliminar definitivamente esta solicitud?">
+                                <button class="table-action danger" type="submit">Eliminar</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="empty-state">No hay solicitudes para mostrar.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

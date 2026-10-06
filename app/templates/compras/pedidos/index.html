@@ -36,6 +36,7 @@
                     <th>Numero</th>
                     <th>Fecha</th>
                     <th>Proveedor</th>
+                    <th>Cotizacion</th>
                     <th>Estado</th>
                     <th>Lineas</th>
                     <th>Acciones</th>
@@ -47,17 +48,21 @@
                     <td><strong>{{ pedido.numero }}</strong></td>
                     <td>{{ pedido.fecha.strftime("%Y-%m-%d") }}</td>
                     <td>{{ pedido.proveedor.nombre }}</td>
+                    <td>{{ pedido.cotizacion.numero if pedido.cotizacion else "Directo" }}</td>
                     <td><span class="status-pill {{ 'ok' if pedido.estado == 'CERRADO' else 'info' }}">{{ pedido.estado.title() }}</span></td>
                     <td>{{ pedido.detalles|length }}</td>
                     <td>
                         <div class="row-actions">
                             <a class="table-action" href="{{ url_for('main.compra_pedido_editar', pedido_id=pedido.id) }}" title="Editar">Editar</a>
                             <a class="table-action" href="{{ url_for('main.compra_pedido_recibir', pedido_id=pedido.id) }}" title="Recibir">Recibir</a>
+                            <form method="post" action="{{ url_for('main.compra_pedido_eliminar', pedido_id=pedido.id) }}" data-confirm="Confirma que desea eliminar definitivamente este pedido?">
+                                <button class="table-action danger" type="submit">Eliminar</button>
+                            </form>
                         </div>
                     </td>
                 </tr>
                 {% else %}
-                <tr><td colspan="6" class="empty-state">No hay pedidos para mostrar.</td></tr>
+                <tr><td colspan="7" class="empty-state">No hay pedidos para mostrar.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

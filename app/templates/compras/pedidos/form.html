@@ -56,6 +56,7 @@
                 <tr>
                     <td>
                         <input type="hidden" name="detalle_id_{{ i }}" value="{{ detalle.id if detalle else '' }}">
+                        <input type="hidden" name="cotizacion_detalle_id_{{ i }}" value="{{ detalle.cotizacion_detalle_id if detalle else '' }}">
                         <select name="producto_id_{{ i }}">
                             <option value="">Producto</option>
                             {% for producto in productos %}

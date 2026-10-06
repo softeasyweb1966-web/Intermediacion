@@ -97,7 +97,7 @@
                             </svg>
                         </a>
                         {% if lote.activo %}
-                        <form method="post" action="{{ url_for('main.lote_anular', lote_id=lote.id) }}">
+                        <form method="post" action="{{ url_for('main.lote_anular', lote_id=lote.id) }}" data-confirm="Confirma que desea anular este lote?">
                             <input type="hidden" name="motivo_anulacion" value="Anulacion solicitada desde listado">
                             <button class="table-action danger" type="submit" title="Anular lote" aria-label="Anular lote">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Convertir cotizacion | Intermediacion{% endblock %}
+{% block page_title %}Convertir cotizacion a pedido{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<form class="form-card wide-form" method="post">
+    <div class="form-grid">
+        <label>Cotizacion<input value="{{ cotizacion.numero }}" disabled></label>
+        <label>Proveedor<input value="{{ cotizacion.proveedor.nombre }}" disabled></label>
+        <label>Numero pedido<input name="numero" value="{{ pedido.numero or '' }}" required></label>
+        <label>Fecha pedido<input type="date" name="fecha" value="{{ pedido.fecha.strftime('%Y-%m-%d') if pedido.fecha else '' }}"></label>
+        <label>Fecha estimada<input type="date" name="fecha_estimada" value="{{ pedido.fecha_estimada.strftime('%Y-%m-%d') if pedido.fecha_estimada else '' }}"></label>
+        <label>Estado
+            <select name="estado">
+                {% for opcion in ["CONFIRMADO", "BORRADOR"] %}
+                <option value="{{ opcion }}" {% if pedido.estado == opcion %}selected{% endif %}>{{ opcion.title() }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label class="span-2">Observaciones<textarea name="observaciones" rows="3">{{ pedido.observaciones or 'Pedido generado desde ' ~ cotizacion.numero }}</textarea></label>
+    </div>
+
+    <h2 class="subsection-title">Lineas a pedir</h2>
+    <div class="line-table-wrap">
+        <table class="line-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Presentacion</th>
+                    <th>Cotizada</th>
+                    <th>Ya pedida</th>
+                    <th>Pendiente</th>
+                    <th>Pedir ahora</th>
+                    <th>Costo</th>
+                    <th>Nota</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in cotizacion.detalles %}
+                {% set pendiente = cantidad_pendiente_cotizacion(detalle) %}
+                <tr>
+                    <td><strong>{{ detalle.producto.nombre }}</strong></td>
+                    <td>{{ detalle.presentacion.nombre if detalle.presentacion else "-" }}</td>
+                    <td>{{ detalle.cantidad_cotizada }}</td>
+                    <td>{{ detalle.cantidad_pedida }}</td>
+                    <td>{{ pendiente }}</td>
+                    <td><input type="number" step="0.0001" min="0" max="{{ pendiente }}" name="cantidad_{{ loop.index }}" {% if pendiente <= 0 %}disabled{% endif %}></td>
+                    <td><input type="number" step="0.01" min="0" name="costo_unitario_{{ loop.index }}" value="{{ detalle.costo_unitario or '' }}" {% if pendiente <= 0 %}disabled{% endif %}></td>
+                    <td><input name="observaciones_{{ loop.index }}" value="{{ detalle.observaciones or '' }}" {% if pendiente <= 0 %}disabled{% endif %}></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="empty-state">No hay lineas para convertir.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ url_for('main.compra_cotizaciones') }}">Cancelar</a>
+        <button type="submit">Crear pedido</button>
+    </div>
+</form>
+{% endblock %}

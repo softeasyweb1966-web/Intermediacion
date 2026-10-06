@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Comparativo | Intermediacion{% endblock %}
+{% block page_title %}Comparativo de proveedores{% endblock %}
+
+{% block content %}
+<section class="toolbar">
+    <a class="secondary-action icon-button" href="{{ url_for('main.compra_solicitudes') }}"><span>Solicitudes</span></a>
+    <a class="secondary-action icon-button" href="{{ url_for('main.compra_cotizaciones') }}"><span>Cotizaciones</span></a>
+</section>
+
+<section class="data-card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Proveedor</th>
+                    <th>Cotizacion</th>
+                    <th>Estado</th>
+                    <th>Productos</th>
+                    <th>Entrega</th>
+                    <th>Pago</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in solicitud.proveedores %}
+                <tr>
+                    <td><strong>{{ item.proveedor.nombre }}</strong></td>
+                    <td>{{ item.cotizacion.numero if item.cotizacion else "-" }}</td>
+                    <td><span class="status-pill info">{{ item.cotizacion.estado.title() if item.cotizacion else item.estado.title() }}</span></td>
+                    <td>{{ item.cotizacion.detalles|length if item.cotizacion else 0 }}</td>
+                    <td>{{ item.cotizacion.tiempo_entrega_dias if item.cotizacion else "-" }} dias</td>
+                    <td>{{ item.cotizacion.forma_pago if item.cotizacion and item.cotizacion.forma_pago else "-" }}</td>
+                    <td>
+                        {% if item.cotizacion %}
+                        <div class="row-actions">
+                            <a class="table-action" href="{{ url_for('main.compra_cotizacion_editar', cotizacion_id=item.cotizacion.id) }}">Ver / Actualizar</a>
+                            <a class="table-action" href="{{ url_for('main.compra_cotizacion_convertir', cotizacion_id=item.cotizacion.id) }}">Pedido</a>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="empty-state">No hay proveedores asociados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

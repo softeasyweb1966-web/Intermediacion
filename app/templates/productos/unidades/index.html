@@ -83,7 +83,7 @@
                             </svg>
                         </a>
                         {% if unidad.activo %}
-                        <form method="post" action="{{ url_for('main.unidad_anular', unidad_id=unidad.id) }}">
+                        <form method="post" action="{{ url_for('main.unidad_anular', unidad_id=unidad.id) }}" data-confirm="Confirma que desea anular esta unidad?">
                             <input type="hidden" name="motivo_anulacion" value="Anulacion solicitada desde listado">
                             <button class="table-action danger" type="submit" title="Anular unidad" aria-label="Anular unidad">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">

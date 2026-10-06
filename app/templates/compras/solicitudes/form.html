@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}{{ modo }} solicitud | Intermediacion{% endblock %}
+{% block page_title %}{{ modo }} solicitud de cotizacion{% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<form class="form-card wide-form" method="post">
+    <div class="form-grid">
+        <label>Numero<input name="numero" value="{{ solicitud.numero or '' }}" required></label>
+        <label>Fecha<input type="date" name="fecha" value="{{ solicitud.fecha.strftime('%Y-%m-%d') if solicitud.fecha else '' }}"></label>
+        <label>Fecha limite<input type="date" name="fecha_limite" value="{{ solicitud.fecha_limite.strftime('%Y-%m-%d') if solicitud.fecha_limite else '' }}"></label>
+        <label>Estado
+            <select name="estado">
+                {% for opcion in estados %}
+                <option value="{{ opcion }}" {% if solicitud.estado == opcion %}selected{% endif %}>{{ opcion.title() }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label class="span-2">Observaciones<textarea name="observaciones" rows="3">{{ solicitud.observaciones or '' }}</textarea></label>
+    </div>
+
+    <h2 class="subsection-title">Productos solicitados</h2>
+    <div class="entry-row">
+        <label>Producto
+            <select id="producto-entry">
+                <option value="">Producto</option>
+                {% for producto in productos %}
+                <option value="{{ producto.id }}" data-unidad="{{ producto.unidad_principal.nombre if producto.unidad_principal else producto.unidad }}">{{ producto.nombre }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Presentacion
+            <select id="presentacion-entry">
+                <option value="">Sin presentacion</option>
+                {% for presentacion in presentaciones %}
+                <option value="{{ presentacion.id }}" data-producto-id="{{ presentacion.producto_id }}" data-unidad="{{ presentacion.unidad.nombre if presentacion.unidad else (presentacion.producto.unidad_principal.nombre if presentacion.producto.unidad_principal else presentacion.producto.unidad) }}">{{ presentacion.producto.nombre }} - {{ presentacion.nombre }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Cantidad
+            <input id="cantidad-entry" type="number" step="0.0001" min="0">
+        </label>
+        <label>Unidad
+            <input id="unidad-entry" readonly>
+        </label>
+        <label>Nota
+            <input id="nota-entry">
+        </label>
+        <button class="secondary-action" type="button" data-add-producto>Agregar</button>
+    </div>
+    <div class="line-table-wrap">
+        <table class="line-table compact-line-table" id="productos-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Presentacion</th>
+                    <th>Unidad</th>
+                    <th>Cantidad</th>
+                    <th>Nota</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <h2 class="subsection-title">Proveedores a consultar</h2>
+    <div class="entry-row provider-entry">
+        <label>Proveedor
+            <select id="proveedor-entry">
+                <option value="">Proveedor</option>
+                {% for proveedor in proveedores %}
+                <option value="{{ proveedor.id }}">{{ proveedor.nombre }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button class="secondary-action" type="button" data-add-proveedor>Agregar</button>
+    </div>
+    <div class="line-table-wrap">
+        <table class="line-table compact-line-table" id="proveedores-table">
+            <thead>
+                <tr>
+                    <th>Proveedor</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ url_for('main.compra_solicitudes') }}">Cancelar</a>
+        <button type="submit">Generar cotizaciones</button>
+    </div>
+</form>
+
+<script>
+    (() => {
+        const maxRows = 99;
+        const productosBody = document.querySelector("#productos-table tbody");
+        const proveedoresBody = document.querySelector("#proveedores-table tbody");
+        const productoSelect = document.querySelector("#producto-entry");
+        const presentacionSelect = document.querySelector("#presentacion-entry");
+        const cantidadInput = document.querySelector("#cantidad-entry");
+        const unidadInput = document.querySelector("#unidad-entry");
+        const notaInput = document.querySelector("#nota-entry");
+        const proveedorSelect = document.querySelector("#proveedor-entry");
+        const allPresentationOptions = [...presentacionSelect.querySelectorAll("option")].map((option) => option.cloneNode(true));
+        const productUnits = {
+            {% for producto in productos %}
+            "{{ producto.id }}": {{ (producto.unidad_principal.nombre if producto.unidad_principal else producto.unidad)|tojson }},
+            {% endfor %}
+        };
+        const presentationUnits = {
+            {% for presentacion in presentaciones %}
+            "{{ presentacion.id }}": {{ (presentacion.unidad.nombre if presentacion.unidad else (presentacion.producto.unidad_principal.nombre if presentacion.producto.unidad_principal else presentacion.producto.unidad))|tojson }},
+            {% endfor %}
+        };
+
+        function selectedText(select) {
+            return select.options[select.selectedIndex]?.text || "";
+        }
+
+        function selectedUnit() {
+            return presentationUnits[presentacionSelect.value] || productUnits[productoSelect.value] || "";
+        }
+
+        function renumberProducts() {
+            [...productosBody.querySelectorAll("tr")].forEach((row, index) => {
+                const number = index + 1;
+                row.querySelector("[data-producto-id]").name = `producto_id_${number}`;
+                row.querySelector("[data-presentacion-id]").name = `presentacion_id_${number}`;
+                row.querySelector("[data-cantidad]").name = `cantidad_${number}`;
+                row.querySelector("[data-nota]").name = `observaciones_${number}`;
+            });
+        }
+
+        function addProduct() {
+            const productoId = productoSelect.value;
+            const cantidad = cantidadInput.value;
+            if (!productoId || !cantidad || Number(cantidad) <= 0 || productosBody.children.length >= maxRows) {
+                return;
+            }
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>
+                    <strong>${selectedText(productoSelect)}</strong>
+                    <input type="hidden" data-producto-id value="${productoId}">
+                </td>
+                <td>
+                    ${selectedText(presentacionSelect)}
+                    <input type="hidden" data-presentacion-id value="${presentacionSelect.value}">
+                </td>
+                <td>${selectedUnit() || "-"}</td>
+                <td>
+                    ${cantidad}
+                    <input type="hidden" data-cantidad value="${cantidad}">
+                </td>
+                <td>
+                    ${notaInput.value || "-"}
+                    <input type="hidden" data-nota value="${notaInput.value}">
+                </td>
+                <td><button class="table-action danger" type="button" data-remove>Quitar</button></td>
+            `;
+            productosBody.appendChild(row);
+            renumberProducts();
+            productoSelect.value = "";
+            presentacionSelect.value = "";
+            cantidadInput.value = "";
+            unidadInput.value = "";
+            notaInput.value = "";
+            productoSelect.focus();
+        }
+
+        function filterPresentations() {
+            const productoId = productoSelect.value;
+            presentacionSelect.innerHTML = "";
+            allPresentationOptions.forEach((option) => {
+                const optionProductId = option.dataset.productoId;
+                if (!option.value || !optionProductId || optionProductId === productoId) {
+                    presentacionSelect.appendChild(option.cloneNode(true));
+                }
+            });
+            presentacionSelect.value = "";
+            unidadInput.value = selectedUnit();
+        }
+
+        function updatePresentationUnit() {
+            unidadInput.value = selectedUnit();
+        }
+
+        function addProvider() {
+            const proveedorId = proveedorSelect.value;
+            if (!proveedorId || proveedoresBody.querySelector(`[value="${proveedorId}"]`)) {
+                return;
+            }
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>
+                    <strong>${selectedText(proveedorSelect)}</strong>
+                    <input type="hidden" name="proveedor_ids" value="${proveedorId}">
+                </td>
+                <td><button class="table-action danger" type="button" data-remove>Quitar</button></td>
+            `;
+            proveedoresBody.appendChild(row);
+            proveedorSelect.value = "";
+            proveedorSelect.focus();
+        }
+
+        document.querySelector("[data-add-producto]").addEventListener("click", addProduct);
+        document.querySelector("[data-add-proveedor]").addEventListener("click", addProvider);
+        productoSelect.addEventListener("change", filterPresentations);
+        presentacionSelect.addEventListener("change", updatePresentationUnit);
+        document.addEventListener("click", (event) => {
+            if (!event.target.matches("[data-remove]")) {
+                return;
+            }
+            const row = event.target.closest("tr");
+            const isProduct = row.closest("tbody") === productosBody;
+            row.remove();
+            if (isProduct) {
+                renumberProducts();
+            }
+        });
+        [productoSelect, presentacionSelect, cantidadInput, notaInput].forEach((field) => {
+            field.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    addProduct();
+                }
+            });
+        });
+        proveedorSelect.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                addProvider();
+            }
+        });
+    })();
+</script>
+{% endblock %}

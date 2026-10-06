@@ -87,7 +87,7 @@
                             </svg>
                         </a>
                         {% if cliente.activo %}
-                        <form method="post" action="{{ url_for('main.cliente_anular', cliente_id=cliente.id) }}">
+                        <form method="post" action="{{ url_for('main.cliente_anular', cliente_id=cliente.id) }}" data-confirm="Confirma que desea anular este cliente?">
                             <input type="hidden" name="motivo_anulacion" value="Anulacion solicitada desde listado">
                             <button class="table-action danger" type="submit" title="Anular cliente" aria-label="Anular cliente">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">

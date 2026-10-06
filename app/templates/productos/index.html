@@ -85,7 +85,7 @@
                             </svg>
                         </a>
                         {% if producto.activo %}
-                        <form method="post" action="{{ url_for('main.producto_anular', producto_id=producto.id) }}">
+                        <form method="post" action="{{ url_for('main.producto_anular', producto_id=producto.id) }}" data-confirm="Confirma que desea anular este producto?">
                             <input type="hidden" name="motivo_anulacion" value="Anulacion solicitada desde listado">
                             <button class="table-action danger" type="submit" title="Anular producto" aria-label="Anular producto">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">

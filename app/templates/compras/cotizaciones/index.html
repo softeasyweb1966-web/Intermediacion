@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Cotizaciones de proveedor | Intermediacion{% endblock %}
+{% block page_title %}Cotizaciones de proveedor{% endblock %}
+
+{% block content %}
+<section class="toolbar">
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar cotizacion, proveedor u observacion">
+        <select name="estado">
+            {% for opcion in ["todos", "BORRADOR", "SOLICITADA", "RECIBIDA", "PARCIAL", "CERRADA", "CANCELADA"] %}
+            <option value="{{ opcion }}" {% if estado == opcion %}selected{% endif %}>{{ opcion.title() }}</option>
+            {% endfor %}
+        </select>
+        <button class="icon-button" type="submit"><span>Buscar</span></button>
+    </form>
+    <a class="secondary-action icon-button" href="{{ url_for('main.compras') }}"><span>Compras</span></a>
+    <a class="primary-action icon-button" href="{{ url_for('main.compra_cotizacion_nueva') }}"><span>Nueva cotizacion</span></a>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-list">
+        {% for category, message in messages %}
+        <p class="flash {{ category }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<section class="data-card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Numero</th>
+                    <th>Fecha</th>
+                    <th>Proveedor</th>
+                    <th>Solicitud</th>
+                    <th>Vigencia</th>
+                    <th>Estado</th>
+                    <th>Archivo</th>
+                    <th>Lineas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cotizacion in cotizaciones %}
+                <tr>
+                    <td><strong>{{ cotizacion.numero }}</strong></td>
+                    <td>{{ cotizacion.fecha.strftime("%Y-%m-%d") }}</td>
+                    <td>{{ cotizacion.proveedor.nombre }}</td>
+                    <td>{{ cotizacion.solicitud.numero if cotizacion.solicitud else "Directa" }}</td>
+                    <td>{{ cotizacion.vigencia_hasta.strftime("%Y-%m-%d") if cotizacion.vigencia_hasta else "-" }}</td>
+                    <td><span class="status-pill {{ 'ok' if cotizacion.estado == 'CERRADA' else 'info' }}">{{ cotizacion.estado.title() }}</span></td>
+                    <td>
+                        {% if cotizacion.archivo_ruta %}
+                        <a href="{{ url_for('static', filename=cotizacion.archivo_ruta) }}" target="_blank" rel="noopener">Ver</a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ cotizacion.detalles|length }}</td>
+                    <td>
+                        <div class="row-actions">
+                            <a class="table-action" href="{{ url_for('main.compra_cotizacion_editar', cotizacion_id=cotizacion.id) }}">Ver / Actualizar</a>
+                            <a class="table-action" href="{{ url_for('main.compra_cotizacion_convertir', cotizacion_id=cotizacion.id) }}">Pedido</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="9" class="empty-state">No hay cotizaciones para mostrar.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

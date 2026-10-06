@@ -97,7 +97,7 @@
                             </svg>
                         </a>
                         {% if presentacion.activo %}
-                        <form method="post" action="{{ url_for('main.presentacion_anular', presentacion_id=presentacion.id) }}">
+                        <form method="post" action="{{ url_for('main.presentacion_anular', presentacion_id=presentacion.id) }}" data-confirm="Confirma que desea anular esta presentacion?">
                             <input type="hidden" name="motivo_anulacion" value="Anulacion solicitada desde listado">
                             <button class="table-action danger" type="submit" title="Anular presentación" aria-label="Anular presentación">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">

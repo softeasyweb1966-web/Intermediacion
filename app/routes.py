@@ -1,17 +1,24 @@
 from datetime import datetime
 from decimal import Decimal
+from pathlib import Path
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from sqlalchemy import or_
+from werkzeug.utils import secure_filename
 
 from .extensions import db
 from .models import (
     Auditoria,
     Cliente,
+    CompraCotizacion,
+    CompraCotizacionDetalle,
     CompraPedido,
     CompraPedidoDetalle,
     CompraRecepcion,
     CompraRecepcionDetalle,
+    CompraSolicitud,
+    CompraSolicitudDetalle,
+    CompraSolicitudProveedor,
     InventarioMovimiento,
     Producto,
     ProductoLote,
@@ -22,6 +29,7 @@ from .models import (
 )
 
 main_bp = Blueprint("main", __name__)
+UPLOAD_DIR = Path(__file__).resolve().parent / "static" / "uploads" / "cotizaciones"
 
 
 @main_bp.route("/")
@@ -49,6 +57,8 @@ def dashboard():
 @main_bp.route("/compras")
 def compras():
     opciones = [
+        {"nombre": "Solicitudes", "detalle": "Pedir precio a varios proveedores", "icono": "history", "url": "main.compra_solicitudes"},
+        {"nombre": "Cotizaciones", "detalle": "Respuestas de proveedores", "icono": "history", "url": "main.compra_cotizaciones"},
         {"nombre": "Pedidos", "detalle": "Solicitudes a proveedor", "icono": "truck", "url": "main.compra_pedidos"},
         {"nombre": "Recepciones", "detalle": "Entradas parciales o directas", "icono": "warehouse", "url": "main.compra_recepciones"},
         {"nombre": "Manual", "detalle": "Pendiente para pruebas", "icono": "history"},
@@ -59,6 +69,235 @@ def compras():
 @main_bp.route("/login")
 def login():
     return render_template("login.html")
+
+
+@main_bp.route("/compras/solicitudes")
+def compra_solicitudes():
+    busqueda = request.args.get("q", "").strip()
+    estado = request.args.get("estado", "todos")
+
+    consulta = CompraSolicitud.query
+    if estado != "todos":
+        consulta = consulta.filter(CompraSolicitud.estado == estado)
+    if busqueda:
+        patron = f"%{busqueda}%"
+        consulta = consulta.filter(
+            or_(
+                CompraSolicitud.numero.ilike(patron),
+                CompraSolicitud.observaciones.ilike(patron),
+            )
+        )
+
+    solicitudes = consulta.order_by(CompraSolicitud.fecha.desc(), CompraSolicitud.id.desc()).all()
+    return render_template(
+        "compras/solicitudes/index.html",
+        solicitudes=solicitudes,
+        busqueda=busqueda,
+        estado=estado,
+    )
+
+
+@main_bp.route("/compras/solicitudes/nueva", methods=["GET", "POST"])
+def compra_solicitud_nueva():
+    solicitud = CompraSolicitud(numero=siguiente_numero("SOL-C", CompraSolicitud), fecha=datetime.utcnow().date())
+    if request.method == "POST":
+        guardar_solicitud_compra(solicitud)
+        if not solicitud.detalles:
+            flash("Agregue al menos un producto a la solicitud.", "error")
+            return render_template_solicitud(solicitud, "Crear")
+        if not solicitud.proveedores:
+            flash("Seleccione al menos un proveedor.", "error")
+            return render_template_solicitud(solicitud, "Crear")
+        db.session.add(solicitud)
+        db.session.commit()
+        registrar_auditoria("compra_solicitudes", solicitud.id, "crear", f"Solicitud creada: {solicitud.numero}")
+        flash("Solicitud creada en borrador. Envie la solicitud para generar cotizaciones.", "success")
+        return redirect(url_for("main.compra_solicitudes"))
+
+    return render_template_solicitud(solicitud, "Crear")
+
+
+@main_bp.route("/compras/solicitudes/<int:solicitud_id>/enviar", methods=["POST"])
+def compra_solicitud_enviar(solicitud_id):
+    solicitud = CompraSolicitud.query.get_or_404(solicitud_id)
+    if solicitud.estado != "BORRADOR":
+        flash("Solo se pueden enviar solicitudes en borrador.", "error")
+        return redirect(url_for("main.compra_solicitudes"))
+
+    generar_cotizaciones_desde_solicitud(solicitud)
+    solicitud.estado = "ENVIADA"
+    db.session.commit()
+    registrar_auditoria("compra_solicitudes", solicitud.id, "enviar", f"Solicitud enviada: {solicitud.numero}")
+    flash("Solicitud enviada y cotizaciones generadas.", "success")
+    return redirect(url_for("main.compra_solicitud_comparativo", solicitud_id=solicitud.id))
+
+
+@main_bp.route("/compras/solicitudes/<int:solicitud_id>/finalizar", methods=["POST"])
+def compra_solicitud_finalizar(solicitud_id):
+    solicitud = CompraSolicitud.query.get_or_404(solicitud_id)
+    solicitud.estado = "FINALIZADA"
+    db.session.commit()
+    registrar_auditoria("compra_solicitudes", solicitud.id, "finalizar", f"Solicitud finalizada: {solicitud.numero}")
+    flash("Solicitud finalizada.", "success")
+    return redirect(url_for("main.compra_solicitudes"))
+
+
+@main_bp.route("/compras/solicitudes/<int:solicitud_id>/cancelar", methods=["POST"])
+def compra_solicitud_cancelar(solicitud_id):
+    solicitud = CompraSolicitud.query.get_or_404(solicitud_id)
+    solicitud.estado = "CANCELADA"
+    solicitud.activo = False
+    solicitud.anulado_en = datetime.utcnow()
+    solicitud.motivo_anulacion = request.form.get("motivo_anulacion", "").strip() or "Solicitud cancelada"
+    db.session.commit()
+    registrar_auditoria("compra_solicitudes", solicitud.id, "cancelar", solicitud.motivo_anulacion)
+    flash("Solicitud cancelada.", "success")
+    return redirect(url_for("main.compra_solicitudes"))
+
+
+@main_bp.route("/compras/solicitudes/<int:solicitud_id>/eliminar", methods=["POST"])
+def compra_solicitud_eliminar(solicitud_id):
+    solicitud = CompraSolicitud.query.get_or_404(solicitud_id)
+    cotizacion_ids = [
+        item.cotizacion_id for item in solicitud.proveedores if item.cotizacion_id
+    ]
+    pedidos_asociados = 0
+    if cotizacion_ids:
+        pedidos_asociados = CompraPedido.query.filter(
+            CompraPedido.cotizacion_id.in_(cotizacion_ids)
+        ).count()
+
+    if pedidos_asociados:
+        flash("No se puede eliminar la solicitud porque ya tiene pedidos asociados.", "error")
+        return redirect(url_for("main.compra_solicitudes"))
+
+    numero = solicitud.numero
+    cotizaciones = [item.cotizacion for item in solicitud.proveedores if item.cotizacion]
+    for item in list(solicitud.proveedores):
+        db.session.delete(item)
+    db.session.flush()
+    for cotizacion in cotizaciones:
+        db.session.delete(cotizacion)
+    db.session.delete(solicitud)
+    db.session.commit()
+    registrar_auditoria("compra_solicitudes", solicitud_id, "eliminar", f"Solicitud eliminada: {numero}")
+    flash("Solicitud eliminada correctamente.", "success")
+    return redirect(url_for("main.compra_solicitudes"))
+
+
+@main_bp.route("/compras/solicitudes/<int:solicitud_id>/comparativo")
+def compra_solicitud_comparativo(solicitud_id):
+    solicitud = CompraSolicitud.query.get_or_404(solicitud_id)
+    return render_template(
+        "compras/solicitudes/comparativo.html",
+        solicitud=solicitud,
+    )
+
+
+@main_bp.route("/compras/cotizaciones")
+def compra_cotizaciones():
+    busqueda = request.args.get("q", "").strip()
+    estado = request.args.get("estado", "todos")
+
+    consulta = CompraCotizacion.query.join(Proveedor)
+    if estado != "todos":
+        consulta = consulta.filter(CompraCotizacion.estado == estado)
+    if busqueda:
+        patron = f"%{busqueda}%"
+        consulta = consulta.filter(
+            or_(
+                CompraCotizacion.numero.ilike(patron),
+                Proveedor.nombre.ilike(patron),
+                CompraCotizacion.observaciones.ilike(patron),
+            )
+        )
+
+    cotizaciones = consulta.order_by(CompraCotizacion.fecha.desc(), CompraCotizacion.id.desc()).all()
+    return render_template(
+        "compras/cotizaciones/index.html",
+        cotizaciones=cotizaciones,
+        busqueda=busqueda,
+        estado=estado,
+    )
+
+
+@main_bp.route("/compras/cotizaciones/nueva", methods=["GET", "POST"])
+def compra_cotizacion_nueva():
+    cotizacion = CompraCotizacion(numero=siguiente_numero("COT-P", CompraCotizacion), fecha=datetime.utcnow().date())
+    if request.method == "POST":
+        try:
+            guardar_cotizacion_compra(cotizacion)
+        except ValueError as error:
+            flash(str(error), "error")
+            return render_template_cotizacion(cotizacion, "Crear")
+        if not cotizacion.detalles:
+            flash("Agregue al menos un producto a la cotizacion.", "error")
+            return render_template_cotizacion(cotizacion, "Crear")
+        db.session.add(cotizacion)
+        db.session.commit()
+        registrar_auditoria("compra_cotizaciones", cotizacion.id, "crear", f"Cotizacion creada: {cotizacion.numero}")
+        flash("Cotizacion registrada correctamente.", "success")
+        return redirect(url_for("main.compra_cotizaciones"))
+
+    return render_template_cotizacion(cotizacion, "Crear")
+
+
+@main_bp.route("/compras/cotizaciones/<int:cotizacion_id>/editar", methods=["GET", "POST"])
+def compra_cotizacion_editar(cotizacion_id):
+    cotizacion = CompraCotizacion.query.get_or_404(cotizacion_id)
+    if request.method == "POST":
+        try:
+            guardar_cotizacion_compra(cotizacion)
+        except ValueError as error:
+            db.session.rollback()
+            flash(str(error), "error")
+            return render_template_cotizacion(cotizacion, "Ver / Actualizar")
+        if not cotizacion.detalles:
+            flash("Agregue al menos un producto a la cotizacion.", "error")
+            return render_template_cotizacion(cotizacion, "Ver / Actualizar")
+        actualizar_estado_respuesta_cotizacion(cotizacion)
+        db.session.commit()
+        actualizar_estado_cotizacion(cotizacion)
+        if cotizacion.solicitud:
+            actualizar_estado_solicitud(cotizacion.solicitud)
+            db.session.commit()
+        registrar_auditoria("compra_cotizaciones", cotizacion.id, "editar", f"Cotizacion editada: {cotizacion.numero}")
+        flash("Cotizacion actualizada correctamente.", "success")
+        return redirect(url_for("main.compra_cotizaciones"))
+
+    return render_template_cotizacion(cotizacion, "Ver / Actualizar")
+
+
+@main_bp.route("/compras/cotizaciones/<int:cotizacion_id>/convertir", methods=["GET", "POST"])
+def compra_cotizacion_convertir(cotizacion_id):
+    cotizacion = CompraCotizacion.query.get_or_404(cotizacion_id)
+    pedido = CompraPedido(
+        numero=siguiente_numero("PED", CompraPedido),
+        cotizacion=cotizacion,
+        proveedor=cotizacion.proveedor,
+        fecha=datetime.utcnow().date(),
+    )
+    if request.method == "POST":
+        try:
+            convertir_cotizacion_a_pedido(cotizacion, pedido)
+        except ValueError as error:
+            db.session.rollback()
+            flash(str(error), "error")
+            return render_template_convertir_cotizacion(cotizacion, pedido)
+        if not pedido.detalles:
+            flash("Seleccione al menos una cantidad para pedir.", "error")
+            return render_template_convertir_cotizacion(cotizacion, pedido)
+        db.session.add(pedido)
+        db.session.commit()
+        actualizar_estado_cotizacion(cotizacion)
+        if cotizacion.solicitud:
+            actualizar_estado_solicitud(cotizacion.solicitud)
+        db.session.commit()
+        registrar_auditoria("compra_pedidos", pedido.id, "crear", f"Pedido creado desde {cotizacion.numero}: {pedido.numero}")
+        flash("Pedido creado desde cotizacion correctamente.", "success")
+        return redirect(url_for("main.compra_pedidos"))
+
+    return render_template_convertir_cotizacion(cotizacion, pedido)
 
 
 @main_bp.route("/compras/pedidos")
@@ -115,6 +354,37 @@ def compra_pedido_editar(pedido_id):
         return redirect(url_for("main.compra_pedidos"))
 
     return render_template_pedido(pedido, "Editar")
+
+
+@main_bp.route("/compras/pedidos/<int:pedido_id>/eliminar", methods=["POST"])
+def compra_pedido_eliminar(pedido_id):
+    pedido = CompraPedido.query.get_or_404(pedido_id)
+    tiene_recepciones = CompraRecepcion.query.filter_by(pedido_id=pedido.id).count() > 0
+    tiene_cantidades_recibidas = any(Decimal(detalle.cantidad_recibida or 0) > 0 for detalle in pedido.detalles)
+    if tiene_recepciones or tiene_cantidades_recibidas:
+        flash("No se puede eliminar el pedido porque ya tiene recepciones asociadas.", "error")
+        return redirect(url_for("main.compra_pedidos"))
+
+    numero = pedido.numero
+    cotizacion = pedido.cotizacion
+    for detalle in pedido.detalles:
+        if detalle.cotizacion_detalle:
+            detalle.cotizacion_detalle.cantidad_pedida = max(
+                Decimal(detalle.cotizacion_detalle.cantidad_pedida or 0) - Decimal(detalle.cantidad_pedida or 0),
+                Decimal("0"),
+            )
+            actualizar_estado_detalle_cotizacion(detalle.cotizacion_detalle)
+
+    db.session.delete(pedido)
+    db.session.commit()
+    if cotizacion:
+        actualizar_estado_cotizacion(cotizacion)
+        if cotizacion.solicitud:
+            actualizar_estado_solicitud(cotizacion.solicitud)
+        db.session.commit()
+    registrar_auditoria("compra_pedidos", pedido_id, "eliminar", f"Pedido eliminado: {numero}")
+    flash("Pedido eliminado correctamente.", "success")
+    return redirect(url_for("main.compra_pedidos"))
 
 
 @main_bp.route("/compras/pedidos/<int:pedido_id>/recibir", methods=["GET", "POST"])
@@ -854,6 +1124,150 @@ def guardar_producto(producto):
     producto.stock_minimo = request.form.get("stock_minimo", "0").strip() or 0
 
 
+def guardar_solicitud_compra(solicitud):
+    solicitud.numero = request.form.get("numero", "").strip() or solicitud.numero
+    solicitud.fecha = obtener_fecha("fecha") or datetime.utcnow().date()
+    solicitud.fecha_limite = obtener_fecha("fecha_limite")
+    solicitud.estado = request.form.get("estado", "BORRADOR")
+    solicitud.observaciones = request.form.get("observaciones", "").strip() or None
+
+    detalles = []
+    for indice in range(1, 100):
+        producto_id = request.form.get(f"producto_id_{indice}", "").strip()
+        cantidad = obtener_decimal_form(f"cantidad_{indice}")
+        if not producto_id or cantidad <= 0:
+            continue
+        presentacion_id = request.form.get(f"presentacion_id_{indice}", "").strip()
+        detalles.append(
+            CompraSolicitudDetalle(
+                producto_id=int(producto_id),
+                presentacion_id=int(presentacion_id) if presentacion_id else None,
+                cantidad_solicitada=cantidad,
+                observaciones=request.form.get(f"observaciones_{indice}", "").strip() or None,
+            )
+        )
+    solicitud.detalles = detalles
+
+    proveedores = []
+    for proveedor_id in request.form.getlist("proveedor_ids"):
+        if proveedor_id:
+            proveedores.append(CompraSolicitudProveedor(proveedor_id=int(proveedor_id)))
+    solicitud.proveedores = proveedores
+
+
+def generar_cotizaciones_desde_solicitud(solicitud):
+    for solicitud_proveedor in solicitud.proveedores:
+        if solicitud_proveedor.cotizacion:
+            continue
+        cotizacion = CompraCotizacion(
+            numero=siguiente_numero("COT-P", CompraCotizacion),
+            solicitud=solicitud,
+            proveedor=solicitud_proveedor.proveedor,
+            fecha=solicitud.fecha,
+            vigencia_hasta=solicitud.fecha_limite,
+            estado="SOLICITADA",
+            observaciones=f"Generada desde {solicitud.numero}",
+        )
+        for detalle in solicitud.detalles:
+            cotizacion.detalles.append(
+                CompraCotizacionDetalle(
+                    producto_id=detalle.producto_id,
+                    presentacion_id=detalle.presentacion_id,
+                    cantidad_cotizada=detalle.cantidad_solicitada,
+                    observaciones=detalle.observaciones,
+                    estado="ABIERTA",
+                )
+            )
+        solicitud_proveedor.cotizacion = cotizacion
+        solicitud_proveedor.estado = "ENVIADA"
+        db.session.add(cotizacion)
+
+
+def guardar_cotizacion_compra(cotizacion):
+    cotizacion.numero = request.form.get("numero", "").strip() or cotizacion.numero
+    cotizacion.proveedor_id = int(request.form.get("proveedor_id"))
+    solicitud_id = request.form.get("solicitud_id", "").strip()
+    cotizacion.solicitud_id = int(solicitud_id) if solicitud_id else cotizacion.solicitud_id
+    cotizacion.fecha = obtener_fecha("fecha") or datetime.utcnow().date()
+    cotizacion.vigencia_hasta = obtener_fecha("vigencia_hasta")
+    cotizacion.estado = request.form.get("estado", "BORRADOR")
+    cotizacion.forma_pago = request.form.get("forma_pago", "").strip() or None
+    cotizacion.dias_credito = int(request.form.get("dias_credito", "0").strip() or 0)
+    cotizacion.tiempo_entrega_dias = int(request.form.get("tiempo_entrega_dias", "0").strip() or 0)
+    cotizacion.observaciones = request.form.get("observaciones", "").strip() or None
+    guardar_archivo_cotizacion(cotizacion)
+
+    detalles_previos = {str(detalle.id): detalle for detalle in cotizacion.detalles if detalle.id}
+    nuevos_detalles = []
+    for indice in range(1, 100):
+        producto_id = request.form.get(f"producto_id_{indice}", "").strip()
+        cantidad = obtener_decimal_form(f"cantidad_{indice}")
+        if not producto_id or cantidad <= 0:
+            continue
+
+        detalle_id = request.form.get(f"detalle_id_{indice}", "").strip()
+        detalle = detalles_previos.get(detalle_id, CompraCotizacionDetalle())
+        if Decimal(detalle.cantidad_pedida or 0) > cantidad:
+            raise ValueError("No puede bajar una cantidad cotizada por debajo de lo ya pedido.")
+        detalle.producto_id = int(producto_id)
+        presentacion_id = request.form.get(f"presentacion_id_{indice}", "").strip()
+        detalle.presentacion_id = int(presentacion_id) if presentacion_id else None
+        detalle.cantidad_cotizada = cantidad
+        detalle.costo_unitario = request.form.get(f"costo_unitario_{indice}", "").strip() or None
+        detalle.referencia_proveedor = request.form.get(f"referencia_proveedor_{indice}", "").strip() or None
+        detalle.observaciones = request.form.get(f"observaciones_{indice}", "").strip() or None
+        actualizar_estado_detalle_cotizacion(detalle)
+        nuevos_detalles.append(detalle)
+
+    cotizacion.detalles = nuevos_detalles
+
+
+def guardar_archivo_cotizacion(cotizacion):
+    archivo = request.files.get("archivo_cotizacion")
+    if not archivo or not archivo.filename:
+        return
+
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    nombre_seguro = secure_filename(archivo.filename)
+    destino_nombre = f"{cotizacion.numero.replace('/', '-')}-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{nombre_seguro}"
+    destino = UPLOAD_DIR / destino_nombre
+    archivo.save(destino)
+    cotizacion.archivo_nombre = archivo.filename
+    cotizacion.archivo_ruta = f"uploads/cotizaciones/{destino_nombre}"
+
+
+def convertir_cotizacion_a_pedido(cotizacion, pedido):
+    pedido.numero = request.form.get("numero", "").strip() or pedido.numero
+    pedido.proveedor = cotizacion.proveedor
+    pedido.fecha = obtener_fecha("fecha") or datetime.utcnow().date()
+    pedido.fecha_estimada = obtener_fecha("fecha_estimada")
+    pedido.estado = request.form.get("estado", "CONFIRMADO")
+    pedido.observaciones = request.form.get("observaciones", "").strip() or f"Pedido generado desde {cotizacion.numero}"
+
+    for indice, detalle_cotizacion in enumerate(cotizacion.detalles, start=1):
+        cantidad = obtener_decimal_form(f"cantidad_{indice}")
+        if cantidad <= 0:
+            continue
+        pendiente = cantidad_pendiente_cotizacion(detalle_cotizacion)
+        if cantidad > pendiente:
+            raise ValueError(f"La cantidad solicitada de {detalle_cotizacion.producto.nombre} supera el pendiente cotizado.")
+
+        detalle_cotizacion.cantidad_pedida = Decimal(detalle_cotizacion.cantidad_pedida or 0) + cantidad
+        actualizar_estado_detalle_cotizacion(detalle_cotizacion)
+        pedido.detalles.append(
+            CompraPedidoDetalle(
+                cotizacion_detalle=detalle_cotizacion,
+                producto_id=detalle_cotizacion.producto_id,
+                presentacion_id=detalle_cotizacion.presentacion_id,
+                cantidad_pedida=cantidad,
+                costo_unitario=request.form.get(f"costo_unitario_{indice}", "").strip() or detalle_cotizacion.costo_unitario,
+                referencia_proveedor=detalle_cotizacion.referencia_proveedor,
+                observaciones=request.form.get(f"observaciones_{indice}", "").strip() or detalle_cotizacion.observaciones,
+                estado="ABIERTA",
+            )
+        )
+
+
 def guardar_pedido_compra(pedido):
     pedido.numero = request.form.get("numero", "").strip() or pedido.numero
     pedido.proveedor_id = int(request.form.get("proveedor_id"))
@@ -872,6 +1286,8 @@ def guardar_pedido_compra(pedido):
 
         detalle_id = request.form.get(f"detalle_id_{indice}", "").strip()
         detalle = detalles_previos.get(detalle_id, CompraPedidoDetalle())
+        cotizacion_detalle_id = request.form.get(f"cotizacion_detalle_id_{indice}", "").strip()
+        detalle.cotizacion_detalle_id = int(cotizacion_detalle_id) if cotizacion_detalle_id else detalle.cotizacion_detalle_id
         detalle.producto_id = int(producto_id)
         presentacion_id = request.form.get(f"presentacion_id_{indice}", "").strip()
         detalle.presentacion_id = int(presentacion_id) if presentacion_id else None
@@ -1010,6 +1426,55 @@ def cantidad_pendiente(detalle):
     return Decimal(detalle.cantidad_pedida or 0) - Decimal(detalle.cantidad_recibida or 0)
 
 
+def cantidad_pendiente_cotizacion(detalle):
+    return Decimal(detalle.cantidad_cotizada or 0) - Decimal(detalle.cantidad_pedida or 0)
+
+
+def actualizar_estado_respuesta_cotizacion(cotizacion):
+    tiene_precios = any(detalle.costo_unitario is not None for detalle in cotizacion.detalles)
+    if cotizacion.estado in {"BORRADOR", "SOLICITADA"} and tiene_precios:
+        cotizacion.estado = "RECIBIDA"
+
+
+def actualizar_estado_detalle_cotizacion(detalle):
+    pendiente = cantidad_pendiente_cotizacion(detalle)
+    if pendiente <= 0:
+        detalle.estado = "CERRADA"
+    elif Decimal(detalle.cantidad_pedida or 0) > 0:
+        detalle.estado = "PARCIAL"
+    else:
+        detalle.estado = "ABIERTA"
+
+
+def actualizar_estado_cotizacion(cotizacion):
+    for detalle in cotizacion.detalles:
+        actualizar_estado_detalle_cotizacion(detalle)
+    if not cotizacion.detalles:
+        cotizacion.estado = "BORRADOR"
+        return
+    cerradas = all(detalle.estado == "CERRADA" for detalle in cotizacion.detalles)
+    parciales = any(detalle.estado == "PARCIAL" for detalle in cotizacion.detalles)
+    pedidas = any(Decimal(detalle.cantidad_pedida or 0) > 0 for detalle in cotizacion.detalles)
+    if cerradas:
+        cotizacion.estado = "CERRADA"
+    elif parciales or pedidas:
+        cotizacion.estado = "PARCIAL"
+    else:
+        actualizar_estado_respuesta_cotizacion(cotizacion)
+
+
+def actualizar_estado_solicitud(solicitud):
+    cotizaciones = [item.cotizacion for item in solicitud.proveedores if item.cotizacion]
+    if not cotizaciones:
+        return
+    if all(cotizacion.estado == "CERRADA" for cotizacion in cotizaciones):
+        solicitud.estado = "FINALIZADA"
+    elif any(cotizacion.estado in {"RECIBIDA", "PARCIAL", "CERRADA"} for cotizacion in cotizaciones):
+        solicitud.estado = "RESPONDIDA"
+    elif solicitud.estado == "BORRADOR":
+        solicitud.estado = "ENVIADA"
+
+
 def actualizar_estado_detalle(detalle):
     pendiente = cantidad_pendiente(detalle)
     if pendiente <= 0:
@@ -1117,6 +1582,40 @@ def render_template_pedido(pedido, modo):
         productos=obtener_productos(),
         presentaciones=obtener_presentaciones(),
         estados=["BORRADOR", "CONFIRMADO", "PARCIAL", "CERRADO"],
+    )
+
+
+def render_template_solicitud(solicitud, modo):
+    return render_template(
+        "compras/solicitudes/form.html",
+        solicitud=solicitud,
+        modo=modo,
+        proveedores=obtener_proveedores(),
+        productos=obtener_productos(),
+        presentaciones=obtener_presentaciones(),
+        estados=["BORRADOR", "ENVIADA", "RESPONDIDA", "FINALIZADA", "CANCELADA"],
+    )
+
+
+def render_template_cotizacion(cotizacion, modo):
+    return render_template(
+        "compras/cotizaciones/form.html",
+        cotizacion=cotizacion,
+        modo=modo,
+        proveedores=obtener_proveedores(),
+        productos=obtener_productos(),
+        presentaciones=obtener_presentaciones(),
+        estados=["BORRADOR", "SOLICITADA", "RECIBIDA", "PARCIAL", "CERRADA", "CANCELADA"],
+        cantidad_pendiente_cotizacion=cantidad_pendiente_cotizacion,
+    )
+
+
+def render_template_convertir_cotizacion(cotizacion, pedido):
+    return render_template(
+        "compras/cotizaciones/convertir.html",
+        cotizacion=cotizacion,
+        pedido=pedido,
+        cantidad_pendiente_cotizacion=cantidad_pendiente_cotizacion,
     )
 
 

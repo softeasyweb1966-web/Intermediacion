@@ -17,13 +17,14 @@
                 </div>
             </div>
             <nav class="nav-list" aria-label="Principal">
-                <a class="nav-item active" href="{{ url_for('main.dashboard') }}">Dashboard</a>
-                <a class="nav-item" href="{{ url_for('main.productos') }}">Productos</a>
-                <a class="nav-item" href="{{ url_for('main.clientes') }}">Clientes</a>
-                <a class="nav-item" href="{{ url_for('main.proveedores') }}">Proveedores</a>
-                <a class="nav-item" href="{{ url_for('main.compras') }}">Compras</a>
-                <a class="nav-item" href="#">Cotizaciones</a>
-                <a class="nav-item" href="{{ url_for('main.inventario_movimientos') }}">Inventario</a>
+                {% set endpoint = request.endpoint or '' %}
+                <a class="nav-item {{ 'active' if endpoint == 'main.dashboard' else '' }}" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+                <a class="nav-item {{ 'active' if endpoint.startswith('main.producto') or endpoint in ['main.productos', 'main.unidades', 'main.presentaciones', 'main.lotes'] else '' }}" href="{{ url_for('main.productos') }}">Productos</a>
+                <a class="nav-item {{ 'active' if endpoint.startswith('main.cliente') else '' }}" href="{{ url_for('main.clientes') }}">Clientes</a>
+                <a class="nav-item {{ 'active' if endpoint.startswith('main.proveedor') else '' }}" href="{{ url_for('main.proveedores') }}">Proveedores</a>
+                <a class="nav-item {{ 'active' if endpoint.startswith('main.compra') or endpoint == 'main.compras' else '' }}" href="{{ url_for('main.compras') }}">Compras</a>
+                <a class="nav-item" href="#">Ventas</a>
+                <a class="nav-item {{ 'active' if endpoint.startswith('main.inventario') else '' }}" href="{{ url_for('main.inventario_movimientos') }}">Inventario</a>
                 <a class="nav-item" href="#">Cartera</a>
             </nav>
         </aside>
@@ -47,5 +48,16 @@
             {% block content %}{% endblock %}
         </main>
     </div>
+    <script>
+        document.addEventListener("submit", (event) => {
+            const form = event.target.closest("form[data-confirm]");
+            if (!form) {
+                return;
+            }
+            if (!window.confirm(form.dataset.confirm)) {
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
