@@ -35,6 +35,12 @@
                     <td>
                         {% if item.cotizacion %}
                         <div class="row-actions">
+                            {% set whatsapp_url = whatsapp_url_solicitud(solicitud, item.proveedor) %}
+                            {% if whatsapp_url %}
+                            <a class="table-action" href="{{ whatsapp_url }}" target="_blank" rel="noopener">WhatsApp</a>
+                            {% else %}
+                            <span class="table-action muted">Sin telefono</span>
+                            {% endif %}
                             <a class="table-action" href="{{ url_for('main.compra_cotizacion_editar', cotizacion_id=item.cotizacion.id) }}">Ver / Actualizar</a>
                             <a class="table-action" href="{{ url_for('main.compra_cotizacion_convertir', cotizacion_id=item.cotizacion.id) }}">Pedido</a>
                         </div>

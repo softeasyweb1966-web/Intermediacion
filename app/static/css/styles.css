@@ -464,6 +464,12 @@ td small {
     color: var(--danger);
 }
 
+.table-action.muted {
+    color: var(--muted);
+    background: #f5f7f8;
+    cursor: not-allowed;
+}
+
 .table-action svg {
     width: 18px;
     height: 18px;

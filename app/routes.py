@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
+from urllib.parse import quote
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from sqlalchemy import or_
@@ -191,6 +192,7 @@ def compra_solicitud_comparativo(solicitud_id):
     return render_template(
         "compras/solicitudes/comparativo.html",
         solicitud=solicitud,
+        whatsapp_url_solicitud=whatsapp_url_solicitud,
     )
 
 
@@ -1138,10 +1140,11 @@ def guardar_solicitud_compra(solicitud):
         if not producto_id or cantidad <= 0:
             continue
         presentacion_id = request.form.get(f"presentacion_id_{indice}", "").strip()
+        presentacion_id = obtener_presentacion_para_producto(producto_id, presentacion_id)
         detalles.append(
             CompraSolicitudDetalle(
                 producto_id=int(producto_id),
-                presentacion_id=int(presentacion_id) if presentacion_id else None,
+                presentacion_id=presentacion_id,
                 cantidad_solicitada=cantidad,
                 observaciones=request.form.get(f"observaciones_{indice}", "").strip() or None,
             )
@@ -1367,6 +1370,59 @@ def guardar_presentacion(presentacion):
     presentacion.talla = request.form.get("talla", "").strip() or None
     presentacion.color = request.form.get("color", "").strip() or None
     presentacion.referencia_interna = request.form.get("referencia_interna", "").strip() or None
+
+
+def obtener_presentacion_para_producto(producto_id, presentacion_id):
+    if not presentacion_id:
+        return None
+
+    producto_id = int(producto_id)
+    presentacion = ProductoPresentacion.query.get(int(presentacion_id))
+    if not presentacion:
+        return None
+    if presentacion.producto_id == producto_id:
+        return presentacion.id
+
+    existente = ProductoPresentacion.query.filter_by(
+        producto_id=producto_id,
+        nombre=presentacion.nombre,
+        unidad_id=presentacion.unidad_id,
+        activo=True,
+    ).first()
+    if existente:
+        return existente.id
+
+    nueva = ProductoPresentacion(
+        producto_id=producto_id,
+        nombre=presentacion.nombre,
+        unidad_id=presentacion.unidad_id,
+        factor=presentacion.factor,
+        talla=presentacion.talla,
+        color=presentacion.color,
+        referencia_interna=presentacion.referencia_interna,
+    )
+    db.session.add(nueva)
+    db.session.flush()
+    return nueva.id
+
+
+def asegurar_presentacion_base(producto):
+    tiene_presentaciones = ProductoPresentacion.query.filter_by(
+        producto_id=producto.id,
+        activo=True,
+    ).count()
+    if tiene_presentaciones:
+        return
+
+    nombre_unidad = producto.unidad_principal.nombre if producto.unidad_principal else producto.unidad
+    db.session.add(
+        ProductoPresentacion(
+            producto=producto,
+            nombre=nombre_unidad or "Unidad",
+            unidad_id=producto.unidad_id,
+            factor=1,
+        )
+    )
 
 
 def guardar_lote(lote):
@@ -1659,6 +1715,47 @@ def obtener_lotes():
         Producto.nombre.asc(),
         ProductoLote.numero_lote.asc(),
     ).all()
+
+
+def limpiar_telefono_whatsapp(telefono):
+    digitos = "".join(caracter for caracter in (telefono or "") if caracter.isdigit())
+    if len(digitos) == 10:
+        return f"57{digitos}"
+    return digitos
+
+
+def whatsapp_url_solicitud(solicitud, proveedor):
+    telefono = limpiar_telefono_whatsapp(proveedor.telefono)
+    if not telefono:
+        return None
+
+    lineas = [
+        f"Solicitud de cotizacion {solicitud.numero}",
+        f"Proveedor: {proveedor.nombre}",
+    ]
+    if solicitud.fecha_limite:
+        lineas.append(f"Fecha limite: {solicitud.fecha_limite.strftime('%Y-%m-%d')}")
+    lineas.append("")
+    lineas.append("Productos:")
+    for detalle in solicitud.detalles:
+        presentacion = f" - {detalle.presentacion.nombre}" if detalle.presentacion else ""
+        unidad = ""
+        if detalle.presentacion and detalle.presentacion.unidad:
+            unidad = detalle.presentacion.unidad.nombre
+        elif detalle.producto.unidad_principal:
+            unidad = detalle.producto.unidad_principal.nombre
+        elif detalle.producto.unidad:
+            unidad = detalle.producto.unidad
+        lineas.append(
+            f"- {detalle.producto.nombre}{presentacion}: {detalle.cantidad_solicitada} {unidad}".strip()
+        )
+    lineas.extend(
+        [
+            "",
+            "Por favor nos comparte precio, disponibilidad, forma de pago y tiempo de entrega.",
+        ]
+    )
+    return f"https://wa.me/{telefono}?text={quote(chr(10).join(lineas))}"
 
 
 def unidad_duplicada(nombre, abreviatura, unidad_id=None):

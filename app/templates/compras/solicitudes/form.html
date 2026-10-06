@@ -186,9 +186,13 @@
         function filterPresentations() {
             const productoId = productoSelect.value;
             presentacionSelect.innerHTML = "";
-            allPresentationOptions.forEach((option) => {
-                const optionProductId = option.dataset.productoId;
-                if (!option.value || !optionProductId || optionProductId === productoId) {
+            const matchingOptions = allPresentationOptions.filter((option) => option.dataset.productoId === productoId);
+            const optionsToShow = matchingOptions.length
+                ? allPresentationOptions.filter((option) => !option.value || option.dataset.productoId === productoId)
+                : allPresentationOptions;
+
+            optionsToShow.forEach((option) => {
+                if (!option.value || optionsToShow === allPresentationOptions || option.dataset.productoId === productoId) {
                     presentacionSelect.appendChild(option.cloneNode(true));
                 }
             });
