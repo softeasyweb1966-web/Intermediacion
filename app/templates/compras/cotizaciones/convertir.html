@@ -44,12 +44,13 @@
                     <th>Pedir ahora</th>
                     <th>Costo</th>
                     <th>Nota</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {% for detalle in cotizacion.detalles %}
                 {% set pendiente = cantidad_pendiente_cotizacion(detalle) %}
-                <tr>
+                <tr class="pedido-linea">
                     <td><strong>{{ detalle.producto.nombre }}</strong></td>
                     <td>{{ detalle.presentacion.nombre if detalle.presentacion else "-" }}</td>
                     <td>{{ detalle.cantidad_cotizada }}</td>
@@ -58,17 +59,43 @@
                     <td><input type="number" step="0.0001" min="0" max="{{ pendiente }}" name="cantidad_{{ loop.index }}" {% if pendiente <= 0 %}disabled{% endif %}></td>
                     <td><input type="number" step="0.01" min="0" name="costo_unitario_{{ loop.index }}" value="{{ detalle.costo_unitario or '' }}" {% if pendiente <= 0 %}disabled{% endif %}></td>
                     <td><input name="observaciones_{{ loop.index }}" value="{{ detalle.observaciones or '' }}" {% if pendiente <= 0 %}disabled{% endif %}></td>
+                    <td><button type="button" class="table-action danger quitar-linea" title="Quitar línea">×</button></td>
                 </tr>
                 {% else %}
-                <tr><td colspan="8" class="empty-state">No hay lineas para convertir.</td></tr>
+                <tr><td colspan="9" class="empty-state">No hay lineas para convertir.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    <button type="button" class="secondary-button" id="agregar-producto">+ Adicionar producto</button>
 
     <div class="form-actions">
         <a href="{{ url_for('main.compra_cotizaciones') }}">Cancelar</a>
         <button type="submit">Crear pedido</button>
     </div>
 </form>
+<template id="producto-adicional-template">
+    <tr class="pedido-linea adicional-linea">
+        <td colspan="2"><select name="adicional_producto" required>
+            <option value="">Seleccione producto</option>
+            {% for producto in productos %}<option value="{{ producto.id }}">{{ producto.nombre }} ({{ producto.codigo }})</option>{% endfor %}
+        </select></td>
+        <td colspan="3">Adicional</td>
+        <td><input type="number" name="adicional_cantidad___N__" step="0.0001" min="0.0001" placeholder="Cantidad" required></td>
+        <td><input type="number" name="adicional_costo___N__" step="0.01" min="0" placeholder="Costo"></td>
+        <td><input name="adicional_observaciones___N__" placeholder="Nota"></td>
+        <td><button type="button" class="table-action danger quitar-linea">×</button></td>
+    </tr>
+</template>
+<script>
+const tabla = document.querySelector('.line-table tbody');
+let adicionalIndice = 0;
+document.getElementById('agregar-producto').addEventListener('click', () => {
+    const html = document.getElementById('producto-adicional-template').innerHTML.replaceAll('__N__', adicionalIndice++);
+    tabla.insertAdjacentHTML('beforeend', html);
+});
+tabla.addEventListener('click', (evento) => {
+    if (evento.target.closest('.quitar-linea')) evento.target.closest('tr').remove();
+});
+</script>
 {% endblock %}

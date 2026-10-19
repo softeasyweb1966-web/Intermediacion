@@ -1270,6 +1270,25 @@ def convertir_cotizacion_a_pedido(cotizacion, pedido):
             )
         )
 
+    # Productos adicionales que el usuario agregue directamente al pedido.
+    adicionales = request.form.getlist("adicional_producto")
+    for indice, producto_id in enumerate(adicionales):
+        if not producto_id:
+            continue
+        producto = db.session.get(Producto, int(producto_id))
+        cantidad = obtener_decimal_form(f"adicional_cantidad_{indice}")
+        if not producto or cantidad <= 0:
+            continue
+        pedido.detalles.append(
+            CompraPedidoDetalle(
+                producto_id=producto.id,
+                cantidad_pedida=cantidad,
+                costo_unitario=request.form.get(f"adicional_costo_{indice}", "").strip() or None,
+                observaciones=request.form.get(f"adicional_observaciones_{indice}", "").strip(),
+                estado="ABIERTA",
+            )
+        )
+
 
 def guardar_pedido_compra(pedido):
     pedido.numero = request.form.get("numero", "").strip() or pedido.numero
@@ -1672,6 +1691,7 @@ def render_template_convertir_cotizacion(cotizacion, pedido):
         cotizacion=cotizacion,
         pedido=pedido,
         cantidad_pendiente_cotizacion=cantidad_pendiente_cotizacion,
+        productos=obtener_productos(),
     )
 
 
