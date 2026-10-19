@@ -661,6 +661,12 @@ td small {
 .line-table th:nth-child(8), .line-table td:nth-child(8) { min-width: 150px; }
 .line-table th:last-child, .line-table td:last-child { min-width: 50px; width: 50px; }
 
+.line-table details { min-width: 105px; margin-bottom: 6px; }
+.line-table details label { display: block; font-size: 0.8rem; margin-top: 6px; }
+.line-table details input { min-height: 32px; margin-top: 3px; }
+.pedido-resumen { display: flex; flex-wrap: wrap; gap: 22px; margin: 16px 0; padding: 14px 16px; border-radius: 8px; background: #eef7f4; color: #21443d; }
+.pedido-resumen strong { color: #087f6b; }
+
 .compact-line-table td:last-child,
 .compact-line-table th:last-child {
     min-width: 90px;
