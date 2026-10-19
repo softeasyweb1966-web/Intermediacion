@@ -645,7 +645,21 @@ td small {
 .line-table select {
     min-height: 38px;
     padding: 9px 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
+
+/* La conversión de cotización debe mostrar producto y cantidades sin
+   obligar al usuario a desplazarse horizontalmente desde el inicio. */
+.line-table th:nth-child(1), .line-table td:nth-child(1) { min-width: 180px; }
+.line-table th:nth-child(2), .line-table td:nth-child(2) { min-width: 100px; }
+.line-table th:nth-child(3), .line-table td:nth-child(3),
+.line-table th:nth-child(4), .line-table td:nth-child(4),
+.line-table th:nth-child(5), .line-table td:nth-child(5) { min-width: 90px; }
+.line-table th:nth-child(6), .line-table td:nth-child(6) { min-width: 125px; }
+.line-table th:nth-child(7), .line-table td:nth-child(7) { min-width: 115px; }
+.line-table th:nth-child(8), .line-table td:nth-child(8) { min-width: 150px; }
+.line-table th:last-child, .line-table td:last-child { min-width: 50px; width: 50px; }
 
 .compact-line-table td:last-child,
 .compact-line-table th:last-child {
