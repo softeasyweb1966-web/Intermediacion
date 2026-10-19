@@ -1282,6 +1282,7 @@ def convertir_cotizacion_a_pedido(cotizacion, pedido):
         pedido.detalles.append(
             CompraPedidoDetalle(
                 producto_id=producto.id,
+                presentacion_id=int(request.form.get(f"adicional_presentacion_{indice}")) if request.form.get(f"adicional_presentacion_{indice}") else None,
                 cantidad_pedida=cantidad,
                 costo_unitario=request.form.get(f"adicional_costo_{indice}", "").strip() or None,
                 observaciones=request.form.get(f"adicional_observaciones_{indice}", "").strip(),
@@ -1692,6 +1693,7 @@ def render_template_convertir_cotizacion(cotizacion, pedido):
         pedido=pedido,
         cantidad_pendiente_cotizacion=cantidad_pendiente_cotizacion,
         productos=obtener_productos(),
+        presentaciones=obtener_presentaciones(),
     )
 
 

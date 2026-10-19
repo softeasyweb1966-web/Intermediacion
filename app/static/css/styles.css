@@ -666,6 +666,19 @@ td small {
 .line-table details input { min-height: 32px; margin-top: 3px; }
 .pedido-resumen { display: flex; flex-wrap: wrap; gap: 22px; margin: 16px 0; padding: 14px 16px; border-radius: 8px; background: #eef7f4; color: #21443d; }
 .pedido-resumen strong { color: #087f6b; }
+.pedido-resumen-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+.pedido-resumen-grid label, .dato-documento, .total-pedido-card { padding: 12px 14px; border: 1px solid #d9e4e1; border-radius: 8px; background: #fff; }
+.pedido-resumen-grid label { display: flex; flex-direction: column; gap: 6px; }
+.dato-documento, .total-pedido-card { display: flex; flex-direction: column; gap: 5px; }
+.dato-documento span, .total-pedido-card span { color: #657873; font-size: .82rem; }
+.total-pedido-card strong { color: #087f6b; font-size: 1.25rem; }
+.pedido-detalle-table th, .pedido-detalle-table td { min-width: 115px; vertical-align: middle; }
+.pedido-detalle-table th:first-child, .pedido-detalle-table td:first-child { min-width: 180px; }
+.pedido-detalle-table th:nth-child(4), .pedido-detalle-table td:nth-child(4) { min-width: 155px; }
+.pedido-detalle-table .numero { white-space: nowrap; }
+.opciones-pedido { margin: 12px 0 18px; }
+.opciones-pedido summary { cursor: pointer; color: #087f6b; font-weight: 700; }
+@media (max-width: 760px) { .pedido-resumen-grid { grid-template-columns: 1fr; } }
 
 .compact-line-table td:last-child,
 .compact-line-table th:last-child {
