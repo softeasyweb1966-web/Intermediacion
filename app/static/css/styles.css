@@ -858,8 +858,28 @@ td small {
 }
 
 .module-tile:hover {
+    position: relative;
     border-color: rgba(22, 116, 95, 0.38);
     background: #fbfdfc;
+}
+
+.module-tile:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 8px);
+    left: 50%;
+    width: max-content;
+    max-width: 220px;
+    padding: 7px 9px;
+    transform: translateX(-50%);
+    border-radius: 6px;
+    background: #162522;
+    color: #fff;
+    font-size: 0.78rem;
+    line-height: 1.25;
+    white-space: normal;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.16);
 }
 
 .module-tile.disabled {

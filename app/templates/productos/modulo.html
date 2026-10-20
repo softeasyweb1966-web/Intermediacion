@@ -17,7 +17,7 @@
 
 <section class="module-grid" aria-label="Opciones del módulo de productos">
     {% for item in opciones %}
-    <a class="module-tile {{ 'disabled' if item.url is not defined }}" href="{{ url_for(item.url) if item.url is defined else '#' }}" title="{{ item.nombre }}{% if item.detalle %} — {{ item.detalle }}{% endif %}" aria-label="{{ item.nombre }}{% if item.detalle %}: {{ item.detalle }}{% endif %}">
+    <a class="module-tile {{ 'disabled' if item.url is not defined }}" href="{{ url_for(item.url) if item.url is defined else '#' }}" title="{{ item.nombre }}{% if item.detalle %} — {{ item.detalle }}{% endif %}" data-tooltip="{{ item.nombre }}{% if item.detalle %} — {{ item.detalle }}{% endif %}" aria-label="{{ item.nombre }}{% if item.detalle %}: {{ item.detalle }}{% endif %}">
         <span class="module-icon {{ item.icono }}">
             {% if item.icono == "box" %}
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -44,6 +44,10 @@
                 <path d="M15 8h3l4 4v5h-3"></path>
                 <circle cx="7.5" cy="17.5" r="2.5"></circle>
                 <circle cx="16.5" cy="17.5" r="2.5"></circle>
+            </svg>
+            {% elif item.icono == "client" %}
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="11" r="2"></circle><path d="M6 17a3 3 0 0 1 6 0M15 10h3M15 14h3"></path>
             </svg>
             {% elif item.icono == "calendar" %}
             <svg viewBox="0 0 24 24" aria-hidden="true">
