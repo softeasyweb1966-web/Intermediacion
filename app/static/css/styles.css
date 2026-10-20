@@ -226,16 +226,20 @@ h1 {
 }
 
 .topbar-title {
+    display: block;
+}
+
+.topbar-heading {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
 }
 
 .dashboard-access-inline {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 18px;
+    margin-top: 0;
     color: var(--muted);
     font-size: 0.9rem;
 }
