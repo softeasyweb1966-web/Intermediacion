@@ -147,7 +147,7 @@ def _guardar_comprobante(tipo):
         total_retenido = Decimal("0")
         if aplicar == factura_data["saldo"]:
             retefuente_valor = (aplicar * retefuente_pct / Decimal("100")).quantize(Decimal("0.01"))
-            reteica_valor = (aplicar * reteica_pct / Decimal("100")).quantize(Decimal("0.01"))
+            reteica_valor = (aplicar * reteica_pct / Decimal("1000")).quantize(Decimal("0.01"))
             total_retenido = retefuente_valor + reteica_valor
         else:
             retefuente_pct = reteica_pct = retefuente_valor = reteica_valor = Decimal("0")

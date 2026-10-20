@@ -1043,6 +1043,7 @@ a.secondary-action[href="/"] {
     }
 }
 .retencion-fields{display:none;gap:.4rem;margin-top:.5rem}.retencion-fields.visible{display:flex}.retencion-fields label{font-size:.75rem}.retencion-fields input{width:5rem}.comprobante-form .data-card{margin-top:1.25rem}
+.retencion-resumen{display:grid;gap:.2rem;min-width:180px;font-size:.78rem}.retencion-resumen strong{float:right}
 .form-shell{grid-template-columns:minmax(0, 1fr)}
 .form-shell .sidebar{display:none}
 .form-shell .main-content{margin-left:0;width:100%;max-width:none}

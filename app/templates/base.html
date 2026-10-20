@@ -120,5 +120,25 @@
             }
         });
     </script>
+<script>
+document.querySelectorAll('.retencion-fields').forEach((box) => {
+    box.querySelectorAll('label').forEach((label) => { if (label.textContent.includes('ReteICA')) label.childNodes[0].textContent = 'ReteICA ‰'; });
+    const resumen = document.createElement('div');
+    resumen.className = 'retencion-resumen';
+    resumen.innerHTML = '<div>Valor total: <strong>0,00</strong></div><div>ReteFuente: <strong>0,00</strong></div><div>ReteICA: <strong>0,00</strong></div><div>Valor neto: <strong>0,00</strong></div>';
+    box.appendChild(resumen);
+    const row = box.closest('tr');
+    const calcular = () => {
+        const base = numero(row.querySelector('.aplicar')?.value);
+        const fuente = base * numero(box.querySelector('[name^="retefuente_"]')?.value) / 100;
+        const ica = base * numero(box.querySelector('[name^="reteica_"]')?.value) / 1000;
+        resumen.querySelectorAll('strong')[0].textContent = formato(base);
+        resumen.querySelectorAll('strong')[1].textContent = formato(fuente);
+        resumen.querySelectorAll('strong')[2].textContent = formato(ica);
+        resumen.querySelectorAll('strong')[3].textContent = formato(base - fuente - ica);
+    };
+    box.querySelectorAll('input').forEach((input) => input.addEventListener('input', calcular));
+    calcular();
+});
 </body>
 </html>
