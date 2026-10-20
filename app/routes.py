@@ -67,8 +67,8 @@ def dashboard():
             inventario_critico += 1
     indicadores = [
         {"titulo": "Cotizaciones abiertas", "valor": str(cotizaciones_abiertas)},
-        {"titulo": "Cuentas por cobrar", "valor": f"${cuentas_por_cobrar:,.2f}"},
-        {"titulo": "Cuentas por pagar", "valor": f"${cuentas_por_pagar:,.2f}"},
+        {"titulo": "Cuentas por cobrar", "valor": formatear_indicador_monetario(cuentas_por_cobrar)},
+        {"titulo": "Cuentas por pagar", "valor": formatear_indicador_monetario(cuentas_por_pagar)},
         {"titulo": "Inventario crítico", "valor": str(inventario_critico)},
     ]
 
@@ -2218,6 +2218,16 @@ def convertir_a_unidad_interna(cantidad_proveedor, factor_conversion):
     if factor <= 0:
         raise ValueError("El factor de conversión debe ser mayor que cero.")
     return cantidad * factor
+
+
+def formatear_indicador_monetario(valor):
+    valor = Decimal(valor or 0)
+    absoluto = abs(valor)
+    if absoluto >= Decimal("1000000"):
+        return f"${valor / Decimal('1000000'):.2f} M"
+    if absoluto >= Decimal("1000"):
+        return f"${valor / Decimal('1000'):.1f} K"
+    return f"${valor:,.2f}"
 
 
 def validar_fecha_vencimiento(producto_id, fecha_vencimiento):
