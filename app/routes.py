@@ -79,7 +79,8 @@ def dashboard():
         {"nombre": "Despachos y recibos", "icono": "warehouse", "clase": "inventory", "url": "main.inventario_movimientos"},
         {"nombre": "Compras", "icono": "purchase", "clase": "suppliers", "url": "main.compras"},
         {"nombre": "Cotizaciones", "icono": "quote", "clase": "quotes"},
-        {"nombre": "Cartera", "icono": "wallet", "clase": "wallet"},
+        {"nombre": "Cuentas por cobrar", "icono": "prefactura", "clase": "quotes", "url": "main.cuentas_por_cobrar"},
+        {"nombre": "Cuentas por pagar", "icono": "document", "clase": "suppliers", "url": "main.cuentas_por_pagar"},
     ]
 
     return render_template("dashboard.html", indicadores=indicadores, accesos=accesos)
