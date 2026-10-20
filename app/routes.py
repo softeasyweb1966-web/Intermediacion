@@ -959,9 +959,7 @@ def productos():
         {"nombre": "Catalogo", "detalle": "Productos base", "icono": "box", "url": "main.productos_catalogo"},
         {"nombre": "Unidades", "detalle": "Medidas y equivalencias", "icono": "ruler", "url": "main.unidades"},
         {"nombre": "Presentaciones", "detalle": "Empaques, tallas y colores", "icono": "layers", "url": "main.presentaciones"},
-        {"nombre": "Proveedores", "detalle": "Precios y condiciones", "icono": "truck"},
         {"nombre": "Lotes", "detalle": "Vencimientos y trazabilidad", "icono": "calendar", "url": "main.lotes"},
-        {"nombre": "Inventario", "detalle": "Saldos y movimientos", "icono": "warehouse", "url": "main.inventario_movimientos"},
         {"nombre": "Historial", "detalle": "Ultimas compras", "icono": "history"},
         {"nombre": "Alertas", "detalle": "Minimos y vencimientos", "icono": "alert"},
     ]
