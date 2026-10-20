@@ -48,11 +48,28 @@ UPLOAD_DIR = Path(__file__).resolve().parent / "static" / "uploads" / "cotizacio
 
 @main_bp.route("/")
 def dashboard():
+    cotizaciones_abiertas = (
+        CompraCotizacion.query.filter(CompraCotizacion.estado.notin_(["CERRADA", "CANCELADA"])).count()
+        + VentaCotizacion.query.filter(VentaCotizacion.estado.notin_(["CONVERTIDA", "ANULADA"])).count()
+    )
+    cuentas_por_pagar = sum(
+        (Decimal(factura.total or 0) for factura in CompraFactura.query.filter(CompraFactura.estado != "ANULADA").all()),
+        Decimal("0"),
+    )
+    cuentas_por_cobrar = sum(
+        (Decimal(prefactura.total or 0) for prefactura in VentaPrefactura.query.filter(VentaPrefactura.estado != "ANULADA").all()),
+        Decimal("0"),
+    )
+    inventario_critico = 0
+    for producto in Producto.query.filter_by(activo=True).all():
+        existencia = sum((Decimal(lote.cantidad_actual or 0) for lote in ProductoLote.query.filter_by(producto_id=producto.id, activo=True).all()), Decimal("0"))
+        if existencia <= Decimal(producto.stock_minimo or 0):
+            inventario_critico += 1
     indicadores = [
-        {"titulo": "Cotizaciones abiertas", "valor": "0"},
-        {"titulo": "Cuentas por cobrar", "valor": "$0"},
-        {"titulo": "Cuentas por pagar", "valor": "$0"},
-        {"titulo": "Inventario critico", "valor": "0"},
+        {"titulo": "Cotizaciones abiertas", "valor": str(cotizaciones_abiertas)},
+        {"titulo": "Cuentas por cobrar", "valor": f"${cuentas_por_cobrar:,.2f}"},
+        {"titulo": "Cuentas por pagar", "valor": f"${cuentas_por_pagar:,.2f}"},
+        {"titulo": "Inventario crítico", "valor": str(inventario_critico)},
     ]
 
     accesos = [
