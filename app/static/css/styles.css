@@ -917,6 +917,11 @@ td small {
     line-height: 1.15;
 }
 
+/* El regreso al Dashboard ya está disponible en la barra superior. */
+a.secondary-action[href="/"] {
+    display: none;
+}
+
 .module-tile small {
     color: var(--muted);
 }
