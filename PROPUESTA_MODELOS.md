@@ -66,6 +66,10 @@ Tabla de relación entre factura de compra y pedido de compra. Permite que una f
 
 Debe guardar también la cantidad relacionada por producto o, preferiblemente, relacionar las líneas correspondientes.
 
+### `CompraFacturaPedidoDetalle`
+
+Tabla de relación entre líneas de factura y líneas de pedido. Guarda la cantidad facturada contra cada línea del pedido y permite calcular cantidades pendientes sin depender únicamente del encabezado.
+
 ### Recepciones
 
 Se conserva `CompraRecepcion`, pero debe permitir relacionarse con:

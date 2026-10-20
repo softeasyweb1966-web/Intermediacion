@@ -16,6 +16,7 @@ from .models import (
     CompraFactura,
     CompraFacturaDetalle,
     CompraFacturaPedido,
+    CompraFacturaPedidoDetalle,
     CompraPedido,
     CompraPedidoDetalle,
     CompraRecepcion,
@@ -30,6 +31,15 @@ from .models import (
     ProductoProveedor,
     Proveedor,
     Unidad,
+    VentaCotizacion,
+    VentaCotizacionDetalle,
+    VentaPedido,
+    VentaPedidoDetalle,
+    VentaPrefactura,
+    VentaPrefacturaDetalle,
+    VentaPrefacturaPedido,
+    VentaDespacho,
+    VentaDespachoDetalle,
 )
 
 main_bp = Blueprint("main", __name__)
@@ -89,6 +99,10 @@ def ayuda():
         for modelo, tipo, endpoint in [
             (CompraFactura, "Factura de compra", "main.compra_facturas"),
             (CompraPedido, "Pedido de compra", "main.compra_pedidos"),
+            (VentaCotizacion, "Cotización de venta", "main.venta_cotizaciones"),
+            (VentaPedido, "Pedido de venta", "main.venta_pedidos"),
+            (VentaPrefactura, "Prefactura de venta", "main.venta_prefacturas"),
+            (VentaDespacho, "Despacho de venta", "main.venta_despachos"),
         ]:
             resultados.extend(
                 {"tipo": tipo, "nombre": item.numero, "url": url_for(endpoint)}
@@ -108,6 +122,135 @@ def compras():
         {"nombre": "Manual", "detalle": "Pendiente para pruebas", "icono": "history"},
     ]
     return render_template("compras/modulo.html", opciones=opciones)
+
+
+@main_bp.route("/ventas")
+def ventas():
+    return render_template("ventas/modulo.html")
+
+
+@main_bp.route("/ventas/cotizaciones")
+def venta_cotizaciones():
+    busqueda = request.args.get("q", "").strip()
+    consulta = VentaCotizacion.query.join(Cliente)
+    if busqueda:
+        patron = f"%{busqueda}%"
+        consulta = consulta.filter(or_(VentaCotizacion.numero.ilike(patron), Cliente.nombre.ilike(patron)))
+    cotizaciones = consulta.order_by(VentaCotizacion.fecha.desc(), VentaCotizacion.id.desc()).all()
+    return render_template("ventas/cotizaciones/index.html", cotizaciones=cotizaciones, busqueda=busqueda)
+
+
+@main_bp.route("/ventas/cotizaciones/nueva", methods=["GET", "POST"])
+def venta_cotizacion_nueva():
+    cotizacion = VentaCotizacion(numero=siguiente_numero("COT-V", VentaCotizacion), fecha=datetime.utcnow().date())
+    if request.method == "POST":
+        cotizacion.cliente_id = int(request.form["cliente_id"])
+        cotizacion.vigencia_hasta = obtener_fecha("vigencia_hasta")
+        cotizacion.observaciones = request.form.get("observaciones", "").strip() or None
+        for i in range(1, 9):
+            producto_id = request.form.get(f"producto_id_{i}")
+            cantidad = obtener_decimal_form(f"cantidad_{i}")
+            if producto_id and cantidad > 0:
+                cotizacion.detalles.append(VentaCotizacionDetalle(
+                    producto_id=int(producto_id),
+                    presentacion_id=int(request.form[f"presentacion_id_{i}"]) if request.form.get(f"presentacion_id_{i}") else None,
+                    cantidad_cotizada=cantidad,
+                    precio_unitario=Decimal(request.form.get(f"precio_{i}") or "0"),
+                ))
+        if not cotizacion.detalles:
+            flash("Agregue al menos un producto.", "error")
+        else:
+            db.session.add(cotizacion)
+            db.session.commit()
+            flash("Cotización de venta creada.", "success")
+            return redirect(url_for("main.venta_cotizaciones"))
+    return render_template("ventas/cotizaciones/form.html", cotizacion=cotizacion, clientes=obtener_clientes(), productos=obtener_productos(), presentaciones=obtener_presentaciones())
+
+
+@main_bp.route("/ventas/pedidos")
+def venta_pedidos():
+    pedidos = VentaPedido.query.join(Cliente).order_by(VentaPedido.fecha.desc(), VentaPedido.id.desc()).all()
+    return render_template("ventas/pedidos/index.html", pedidos=pedidos)
+
+
+@main_bp.route("/ventas/pedidos/nuevo", methods=["GET", "POST"])
+def venta_pedido_nuevo():
+    pedido = VentaPedido(numero=siguiente_numero("PED-V", VentaPedido), fecha=datetime.utcnow().date())
+    if request.method == "POST":
+        pedido.cliente_id = int(request.form["cliente_id"])
+        for i in range(1, 9):
+            producto_id = request.form.get(f"producto_id_{i}")
+            cantidad = obtener_decimal_form(f"cantidad_{i}")
+            if producto_id and cantidad > 0:
+                pedido.detalles.append(VentaPedidoDetalle(producto_id=int(producto_id), cantidad_pedida=cantidad, precio_unitario=Decimal(request.form.get(f"precio_{i}") or "0")))
+        if pedido.detalles:
+            db.session.add(pedido)
+            db.session.commit()
+            return redirect(url_for("main.venta_pedidos"))
+        flash("Agregue al menos un producto.", "error")
+    return render_template("ventas/pedidos/form.html", pedido=pedido, clientes=obtener_clientes(), productos=obtener_productos())
+
+
+@main_bp.route("/ventas/prefacturas")
+def venta_prefacturas():
+    prefacturas = VentaPrefactura.query.join(Cliente).order_by(VentaPrefactura.fecha.desc(), VentaPrefactura.id.desc()).all()
+    return render_template("ventas/prefacturas/index.html", prefacturas=prefacturas)
+
+
+@main_bp.route("/ventas/prefacturas/nueva", methods=["GET", "POST"])
+def venta_prefactura_nueva():
+    prefactura = VentaPrefactura(numero=siguiente_numero("PF", VentaPrefactura), fecha=datetime.utcnow().date())
+    if request.method == "POST":
+        prefactura.cliente_id = int(request.form["cliente_id"])
+        for pedido_id in request.form.getlist("pedido_ids"):
+            if pedido_id:
+                prefactura.pedidos.append(VentaPrefacturaPedido(pedido_id=int(pedido_id)))
+        for i in range(1, 9):
+            producto_id = request.form.get(f"producto_id_{i}")
+            cantidad = obtener_decimal_form(f"cantidad_{i}")
+            if producto_id and cantidad > 0:
+                precio = Decimal(request.form.get(f"precio_{i}") or "0")
+                prefactura.detalles.append(VentaPrefacturaDetalle(producto_id=int(producto_id), cantidad_prefacturada=cantidad, precio_unitario=precio))
+                prefactura.subtotal += cantidad * precio
+        prefactura.total = prefactura.subtotal
+        if prefactura.detalles:
+            db.session.add(prefactura)
+            db.session.commit()
+            return redirect(url_for("main.venta_prefacturas"))
+        flash("Agregue al menos un producto.", "error")
+    return render_template("ventas/prefacturas/form.html", prefactura=prefactura, clientes=obtener_clientes(), productos=obtener_productos(), pedidos=VentaPedido.query.order_by(VentaPedido.fecha.desc()).limit(100).all())
+
+
+@main_bp.route("/ventas/despachos")
+def venta_despachos():
+    despachos = VentaDespacho.query.join(Cliente).order_by(VentaDespacho.fecha.desc(), VentaDespacho.id.desc()).all()
+    return render_template("ventas/despachos/index.html", despachos=despachos)
+
+
+@main_bp.route("/ventas/despachos/nuevo", methods=["GET", "POST"])
+def venta_despacho_nuevo():
+    despacho = VentaDespacho(numero=siguiente_numero("DES", VentaDespacho), fecha=datetime.utcnow().date())
+    if request.method == "POST":
+        despacho.cliente_id = int(request.form["cliente_id"])
+        for i in range(1, 9):
+            lote_id = request.form.get(f"lote_id_{i}")
+            cantidad = obtener_decimal_form(f"cantidad_{i}")
+            if not lote_id or cantidad <= 0:
+                continue
+            lote = ProductoLote.query.get_or_404(int(lote_id))
+            disponible = Decimal(lote.cantidad_actual or 0)
+            if cantidad > disponible:
+                flash(f"La cantidad supera el inventario disponible para {lote.producto.nombre}.", "error")
+                return render_template("ventas/despachos/form.html", despacho=despacho, clientes=obtener_clientes(), lotes=obtener_lotes())
+            lote.cantidad_actual = disponible - cantidad
+            despacho.detalles.append(VentaDespachoDetalle(producto_id=lote.producto_id, lote=lote, presentacion_id=lote.presentacion_id, cantidad=cantidad))
+            db.session.add(InventarioMovimiento(tipo="DESPACHO", fecha=despacho.fecha, producto_id=lote.producto_id, lote=lote, presentacion_id=lote.presentacion_id, cliente_id=despacho.cliente_id, cantidad=cantidad, documento=despacho.numero, responsable=despacho.responsable))
+        if despacho.detalles:
+            db.session.add(despacho)
+            db.session.commit()
+            return redirect(url_for("main.venta_despachos"))
+        flash("Agregue al menos un lote y una cantidad.", "error")
+    return render_template("ventas/despachos/form.html", despacho=despacho, clientes=obtener_clientes(), lotes=obtener_lotes())
 
 
 @main_bp.route("/login")
@@ -396,11 +539,64 @@ def compra_factura_nueva():
             flash("Agregue al menos un producto a la factura.", "error")
             return render_template_factura_compra(factura, "Crear")
         db.session.add(factura)
+        db.session.flush()
+        try:
+            vincular_factura_con_pedidos(factura)
+        except ValueError as error:
+            db.session.rollback()
+            flash(str(error), "error")
+            return render_template_factura_compra(factura, "Crear")
         db.session.commit()
         registrar_auditoria("compra_facturas", factura.id, "crear", f"Factura creada: {factura.numero}")
         flash("Factura de compra registrada correctamente.", "success")
         return redirect(url_for("main.compra_facturas"))
     return render_template_factura_compra(factura, "Crear")
+
+
+@main_bp.route("/compras/facturas/<int:factura_id>/recibir", methods=["GET", "POST"])
+def compra_factura_recibir(factura_id):
+    factura = CompraFactura.query.get_or_404(factura_id)
+    if not any(Decimal(detalle.cantidad_facturada or 0) > Decimal(detalle.cantidad_recibida or 0) for detalle in factura.detalles):
+        flash("La factura ya está recibida completamente.", "info")
+        return redirect(url_for("main.compra_facturas"))
+    recepcion = CompraRecepcion(
+        numero=siguiente_numero("REC", CompraRecepcion),
+        factura=factura,
+        proveedor=factura.proveedor,
+        fecha=datetime.utcnow().date(),
+    )
+    if request.method == "POST":
+        try:
+            guardar_recepcion_factura(recepcion, factura)
+        except ValueError as error:
+            db.session.rollback()
+            flash(str(error), "error")
+            return render_template_recepcion_factura(recepcion, factura)
+        if not recepcion.detalles:
+            flash("Registre al menos una cantidad recibida.", "error")
+            return render_template_recepcion_factura(recepcion, factura)
+        db.session.add(recepcion)
+        actualizar_estado_factura_compra(factura)
+        db.session.commit()
+        flash("Recepción registrada correctamente.", "success")
+        return redirect(url_for("main.compra_facturas"))
+    return render_template_recepcion_factura(recepcion, factura)
+
+
+@main_bp.route("/compras/facturas/<int:factura_id>/anular", methods=["POST"])
+def compra_factura_anular(factura_id):
+    factura = CompraFactura.query.get_or_404(factura_id)
+    if any(Decimal(detalle.cantidad_recibida or 0) > 0 for detalle in factura.detalles):
+        flash("La factura tiene recepciones y no puede anularse sin revertirlas.", "error")
+        return redirect(url_for("main.compra_facturas"))
+    factura.estado = "ANULADA"
+    factura.activo = False
+    factura.anulado_en = datetime.utcnow()
+    factura.motivo_anulacion = request.form.get("motivo_anulacion", "").strip() or "Factura anulada"
+    db.session.commit()
+    registrar_auditoria("compra_facturas", factura.id, "anular", factura.motivo_anulacion)
+    flash("Factura anulada correctamente.", "success")
+    return redirect(url_for("main.compra_facturas"))
 
 
 @main_bp.route("/compras/pedidos/nuevo", methods=["GET", "POST"])
@@ -1455,6 +1651,67 @@ def guardar_recepcion_compra(recepcion, pedido=None):
         actualizar_producto_proveedor(int(producto_id), recepcion.proveedor_id, costo, detalle_pedido)
 
 
+def guardar_recepcion_factura(recepcion, factura):
+    recepcion.numero = request.form.get("numero", "").strip() or recepcion.numero
+    recepcion.proveedor_id = factura.proveedor_id
+    recepcion.factura = factura
+    recepcion.fecha = obtener_fecha("fecha") or datetime.utcnow().date()
+    recepcion.documento = request.form.get("documento", "").strip() or factura.numero_proveedor or factura.numero
+    recepcion.responsable = request.form.get("responsable", "").strip() or None
+    recepcion.observaciones = request.form.get("observaciones", "").strip() or None
+
+    for indice, detalle_factura in enumerate(factura.detalles, start=1):
+        cantidad = obtener_decimal_form(f"cantidad_{indice}")
+        pendiente = max(
+            Decimal(detalle_factura.cantidad_facturada or 0)
+            - Decimal(detalle_factura.cantidad_recibida or 0),
+            Decimal("0"),
+        )
+        if cantidad <= 0:
+            continue
+        if cantidad > pendiente:
+            raise ValueError(f"La cantidad recibida de {detalle_factura.producto.nombre} supera el pendiente.")
+        numero_lote = request.form.get(f"numero_lote_{indice}", "").strip()
+        fecha_vencimiento = obtener_fecha(f"fecha_vencimiento_{indice}")
+        lote = obtener_o_crear_lote(
+            detalle_factura.producto_id,
+            detalle_factura.presentacion_id,
+            factura.proveedor_id,
+            numero_lote,
+            fecha_vencimiento,
+        )
+        lote.cantidad_actual = Decimal(lote.cantidad_actual or 0) + cantidad
+        costo = detalle_factura.costo_unitario
+        recepcion.detalles.append(
+            CompraRecepcionDetalle(
+                factura_detalle=detalle_factura,
+                producto_id=detalle_factura.producto_id,
+                lote=lote,
+                presentacion_id=detalle_factura.presentacion_id,
+                cantidad=cantidad,
+                costo_unitario=costo,
+            )
+        )
+        detalle_factura.cantidad_recibida = Decimal(detalle_factura.cantidad_recibida or 0) + cantidad
+        registrar_movimiento_recepcion(recepcion, lote, cantidad, costo)
+        actualizar_producto_proveedor(detalle_factura.producto_id, factura.proveedor_id, costo)
+
+
+def actualizar_estado_factura_compra(factura):
+    cantidades = [
+        Decimal(detalle.cantidad_recibida or 0) for detalle in factura.detalles
+    ]
+    esperadas = [
+        Decimal(detalle.cantidad_facturada or 0) for detalle in factura.detalles
+    ]
+    if not esperadas:
+        factura.estado = "REGISTRADA"
+    elif all(recibida >= esperada for recibida, esperada in zip(cantidades, esperadas)):
+        factura.estado = "COMPLETA"
+    elif any(recibida > 0 for recibida in cantidades):
+        factura.estado = "PARCIAL"
+
+
 def guardar_unidad(unidad):
     unidad.nombre = request.form.get("nombre", "").strip()
     unidad.abreviatura = request.form.get("abreviatura", "").strip()
@@ -1641,18 +1898,24 @@ def actualizar_estado_detalle(detalle):
 
 
 def actualizar_estado_pedido(pedido):
-    for detalle in pedido.detalles:
-        actualizar_estado_detalle(detalle)
     if not pedido.detalles:
         pedido.estado = "BORRADOR"
         return
-    cerradas = all(detalle.estado == "CERRADA" for detalle in pedido.detalles)
-    parciales = any(detalle.estado == "PARCIAL" for detalle in pedido.detalles)
-    recibidas = any(Decimal(detalle.cantidad_recibida or 0) > 0 for detalle in pedido.detalles)
-    if cerradas:
+    completas = all(
+        Decimal(detalle.cantidad_recibida or 0) >= Decimal(detalle.cantidad_pedida or 0)
+        for detalle in pedido.detalles
+    )
+    avanzadas = any(
+        Decimal(detalle.cantidad_facturada or 0) > 0
+        or Decimal(detalle.cantidad_recibida or 0) > 0
+        for detalle in pedido.detalles
+    )
+    if completas:
         pedido.estado = "CERRADO"
-    elif parciales or recibidas:
+    elif avanzadas:
         pedido.estado = "PARCIAL"
+    else:
+        pedido.estado = "CONFIRMADO" if pedido.estado != "BORRADOR" else "BORRADOR"
 
 
 def obtener_o_crear_lote(producto_id, presentacion_id, proveedor_id, numero_lote, fecha_vencimiento):
@@ -1783,6 +2046,9 @@ def guardar_factura_compra(factura):
             producto_id=int(producto_id),
             presentacion_id=int(request.form[f"presentacion_id_{i}"]) if request.form.get(f"presentacion_id_{i}") else None,
             cantidad_facturada=cantidad_decimal,
+            cantidad_proveedor=Decimal(request.form.get(f"cantidad_proveedor_{i}") or cantidad_decimal),
+            unidad_proveedor_id=int(request.form[f"unidad_proveedor_id_{i}"]) if request.form.get(f"unidad_proveedor_id_{i}") else None,
+            factor_conversion=Decimal(request.form.get(f"factor_conversion_{i}") or "1"),
             costo_unitario=costo_decimal,
             referencia_proveedor=request.form.get(f"referencia_proveedor_{i}", "").strip() or None,
             descripcion_proveedor=request.form.get(f"descripcion_proveedor_{i}", "").strip() or None,
@@ -1790,6 +2056,42 @@ def guardar_factura_compra(factura):
         factura.detalles.append(detalle)
         factura.subtotal += cantidad_decimal * costo_decimal
     factura.total = factura.subtotal - factura.descuentos + factura.impuestos
+
+
+def vincular_factura_con_pedidos(factura):
+    pedidos = [relacion.pedido for relacion in factura.pedidos]
+    for detalle_factura in factura.detalles:
+        pendiente_factura = Decimal(detalle_factura.cantidad_facturada or 0)
+        candidatos = [
+            detalle_pedido
+            for pedido in pedidos
+            for detalle_pedido in pedido.detalles
+            if detalle_pedido.producto_id == detalle_factura.producto_id
+            and detalle_pedido.presentacion_id == detalle_factura.presentacion_id
+        ]
+        for detalle_pedido in candidatos:
+            if pendiente_factura <= 0:
+                break
+            ya_facturado = sum(
+                (Decimal(relacion.cantidad or 0) for relacion in CompraFacturaPedidoDetalle.query.filter_by(pedido_detalle_id=detalle_pedido.id).all()),
+                Decimal("0"),
+            )
+            pendiente_pedido = max(Decimal(detalle_pedido.cantidad_pedida or 0) - ya_facturado, Decimal("0"))
+            cantidad = min(pendiente_factura, pendiente_pedido)
+            if cantidad > 0:
+                db.session.add(CompraFacturaPedidoDetalle(
+                    factura_detalle=detalle_factura,
+                    pedido_detalle=detalle_pedido,
+                    cantidad=cantidad,
+                ))
+                detalle_pedido.cantidad_facturada = Decimal(detalle_pedido.cantidad_facturada or 0) + cantidad
+                pendiente_factura -= cantidad
+        if pendiente_factura > 0 and pedidos:
+            raise ValueError(
+                f"La cantidad de {detalle_factura.producto.nombre} supera lo pendiente en los pedidos seleccionados."
+            )
+    for pedido in pedidos:
+        actualizar_estado_pedido(pedido)
 
 
 def render_template_solicitud(solicitud, modo):
@@ -1841,8 +2143,25 @@ def render_template_recepcion(recepcion, modo, pedido=None):
     )
 
 
+def render_template_recepcion_factura(recepcion, factura):
+    return render_template(
+        "compras/recepciones/factura_form.html",
+        recepcion=recepcion,
+        factura=factura,
+        proveedores=obtener_proveedores(),
+    )
+
+
 def obtener_unidades():
     return Unidad.query.filter_by(activo=True).order_by(Unidad.nombre.asc()).all()
+
+
+def convertir_a_unidad_interna(cantidad_proveedor, factor_conversion):
+    cantidad = Decimal(cantidad_proveedor or 0)
+    factor = Decimal(factor_conversion or 1)
+    if factor <= 0:
+        raise ValueError("El factor de conversión debe ser mayor que cero.")
+    return cantidad * factor
 
 
 def obtener_productos():

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Recibir factura | Intermediacion{% endblock %}
+{% block page_title %}Recibir factura {{ factura.numero }}{% endblock %}
+
+{% block content %}
+<section class="toolbar">
+    <a class="secondary-action icon-button" href="{{ url_for('main.compra_facturas') }}"><span>Regresar</span></a>
+    <button class="primary-action icon-button" type="submit" form="recepcion-factura-form"><span>Registrar recepción</span></button>
+</section>
+<form id="recepcion-factura-form" class="form-card wide-form" method="post">
+    <div class="form-grid">
+        <label>Número de recepción<input name="numero" value="{{ recepcion.numero }}" required></label>
+        <label>Proveedor<input value="{{ factura.proveedor.nombre }}" readonly></label>
+        <label>Fecha<input type="date" name="fecha" value="{{ recepcion.fecha.strftime('%Y-%m-%d') }}"></label>
+        <label>Documento<input name="documento" value="{{ factura.numero_proveedor or factura.numero }}"></label>
+        <label>Responsable<input name="responsable"></label>
+        <label class="span-2">Observaciones<textarea name="observaciones" rows="2"></textarea></label>
+    </div>
+    <h2 class="subsection-title">Líneas pendientes</h2>
+    <div class="line-table-wrap"><table class="line-table">
+        <thead><tr><th>Producto</th><th>Presentación</th><th>Facturado</th><th>Recibido</th><th>Pendiente</th><th>Recibir</th><th>Lote</th><th>Vence</th></tr></thead>
+        <tbody>{% for detalle in factura.detalles %}{% set pendiente = [detalle.cantidad_facturada - detalle.cantidad_recibida, 0]|max %}{% set i = loop.index %}
+            <tr><td>{{ detalle.producto.nombre }}</td><td>{{ detalle.presentacion.nombre if detalle.presentacion else '-' }}</td><td>{{ detalle.cantidad_facturada }}</td><td>{{ detalle.cantidad_recibida }}</td><td>{{ pendiente }}</td><td><input type="number" step="0.0001" min="0" max="{{ pendiente }}" name="cantidad_{{ i }}"></td><td><input name="numero_lote_{{ i }}"></td><td><input type="date" name="fecha_vencimiento_{{ i }}"></td></tr>
+        {% else %}<tr><td colspan="8" class="empty-state">La factura no tiene líneas.</td></tr>{% endfor %}</tbody>
+    </table></div>
+</form>
+{% endblock %}

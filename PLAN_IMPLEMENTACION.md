@@ -33,6 +33,9 @@
 - Registrar entradas y salidas desde documentos.
 - Controlar lotes, vencimientos y conversiones de unidades.
 - Evitar cantidades superiores a las pendientes.
+- Incorporar devoluciones de clientes y proveedores.
+- Incorporar ajustes autorizados de entrada y salida.
+- Aplicar conversiones entre unidades del proveedor y unidades internas.
 
 ## Etapa 5: navegación y experiencia de usuario
 

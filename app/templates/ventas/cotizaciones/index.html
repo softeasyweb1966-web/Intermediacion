@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Cotizaciones de venta | Intermediacion{% endblock %}
+{% block page_title %}Cotizaciones de venta{% endblock %}
+{% block content %}
+<section class="toolbar"><a class="secondary-action icon-button" href="{{ url_for('main.ventas') }}"><span>Regresar</span></a><form class="search-form"><input name="q" value="{{ busqueda }}" placeholder="Buscar cotización o cliente"><button class="primary-action icon-button">Buscar</button></form><a class="primary-action icon-button" href="{{ url_for('main.venta_cotizacion_nueva') }}"><span>Nueva cotización</span></a></section>
+<section class="data-card"><div class="table-wrap"><table><thead><tr><th>Número</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Total</th></tr></thead><tbody>{% for item in cotizaciones %}<tr><td>{{ item.numero }}</td><td>{{ item.fecha.strftime('%Y-%m-%d') }}</td><td>{{ item.cliente.nombre }}</td><td>{{ item.estado.title() }}</td><td>{{ item.total }}</td></tr>{% else %}<tr><td colspan="5" class="empty-state">No hay cotizaciones.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

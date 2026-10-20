@@ -25,7 +25,7 @@
 <section class="data-card">
     <div class="table-wrap">
         <table>
-            <thead><tr><th>Número interno</th><th>Factura proveedor</th><th>Fecha</th><th>Proveedor</th><th>Total</th><th>Estado</th></tr></thead>
+            <thead><tr><th>Número interno</th><th>Factura proveedor</th><th>Fecha</th><th>Proveedor</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
             <tbody>
                 {% for factura in facturas %}
                 <tr>
@@ -35,8 +35,9 @@
                     <td>{{ factura.proveedor.nombre }}</td>
                     <td>{{ "%.2f"|format(factura.total or 0) }}</td>
                     <td><span class="status-pill info">{{ factura.estado.title() }}</span></td>
+                    <td><div class="row-actions"><a class="table-action" href="{{ url_for('main.compra_factura_recibir', factura_id=factura.id) }}">Recibir</a>{% if factura.estado != 'ANULADA' and not factura.detalles|selectattr('cantidad_recibida', 'gt', 0)|list %}<form method="post" action="{{ url_for('main.compra_factura_anular', factura_id=factura.id) }}"><button class="table-action danger" type="submit">Anular</button></form>{% endif %}</div></td>
                 </tr>
-                {% else %}<tr><td colspan="6" class="empty-state">No hay facturas para mostrar.</td></tr>{% endfor %}
+                {% else %}<tr><td colspan="7" class="empty-state">No hay facturas para mostrar.</td></tr>{% endfor %}
             </tbody>
         </table>
     </div>
