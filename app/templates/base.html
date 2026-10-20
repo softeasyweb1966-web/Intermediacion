@@ -38,14 +38,14 @@
                         {% block page_title_extra %}{% endblock %}
                     </div>
                 </div>
-                <a class="user-chip icon-button" href="{{ url_for('main.login') }}">
+                {% block page_action %}<a class="user-chip icon-button" href="{{ url_for('main.login') }}">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                         <path d="M10 17l5-5-5-5"></path>
                         <path d="M15 12H3"></path>
                     </svg>
                     <span>Ingresar</span>
-                </a>
+                </a>{% endblock %}
             </header>
 
             {% block content %}{% endblock %}
