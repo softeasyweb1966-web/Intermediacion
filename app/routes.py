@@ -111,7 +111,7 @@ def cuentas_por_pagar():
 def _guardar_comprobante(tipo):
     cobrar = tipo == "RECIBO_CAJA"
     tercero_id = request.form.get("tercero_id", "").strip()
-    valor = Decimal(request.form.get("valor", "0").strip() or "0")
+    valor = decimal_monetario(request.form.get("valor", "0"))
     if not tercero_id or valor <= 0:
         flash("Seleccione un tercero e ingrese un valor mayor que cero.", "error")
         return None
@@ -136,7 +136,7 @@ def _guardar_comprobante(tipo):
         if ids and str(factura.id) not in ids:
             continue
         try:
-            aplicar = Decimal(request.form.get(f"aplicar_{factura.id}", "0") or "0")
+            aplicar = decimal_monetario(request.form.get(f"aplicar_{factura.id}", "0"))
         except Exception:
             aplicar = Decimal("0")
         aplicar = min(max(aplicar, Decimal("0")), factura_data["saldo"], restante)
@@ -2129,6 +2129,15 @@ def obtener_decimal_form(campo):
 def obtener_fecha(campo):
     valor = request.form.get(campo, "").strip()
     return datetime.strptime(valor, "%Y-%m-%d").date() if valor else None
+
+
+def decimal_monetario(valor):
+    texto = str(valor or "").strip().replace("$", "").replace(" ", "")
+    if not texto:
+        return Decimal("0")
+    if "," in texto:
+        texto = texto.replace(".", "").replace(",", ".")
+    return Decimal(texto or "0")
 
 
 def siguiente_numero(prefijo, modelo):
