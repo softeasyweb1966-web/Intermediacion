@@ -14,17 +14,6 @@
 {% endblock %}
 
 {% block content %}
-<section class="module-toolbar">
-    <a class="secondary-action icon-button" href="{{ url_for('main.dashboard') }}">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m3 11 9-8 9 8"></path>
-            <path d="M5 10v10h14V10"></path>
-            <path d="M9 20v-6h6v6"></path>
-        </svg>
-        <span>Menú</span>
-    </a>
-</section>
-
 <section class="module-grid" aria-label="Opciones del módulo de productos">
     {% for item in opciones %}
     <a class="module-tile {{ 'disabled' if item.url is not defined }}" href="{{ url_for(item.url) if item.url is defined else '#' }}" title="{{ item.nombre }}" aria-label="{{ item.nombre }}">
