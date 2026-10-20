@@ -84,8 +84,15 @@ class ProductoProveedor(db.Model, TimestampMixin, EstadoMixin):
     producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
     proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedores.id"), nullable=False, index=True)
     referencia_proveedor = db.Column(db.String(100))
+    codigo_proveedor = db.Column(db.String(100), index=True)
+    descripcion_proveedor = db.Column(db.String(180))
+    marca_proveedor = db.Column(db.String(120))
     unidad_compra_id = db.Column(db.Integer, db.ForeignKey("unidades.id"))
     presentacion = db.Column(db.String(120))
+    factor_conversion = db.Column(db.Numeric(14, 4), default=1, nullable=False)
+    codigo_barras = db.Column(db.String(80))
+    documento_origen = db.Column(db.String(100))
+    vigente_desde = db.Column(db.Date)
     precio_compra = db.Column(db.Numeric(14, 2))
     forma_pago = db.Column(db.String(20))
     dias_credito = db.Column(db.Integer, default=0, nullable=False)
@@ -97,6 +104,31 @@ class ProductoProveedor(db.Model, TimestampMixin, EstadoMixin):
 
     producto = db.relationship("Producto")
     proveedor = db.relationship("Proveedor")
+    unidad_compra = db.relationship("Unidad")
+
+
+class ProductoProveedorHistorial(db.Model, TimestampMixin):
+    __tablename__ = "producto_proveedor_historial"
+
+    id = db.Column(db.Integer, primary_key=True)
+    producto_proveedor_id = db.Column(
+        db.Integer,
+        db.ForeignKey("producto_proveedores.id"),
+        nullable=False,
+        index=True,
+    )
+    codigo_proveedor = db.Column(db.String(100))
+    descripcion_proveedor = db.Column(db.String(180))
+    marca_proveedor = db.Column(db.String(120))
+    presentacion = db.Column(db.String(120))
+    unidad_compra_id = db.Column(db.Integer, db.ForeignKey("unidades.id"))
+    factor_conversion = db.Column(db.Numeric(14, 4), default=1, nullable=False)
+    codigo_barras = db.Column(db.String(80))
+    documento_origen = db.Column(db.String(100))
+    vigente_desde = db.Column(db.Date)
+    vigente_hasta = db.Column(db.Date)
+
+    producto_proveedor = db.relationship("ProductoProveedor")
     unidad_compra = db.relationship("Unidad")
 
 
@@ -350,3 +382,265 @@ class Auditoria(db.Model):
     accion = db.Column(db.String(40), nullable=False)
     detalle = db.Column(db.Text)
     creado_en = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+
+class CompraFactura(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "compra_facturas"
+
+    id = db.Column(db.Integer, primary_key=True)
+    numero = db.Column(db.String(40), unique=True, nullable=False, index=True)
+    numero_proveedor = db.Column(db.String(80), index=True)
+    proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedores.id"), nullable=False, index=True)
+    fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
+    fecha_vencimiento = db.Column(db.Date)
+    estado = db.Column(db.String(20), default="BORRADOR", nullable=False, index=True)
+    subtotal = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    descuentos = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    impuestos = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    total = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    observaciones = db.Column(db.Text)
+
+    proveedor = db.relationship("Proveedor")
+    detalles = db.relationship(
+        "CompraFacturaDetalle",
+        cascade="all, delete-orphan",
+        back_populates="factura",
+        order_by="CompraFacturaDetalle.id",
+    )
+    pedidos = db.relationship(
+        "CompraFacturaPedido",
+        cascade="all, delete-orphan",
+        back_populates="factura",
+    )
+
+
+class CompraFacturaDetalle(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "compra_factura_detalles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    factura_id = db.Column(db.Integer, db.ForeignKey("compra_facturas.id"), nullable=False, index=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    presentacion_id = db.Column(db.Integer, db.ForeignKey("producto_presentaciones.id"))
+    cantidad_facturada = db.Column(db.Numeric(14, 4), nullable=False)
+    cantidad_recibida = db.Column(db.Numeric(14, 4), default=0, nullable=False)
+    costo_unitario = db.Column(db.Numeric(14, 2), nullable=False)
+    descuento = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    impuesto = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    referencia_proveedor = db.Column(db.String(100))
+    descripcion_proveedor = db.Column(db.String(180))
+
+    factura = db.relationship("CompraFactura", back_populates="detalles")
+    producto = db.relationship("Producto")
+    presentacion = db.relationship("ProductoPresentacion")
+
+
+class CompraFacturaPedido(db.Model, TimestampMixin):
+    __tablename__ = "compra_factura_pedidos"
+
+    id = db.Column(db.Integer, primary_key=True)
+    factura_id = db.Column(db.Integer, db.ForeignKey("compra_facturas.id"), nullable=False, index=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey("compra_pedidos.id"), nullable=False, index=True)
+    observaciones = db.Column(db.Text)
+
+    factura = db.relationship("CompraFactura", back_populates="pedidos")
+    pedido = db.relationship("CompraPedido")
+
+
+class VentaCotizacion(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "venta_cotizaciones"
+
+    id = db.Column(db.Integer, primary_key=True)
+    numero = db.Column(db.String(40), unique=True, nullable=False, index=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"), nullable=False, index=True)
+    fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
+    vigencia_hasta = db.Column(db.Date)
+    estado = db.Column(db.String(20), default="BORRADOR", nullable=False, index=True)
+    subtotal = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    descuentos = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    impuestos = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    total = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    observaciones = db.Column(db.Text)
+
+    cliente = db.relationship("Cliente")
+    detalles = db.relationship(
+        "VentaCotizacionDetalle",
+        cascade="all, delete-orphan",
+        back_populates="cotizacion",
+        order_by="VentaCotizacionDetalle.id",
+    )
+
+
+class VentaCotizacionDetalle(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "venta_cotizacion_detalles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    cotizacion_id = db.Column(db.Integer, db.ForeignKey("venta_cotizaciones.id"), nullable=False, index=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    presentacion_id = db.Column(db.Integer, db.ForeignKey("producto_presentaciones.id"))
+    cantidad_cotizada = db.Column(db.Numeric(14, 4), nullable=False)
+    precio_unitario = db.Column(db.Numeric(14, 2), nullable=False)
+    descuento = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    impuesto = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    observaciones = db.Column(db.Text)
+
+    cotizacion = db.relationship("VentaCotizacion", back_populates="detalles")
+    producto = db.relationship("Producto")
+    presentacion = db.relationship("ProductoPresentacion")
+
+
+class VentaPedido(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "venta_pedidos"
+
+    id = db.Column(db.Integer, primary_key=True)
+    numero = db.Column(db.String(40), unique=True, nullable=False, index=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"), nullable=False, index=True)
+    fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
+    fecha_entrega = db.Column(db.Date)
+    estado = db.Column(db.String(20), default="BORRADOR", nullable=False, index=True)
+    observaciones = db.Column(db.Text)
+
+    cliente = db.relationship("Cliente")
+    detalles = db.relationship(
+        "VentaPedidoDetalle",
+        cascade="all, delete-orphan",
+        back_populates="pedido",
+        order_by="VentaPedidoDetalle.id",
+    )
+    cotizaciones = db.relationship(
+        "VentaPedidoCotizacion",
+        cascade="all, delete-orphan",
+        back_populates="pedido",
+    )
+
+
+class VentaPedidoDetalle(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "venta_pedido_detalles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey("venta_pedidos.id"), nullable=False, index=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    presentacion_id = db.Column(db.Integer, db.ForeignKey("producto_presentaciones.id"))
+    cantidad_pedida = db.Column(db.Numeric(14, 4), nullable=False)
+    cantidad_prefacturada = db.Column(db.Numeric(14, 4), default=0, nullable=False)
+    cantidad_despachada = db.Column(db.Numeric(14, 4), default=0, nullable=False)
+    precio_unitario = db.Column(db.Numeric(14, 2), nullable=False)
+    observaciones = db.Column(db.Text)
+
+    pedido = db.relationship("VentaPedido", back_populates="detalles")
+    producto = db.relationship("Producto")
+    presentacion = db.relationship("ProductoPresentacion")
+
+
+class VentaPedidoCotizacion(db.Model, TimestampMixin):
+    __tablename__ = "venta_pedido_cotizaciones"
+
+    id = db.Column(db.Integer, primary_key=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey("venta_pedidos.id"), nullable=False, index=True)
+    cotizacion_id = db.Column(db.Integer, db.ForeignKey("venta_cotizaciones.id"), nullable=False, index=True)
+
+    pedido = db.relationship("VentaPedido", back_populates="cotizaciones")
+    cotizacion = db.relationship("VentaCotizacion")
+
+
+class VentaPrefactura(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "venta_prefacturas"
+
+    id = db.Column(db.Integer, primary_key=True)
+    numero = db.Column(db.String(40), unique=True, nullable=False, index=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"), nullable=False, index=True)
+    fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
+    estado = db.Column(db.String(20), default="BORRADOR", nullable=False, index=True)
+    subtotal = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    descuentos = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    impuestos = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    total = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    observaciones = db.Column(db.Text)
+
+    cliente = db.relationship("Cliente")
+    detalles = db.relationship(
+        "VentaPrefacturaDetalle",
+        cascade="all, delete-orphan",
+        back_populates="prefactura",
+        order_by="VentaPrefacturaDetalle.id",
+    )
+
+
+class VentaPrefacturaDetalle(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "venta_prefactura_detalles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    prefactura_id = db.Column(db.Integer, db.ForeignKey("venta_prefacturas.id"), nullable=False, index=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    presentacion_id = db.Column(db.Integer, db.ForeignKey("producto_presentaciones.id"))
+    cantidad_prefacturada = db.Column(db.Numeric(14, 4), nullable=False)
+    cantidad_despachada = db.Column(db.Numeric(14, 4), default=0, nullable=False)
+    precio_unitario = db.Column(db.Numeric(14, 2), nullable=False)
+    descuento = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    impuesto = db.Column(db.Numeric(14, 2), default=0, nullable=False)
+    observaciones = db.Column(db.Text)
+
+    prefactura = db.relationship("VentaPrefactura", back_populates="detalles")
+    producto = db.relationship("Producto")
+    presentacion = db.relationship("ProductoPresentacion")
+
+
+class VentaDespacho(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "venta_despachos"
+
+    id = db.Column(db.Integer, primary_key=True)
+    numero = db.Column(db.String(40), unique=True, nullable=False, index=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"), nullable=False, index=True)
+    fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
+    estado = db.Column(db.String(20), default="BORRADOR", nullable=False, index=True)
+    responsable = db.Column(db.String(120))
+    observaciones = db.Column(db.Text)
+
+    cliente = db.relationship("Cliente")
+    detalles = db.relationship(
+        "VentaDespachoDetalle",
+        cascade="all, delete-orphan",
+        back_populates="despacho",
+        order_by="VentaDespachoDetalle.id",
+    )
+
+
+class VentaDespachoDetalle(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "venta_despacho_detalles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    despacho_id = db.Column(db.Integer, db.ForeignKey("venta_despachos.id"), nullable=False, index=True)
+    producto_id = db.Column(db.Integer, db.ForeignKey("productos.id"), nullable=False, index=True)
+    lote_id = db.Column(db.Integer, db.ForeignKey("producto_lotes.id"), nullable=False, index=True)
+    presentacion_id = db.Column(db.Integer, db.ForeignKey("producto_presentaciones.id"))
+    prefactura_detalle_id = db.Column(db.Integer, db.ForeignKey("venta_prefactura_detalles.id"), index=True)
+    pedido_detalle_id = db.Column(db.Integer, db.ForeignKey("venta_pedido_detalles.id"), index=True)
+    cantidad = db.Column(db.Numeric(14, 4), nullable=False)
+
+    despacho = db.relationship("VentaDespacho", back_populates="detalles")
+    producto = db.relationship("Producto")
+    lote = db.relationship("ProductoLote")
+    presentacion = db.relationship("ProductoPresentacion")
+    prefactura_detalle = db.relationship("VentaPrefacturaDetalle")
+    pedido_detalle = db.relationship("VentaPedidoDetalle")
+
+
+class VentaPrefacturaPedido(db.Model, TimestampMixin):
+    __tablename__ = "venta_prefactura_pedidos"
+
+    id = db.Column(db.Integer, primary_key=True)
+    prefactura_id = db.Column(db.Integer, db.ForeignKey("venta_prefacturas.id"), nullable=False, index=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey("venta_pedidos.id"), nullable=False, index=True)
+
+    prefactura = db.relationship("VentaPrefactura")
+    pedido = db.relationship("VentaPedido")
+
+
+class VentaPrefacturaCotizacion(db.Model, TimestampMixin):
+    __tablename__ = "venta_prefactura_cotizaciones"
+
+    id = db.Column(db.Integer, primary_key=True)
+    prefactura_id = db.Column(db.Integer, db.ForeignKey("venta_prefacturas.id"), nullable=False, index=True)
+    cotizacion_id = db.Column(db.Integer, db.ForeignKey("venta_cotizaciones.id"), nullable=False, index=True)
+
+    prefactura = db.relationship("VentaPrefactura")
+    cotizacion = db.relationship("VentaCotizacion")

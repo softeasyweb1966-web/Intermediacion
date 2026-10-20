@@ -18,3 +18,29 @@ Press CTRL+C to quit
 127.0.0.1 - - [19/Oct/2026 11:44:08] "GET /static/css/styles.css HTTP/1.1" 304 -
 127.0.0.1 - - [19/Oct/2026 11:44:11] "GET /compras/cotizaciones/4/convertir HTTP/1.1" 200 -
 127.0.0.1 - - [19/Oct/2026 11:44:11] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 18:38:50] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 18:38:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 18:38:57] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 18:38:58] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 18:53:22] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 18:53:22] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\models.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\models.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\scripts\\update_schema.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619

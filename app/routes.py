@@ -13,6 +13,8 @@ from .models import (
     Cliente,
     CompraCotizacion,
     CompraCotizacionDetalle,
+    CompraFactura,
+    CompraFacturaDetalle,
     CompraPedido,
     CompraPedidoDetalle,
     CompraRecepcion,
@@ -61,6 +63,7 @@ def compras():
         {"nombre": "Solicitudes", "detalle": "Pedir precio a varios proveedores", "icono": "history", "url": "main.compra_solicitudes"},
         {"nombre": "Cotizaciones", "detalle": "Respuestas de proveedores", "icono": "history", "url": "main.compra_cotizaciones"},
         {"nombre": "Pedidos", "detalle": "Solicitudes a proveedor", "icono": "truck", "url": "main.compra_pedidos"},
+        {"nombre": "Facturas", "detalle": "Documentos recibidos del proveedor", "icono": "document", "url": "main.compra_facturas"},
         {"nombre": "Recepciones", "detalle": "Entradas parciales o directas", "icono": "warehouse", "url": "main.compra_recepciones"},
         {"nombre": "Manual", "detalle": "Pendiente para pruebas", "icono": "history"},
     ]
@@ -322,6 +325,42 @@ def compra_pedidos():
 
     pedidos = consulta.order_by(CompraPedido.fecha.desc(), CompraPedido.id.desc()).all()
     return render_template("compras/pedidos/index.html", pedidos=pedidos, busqueda=busqueda, estado=estado)
+
+
+@main_bp.route("/compras/facturas")
+def compra_facturas():
+    busqueda = request.args.get("q", "").strip()
+    estado = request.args.get("estado", "todos")
+    consulta = CompraFactura.query.join(Proveedor)
+    if estado != "todos":
+        consulta = consulta.filter(CompraFactura.estado == estado)
+    if busqueda:
+        patron = f"%{busqueda}%"
+        consulta = consulta.filter(
+            or_(
+                CompraFactura.numero.ilike(patron),
+                CompraFactura.numero_proveedor.ilike(patron),
+                Proveedor.nombre.ilike(patron),
+            )
+        )
+    facturas = consulta.order_by(CompraFactura.fecha.desc(), CompraFactura.id.desc()).all()
+    return render_template("compras/facturas/index.html", facturas=facturas, busqueda=busqueda, estado=estado)
+
+
+@main_bp.route("/compras/facturas/nueva", methods=["GET", "POST"])
+def compra_factura_nueva():
+    factura = CompraFactura(numero=siguiente_numero("FC", CompraFactura), fecha=datetime.utcnow().date())
+    if request.method == "POST":
+        guardar_factura_compra(factura)
+        if not factura.detalles:
+            flash("Agregue al menos un producto a la factura.", "error")
+            return render_template_factura_compra(factura, "Crear")
+        db.session.add(factura)
+        db.session.commit()
+        registrar_auditoria("compra_facturas", factura.id, "crear", f"Factura creada: {factura.numero}")
+        flash("Factura de compra registrada correctamente.", "success")
+        return redirect(url_for("main.compra_facturas"))
+    return render_template_factura_compra(factura, "Crear")
 
 
 @main_bp.route("/compras/pedidos/nuevo", methods=["GET", "POST"])
@@ -1659,6 +1698,53 @@ def render_template_pedido(pedido, modo):
         presentaciones=obtener_presentaciones(),
         estados=["BORRADOR", "CONFIRMADO", "PARCIAL", "CERRADO"],
     )
+
+
+def render_template_factura_compra(factura, modo):
+    return render_template(
+        "compras/facturas/form.html",
+        factura=factura,
+        modo=modo,
+        proveedores=obtener_proveedores(),
+        productos=obtener_productos(),
+        presentaciones=obtener_presentaciones(),
+        estados=["BORRADOR", "REGISTRADA", "PARCIAL", "COMPLETA", "ANULADA"],
+    )
+
+
+def guardar_factura_compra(factura):
+    factura.numero = request.form.get("numero", "").strip() or factura.numero
+    factura.numero_proveedor = request.form.get("numero_proveedor", "").strip() or None
+    factura.proveedor_id = int(request.form["proveedor_id"])
+    factura.fecha = obtener_fecha("fecha") or datetime.utcnow().date()
+    factura.fecha_vencimiento = obtener_fecha("fecha_vencimiento")
+    factura.estado = request.form.get("estado", "BORRADOR")
+    factura.observaciones = request.form.get("observaciones", "").strip() or None
+    factura.subtotal = Decimal("0")
+    factura.descuentos = Decimal("0")
+    factura.impuestos = Decimal("0")
+    factura.total = Decimal("0")
+    factura.detalles.clear()
+
+    for i in range(1, 9):
+        producto_id = request.form.get(f"producto_id_{i}")
+        cantidad = request.form.get(f"cantidad_{i}")
+        costo = request.form.get(f"costo_unitario_{i}")
+        if not producto_id or not cantidad:
+            continue
+        cantidad_decimal = Decimal(cantidad)
+        costo_decimal = Decimal(costo or "0")
+        detalle = CompraFacturaDetalle(
+            producto_id=int(producto_id),
+            presentacion_id=int(request.form[f"presentacion_id_{i}"]) if request.form.get(f"presentacion_id_{i}") else None,
+            cantidad_facturada=cantidad_decimal,
+            costo_unitario=costo_decimal,
+            referencia_proveedor=request.form.get(f"referencia_proveedor_{i}", "").strip() or None,
+            descripcion_proveedor=request.form.get(f"descripcion_proveedor_{i}", "").strip() or None,
+        )
+        factura.detalles.append(detalle)
+        factura.subtotal += cantidad_decimal * costo_decimal
+    factura.total = factura.subtotal - factura.descuentos + factura.impuestos
 
 
 def render_template_solicitud(solicitud, modo):

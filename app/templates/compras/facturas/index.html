@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Facturas de compra | Intermediacion{% endblock %}
+{% block page_title %}Facturas de compra{% endblock %}
+
+{% block content %}
+<section class="toolbar">
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar factura, proveedor o número externo">
+        <select name="estado">
+            {% for opcion in ["todos", "BORRADOR", "REGISTRADA", "PARCIAL", "COMPLETA", "ANULADA"] %}
+            <option value="{{ opcion }}" {% if estado == opcion %}selected{% endif %}>{{ opcion.title() }}</option>
+            {% endfor %}
+        </select>
+        <button class="icon-button" type="submit"><span>Buscar</span></button>
+    </form>
+    <a class="secondary-action icon-button" href="{{ url_for('main.compras') }}"><span>Regresar</span></a>
+    <a class="primary-action icon-button" href="{{ url_for('main.compra_factura_nueva') }}"><span>Nueva factura</span></a>
+</section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}<div class="flash-list">{% for category, message in messages %}<p class="flash {{ category }}">{{ message }}</p>{% endfor %}</div>{% endif %}
+{% endwith %}
+
+<section class="data-card">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Número interno</th><th>Factura proveedor</th><th>Fecha</th><th>Proveedor</th><th>Total</th><th>Estado</th></tr></thead>
+            <tbody>
+                {% for factura in facturas %}
+                <tr>
+                    <td><strong>{{ factura.numero }}</strong></td>
+                    <td>{{ factura.numero_proveedor or "-" }}</td>
+                    <td>{{ factura.fecha.strftime("%Y-%m-%d") }}</td>
+                    <td>{{ factura.proveedor.nombre }}</td>
+                    <td>{{ "%.2f"|format(factura.total or 0) }}</td>
+                    <td><span class="status-pill info">{{ factura.estado.title() }}</span></td>
+                </tr>
+                {% else %}<tr><td colspan="6" class="empty-state">No hay facturas para mostrar.</td></tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
