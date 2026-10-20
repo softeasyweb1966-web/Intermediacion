@@ -50,6 +50,16 @@
                     <span>Ingresar</span>
                 </a>
                 {% else %}
+                {% if request.endpoint != 'main.productos' and (request.endpoint.startswith('main.producto') or request.endpoint.startswith('main.unidad') or request.endpoint.startswith('main.presentacion') or request.endpoint.startswith('main.lote')) %}
+                <a class="user-chip icon-button" href="{{ url_for('main.productos') }}" title="Regresar al menu Productos">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M21 8.5 12 3 3 8.5l9 5.5-9 5.5Z"></path>
+                        <path d="M3 8.5v7L12 21l9-5.5v-7"></path>
+                        <path d="M12 14v7"></path>
+                    </svg>
+                    <span>Productos</span>
+                </a>
+                {% endif %}
                 <a class="user-chip icon-button" href="{{ url_for('main.dashboard') }}" title="Regresar al menú principal">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="m3 11 9-8 9 8"></path>
