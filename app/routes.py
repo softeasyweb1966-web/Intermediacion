@@ -75,9 +75,9 @@ def dashboard():
     accesos = [
         {"nombre": "Productos", "icono": "box", "clase": "products", "url": "main.productos"},
         {"nombre": "Clientes", "icono": "client", "clase": "clients", "url": "main.clientes"},
-        {"nombre": "Proveedores", "icono": "truck", "clase": "suppliers", "url": "main.proveedores"},
+        {"nombre": "Proveedores", "icono": "supplier", "clase": "suppliers", "url": "main.proveedores"},
         {"nombre": "Despachos y recibos", "icono": "warehouse", "clase": "inventory", "url": "main.inventario_movimientos"},
-        {"nombre": "Compras", "icono": "truck", "clase": "suppliers", "url": "main.compras"},
+        {"nombre": "Compras", "icono": "purchase", "clase": "suppliers", "url": "main.compras"},
         {"nombre": "Cotizaciones", "icono": "quote", "clase": "quotes"},
         {"nombre": "Cartera", "icono": "wallet", "clase": "wallet"},
     ]
