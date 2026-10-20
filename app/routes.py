@@ -126,7 +126,13 @@ def compras():
 
 @main_bp.route("/ventas")
 def ventas():
-    return render_template("ventas/modulo.html")
+    opciones = [
+        {"nombre": "Cotizaciones", "detalle": "Propuestas comerciales para clientes", "icono": "quote", "url": "main.venta_cotizaciones"},
+        {"nombre": "Pedidos", "detalle": "Pedidos aprobados por clientes", "icono": "history", "url": "main.venta_pedidos"},
+        {"nombre": "Prefacturas", "detalle": "Documento previo a la facturación externa", "icono": "quote", "url": "main.venta_prefacturas"},
+        {"nombre": "Despachos", "detalle": "Salidas parciales o totales de mercancía", "icono": "warehouse", "url": "main.venta_despachos"},
+    ]
+    return render_template("ventas/modulo.html", opciones=opciones)
 
 
 @main_bp.route("/ventas/cotizaciones")

@@ -1,6 +1,3 @@
-{% extends "base.html" %}
+{% extends "productos/modulo.html" %}
 {% block title %}Ventas | Intermediacion{% endblock %}
 {% block page_title %}Ventas{% endblock %}
-{% block content %}
-<section class="toolbar"><a class="secondary-action icon-button" href="{{ url_for('main.dashboard') }}"><span>Regresar</span></a><a class="primary-action icon-button" href="{{ url_for('main.venta_cotizaciones') }}"><span>Cotizaciones</span></a><a class="primary-action icon-button" href="{{ url_for('main.venta_pedidos') }}"><span>Pedidos</span></a><a class="primary-action icon-button" href="{{ url_for('main.venta_prefacturas') }}"><span>Prefacturas</span></a><a class="primary-action icon-button" href="{{ url_for('main.venta_despachos') }}"><span>Despachos</span></a></section>
-{% endblock %}
