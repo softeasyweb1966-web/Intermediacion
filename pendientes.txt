@@ -1,0 +1,39 @@
+PENDIENTES - CONTINUACIÓN DEL DESARROLLO
+
+Fecha: 2026-10-20
+
+Contexto actual
+- Aplicación Flask de gestión comercial e inventarios.
+- Inventarios ya cuenta con saldos por producto, detalle por lote y semáforo de vencimientos.
+- Recibos y despachos permiten indicar origen directo, pedido o cotización.
+- Cuentas por cobrar y pagar ya tienen estados de cuenta y movimientos.
+- Recibos de caja y comprobantes de egreso permiten seleccionar tercero, valor y distribuir automáticamente el pago entre documentos pendientes.
+- Al seleccionar el tercero se muestran sus documentos pendientes antes de guardar.
+
+Próximos cambios acordados
+1. Rediseñar los documentos y comprobantes.
+2. Ocultar el menú lateral en formularios y comprobantes para aprovechar mejor el espacio.
+3. Quitar la tarjeta informativa: "El valor se aplicará automáticamente a los documentos pendientes del tercero, comenzando por el vencimiento más próximo."
+4. Dejar el campo Observaciones al final del formulario/documento.
+5. Mostrar un número automático en recibos de caja y comprobantes de egreso.
+6. Permitir escoger la forma de recibir o pagar el dinero, según el caso: efectivo, transferencia, cheque, tarjeta, consignación, etc.
+7. Implementar retenciones opcionales y por documento:
+   - Activar retención únicamente cuando aplique.
+   - Seleccionar tipo de retención.
+   - Registrar porcentaje y base.
+   - Calcular automáticamente el valor retenido.
+   - Mostrar valor neto aplicado.
+   - Mantener el saldo correcto de cada documento.
+8. Un comprobante puede aplicar un pago a varios documentos y cada documento puede tener una retención diferente.
+9. Mostrar en el comprobante: valor recibido/pagado, retenciones, valor neto, documentos afectados y saldo restante por documento.
+
+Regla importante
+- Las retenciones son opcionales y deben manejarse individualmente por documento, no únicamente a nivel general del comprobante.
+
+Últimos archivos relevantes
+- app/routes.py
+- app/templates/cuentas/comprobante.html
+- app/templates/cuentas/estado.html
+- app/templates/cuentas/movimientos.html
+- app/templates/base.html
+- app/templates/inventario/form.html

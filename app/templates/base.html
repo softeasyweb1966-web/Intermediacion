@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <div class="app-shell">
+    <div class="app-shell{% if request.endpoint in ['main.cxc_comprobante', 'main.cxp_comprobante'] %} form-shell{% endif %}">
         <aside class="sidebar">
             <div class="brand">
                 <span class="brand-mark">I</span>
@@ -84,6 +84,14 @@
                 <a class="user-chip icon-button" href="{{ url_for('main.inventario_modulo') }}" title="Regresar al menu Inventario">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V8l9-5 9 5v13M7 21v-8h10v8M7 13h10M9 17h6"></path></svg>
                     <span>Inventario</span>
+                </a>
+                {% elif endpoint.startswith('main.cxc_') %}
+                <a class="user-chip icon-button" href="{{ url_for('main.cuentas_por_cobrar') }}" title="Regresar al menu Cuentas por cobrar">
+                    <span>Cuentas por cobrar</span>
+                </a>
+                {% elif endpoint.startswith('main.cxp_') %}
+                <a class="user-chip icon-button" href="{{ url_for('main.cuentas_por_pagar') }}" title="Regresar al menu Cuentas por pagar">
+                    <span>Cuentas por pagar</span>
                 </a>
                 {% endif %}
                 <a class="user-chip icon-button" href="{{ url_for('main.dashboard') }}" title="Regresar al menú principal">

@@ -11,6 +11,8 @@ from .extensions import db
 from .models import (
     Auditoria,
     Cliente,
+    ComprobantePago,
+    AplicacionPago,
     CompraCotizacion,
     CompraCotizacionDetalle,
     CompraFactura,
@@ -89,9 +91,9 @@ def dashboard():
 @main_bp.route("/cuentas-por-cobrar")
 def cuentas_por_cobrar():
     opciones = [
-        {"nombre": "Estados de cuenta", "detalle": "Consultar saldos y vencimientos por cliente", "icono": "client"},
-        {"nombre": "Movimientos", "detalle": "Consultar cargos, abonos y saldos", "icono": "history"},
-        {"nombre": "Recibos de caja", "detalle": "Registrar comprobantes de recaudo", "icono": "document"},
+        {"nombre": "Estados de cuenta", "detalle": "Consultar saldos y vencimientos por cliente", "icono": "client", "url": "main.cxc_estados"},
+        {"nombre": "Movimientos", "detalle": "Consultar cargos, abonos y saldos", "icono": "history", "url": "main.cxc_movimientos"},
+        {"nombre": "Recibos de caja", "detalle": "Registrar comprobantes de recaudo", "icono": "document", "url": "main.cxc_comprobante"},
     ]
     return render_template("modulo_generico.html", titulo="Cuentas por cobrar", opciones=opciones)
 
@@ -99,11 +101,149 @@ def cuentas_por_cobrar():
 @main_bp.route("/cuentas-por-pagar")
 def cuentas_por_pagar():
     opciones = [
-        {"nombre": "Estados de cuenta", "detalle": "Consultar saldos y vencimientos por proveedor", "icono": "supplier"},
-        {"nombre": "Movimientos", "detalle": "Consultar cargos, abonos y saldos", "icono": "history"},
-        {"nombre": "Comprobantes de egreso", "detalle": "Registrar comprobantes de pago", "icono": "document"},
+        {"nombre": "Estados de cuenta", "detalle": "Consultar saldos y vencimientos por proveedor", "icono": "supplier", "url": "main.cxp_estados"},
+        {"nombre": "Movimientos", "detalle": "Consultar cargos, abonos y saldos", "icono": "history", "url": "main.cxp_movimientos"},
+        {"nombre": "Comprobantes de egreso", "detalle": "Registrar comprobantes de pago", "icono": "document", "url": "main.cxp_comprobante"},
     ]
     return render_template("modulo_generico.html", titulo="Cuentas por pagar", opciones=opciones)
+
+
+def _guardar_comprobante(tipo):
+    cobrar = tipo == "RECIBO_CAJA"
+    tercero_id = request.form.get("tercero_id", "").strip()
+    valor = Decimal(request.form.get("valor", "0").strip() or "0")
+    if not tercero_id or valor <= 0:
+        flash("Seleccione un tercero e ingrese un valor mayor que cero.", "error")
+        return None
+    comprobante = ComprobantePago(
+        numero=siguiente_numero("RC" if cobrar else "CE", ComprobantePago),
+        tipo=tipo,
+        cliente_id=int(tercero_id) if cobrar else None,
+        proveedor_id=None if cobrar else int(tercero_id),
+        fecha=obtener_fecha("fecha") or datetime.utcnow().date(),
+        valor=valor,
+        forma_pago=request.form.get("forma_pago", "").strip() or None,
+        observaciones=request.form.get("observaciones", "").strip() or None,
+    )
+    db.session.add(comprobante)
+    db.session.flush()
+    filas, _ = _cuenta_data("cobrar" if cobrar else "pagar")
+    facturas = [f for f in filas if (f["factura"].cliente_id if cobrar else f["factura"].proveedor_id) == int(tercero_id) and f["saldo"] > 0]
+    restante = valor
+    ids = request.form.getlist("documento_id")
+    for factura_data in facturas:
+        factura = factura_data["factura"]
+        if ids and str(factura.id) not in ids:
+            continue
+        try:
+            aplicar = Decimal(request.form.get(f"aplicar_{factura.id}", "0") or "0")
+        except Exception:
+            aplicar = Decimal("0")
+        aplicar = min(max(aplicar, Decimal("0")), factura_data["saldo"], restante)
+        if aplicar <= 0:
+            continue
+        retefuente_pct = Decimal(request.form.get(f"retefuente_{factura.id}", "0") or "0")
+        reteica_pct = Decimal(request.form.get(f"reteica_{factura.id}", "0") or "0")
+        total_retenido = Decimal("0")
+        if aplicar == factura_data["saldo"]:
+            retefuente_valor = (aplicar * retefuente_pct / Decimal("100")).quantize(Decimal("0.01"))
+            reteica_valor = (aplicar * reteica_pct / Decimal("100")).quantize(Decimal("0.01"))
+            total_retenido = retefuente_valor + reteica_valor
+        else:
+            retefuente_pct = reteica_pct = retefuente_valor = reteica_valor = Decimal("0")
+        db.session.add(AplicacionPago(comprobante_id=comprobante.id, prefactura_id=factura.id if cobrar else None, factura_compra_id=None if cobrar else factura.id, valor_aplicado=aplicar, retefuente_porcentaje=retefuente_pct, retefuente_valor=retefuente_valor, reteica_porcentaje=reteica_pct, reteica_valor=reteica_valor, valor_neto=aplicar - total_retenido))
+        restante -= aplicar
+        if restante <= 0:
+            break
+    db.session.commit()
+    flash(f"Comprobante {comprobante.numero} registrado y distribuido correctamente.", "success")
+    return comprobante
+
+
+def _comprobante_form(tipo):
+    cobrar = tipo == "RECIBO_CAJA"
+    if request.method == "POST":
+        comprobante = _guardar_comprobante(tipo)
+        if comprobante:
+            return redirect(url_for("main.cxc_estados" if cobrar else "main.cxp_estados"))
+    tercero_id = request.args.get("tercero_id", type=int)
+    documentos = []
+    if tercero_id:
+        filas, _ = _cuenta_data("cobrar" if cobrar else "pagar")
+        documentos = [fila for fila in filas if fila["factura"].cliente_id == tercero_id] if cobrar else [fila for fila in filas if fila["factura"].proveedor_id == tercero_id]
+        documentos = [fila for fila in documentos if fila["saldo"] > 0]
+        documentos.sort(key=lambda f: (f["factura"].fecha_vencimiento or f["factura"].fecha, f["factura"].fecha))
+    return render_template("cuentas/comprobante.html", tipo=tipo, clientes=obtener_clientes(), proveedores=obtener_proveedores(), tercero_id=tercero_id, documentos=documentos, hoy=datetime.utcnow().date().isoformat())
+
+
+@main_bp.route("/cuentas-por-cobrar/recibos/nuevo", methods=["GET", "POST"])
+def cxc_comprobante():
+    return _comprobante_form("RECIBO_CAJA")
+
+
+@main_bp.route("/cuentas-por-pagar/egresos/nuevo", methods=["GET", "POST"])
+def cxp_comprobante():
+    return _comprobante_form("EGRESO")
+
+
+def _cuenta_data(tipo, busqueda=""):
+    cobrar = tipo == "cobrar"
+    facturas = VentaPrefactura.query.join(Cliente).filter(VentaPrefactura.estado != "ANULADA").all() if cobrar else CompraFactura.query.join(Proveedor).filter(CompraFactura.estado != "ANULADA").all()
+    pagos = ComprobantePago.query.filter_by(tipo="RECIBO_CAJA" if cobrar else "EGRESO").all()
+    aplicaciones = AplicacionPago.query.all()
+    aplicados = {}
+    for aplicacion in aplicaciones:
+        clave = aplicacion.prefactura_id if cobrar else aplicacion.factura_compra_id
+        if clave:
+            aplicados[clave] = aplicados.get(clave, Decimal("0")) + Decimal(aplicacion.valor_aplicado or 0)
+    filas = []
+    patron = busqueda.lower()
+    for factura in facturas:
+        tercero = factura.cliente if cobrar else factura.proveedor
+        if patron and patron not in (tercero.nombre or "").lower() and patron not in factura.numero.lower():
+            continue
+        total = Decimal(factura.total or 0)
+        aplicado = aplicados.get(factura.id, Decimal("0"))
+        filas.append({"factura": factura, "tercero": tercero, "total": total, "aplicado": aplicado, "saldo": total - aplicado})
+    return filas, pagos
+
+
+@main_bp.route("/cuentas-por-cobrar/estados")
+def cxc_estados():
+    busqueda = request.args.get("q", "").strip()
+    filas, _ = _cuenta_data("cobrar", busqueda)
+    return render_template("cuentas/estado.html", tipo="cobrar", filas=filas, busqueda=busqueda)
+
+
+@main_bp.route("/cuentas-por-pagar/estados")
+def cxp_estados():
+    busqueda = request.args.get("q", "").strip()
+    filas, _ = _cuenta_data("pagar", busqueda)
+    return render_template("cuentas/estado.html", tipo="pagar", filas=filas, busqueda=busqueda)
+
+
+def _movimientos_cuenta(tipo, busqueda=""):
+    cobrar = tipo == "cobrar"
+    filas, pagos = _cuenta_data(tipo, busqueda)
+    movimientos = [{"fecha": f["factura"].fecha, "tipo": "Cargo", "tercero": f["tercero"].nombre, "documento": f["factura"].numero, "valor": f["total"], "saldo": f["saldo"]} for f in filas]
+    for pago in pagos:
+        tercero = pago.cliente if cobrar else pago.proveedor
+        if not tercero or (busqueda and busqueda.lower() not in tercero.nombre.lower() and busqueda.lower() not in pago.numero.lower()):
+            continue
+        movimientos.append({"fecha": pago.fecha, "tipo": "Abono", "tercero": tercero.nombre, "documento": pago.numero, "valor": Decimal(pago.valor or 0), "saldo": None})
+    return sorted(movimientos, key=lambda m: m["fecha"], reverse=True)
+
+
+@main_bp.route("/cuentas-por-cobrar/movimientos")
+def cxc_movimientos():
+    busqueda = request.args.get("q", "").strip()
+    return render_template("cuentas/movimientos.html", tipo="cobrar", movimientos=_movimientos_cuenta("cobrar", busqueda), busqueda=busqueda)
+
+
+@main_bp.route("/cuentas-por-pagar/movimientos")
+def cxp_movimientos():
+    busqueda = request.args.get("q", "").strip()
+    return render_template("cuentas/movimientos.html", tipo="pagar", movimientos=_movimientos_cuenta("pagar", busqueda), busqueda=busqueda)
 
 
 @main_bp.route("/ayuda")
@@ -233,6 +373,19 @@ def inventario_saldo_detalle(producto_id):
         InventarioMovimiento.fecha.desc(), InventarioMovimiento.id.desc()
     ).all()
     saldo = sum((Decimal(lote.cantidad_actual or 0) for lote in lotes), Decimal("0"))
+    hoy = datetime.utcnow().date()
+    for lote in lotes:
+        if not producto.maneja_vencimiento or not lote.fecha_vencimiento:
+            lote.dias_para_vencer = None
+            lote.estado_vencimiento = "sin_fecha"
+        else:
+            lote.dias_para_vencer = (lote.fecha_vencimiento - hoy).days
+            if lote.dias_para_vencer >= 90:
+                lote.estado_vencimiento = "verde"
+            elif lote.dias_para_vencer >= 1:
+                lote.estado_vencimiento = "amarillo"
+            else:
+                lote.estado_vencimiento = "rojo"
     return render_template("inventario/saldo_detalle.html", producto=producto, lotes=lotes, movimientos=movimientos, saldo=saldo)
 
 
@@ -1466,7 +1619,7 @@ def inventario_recibo():
         flash("Recibo registrado correctamente.", "success")
         return redirect(url_for("main.inventario_movimientos"))
 
-    return render_template_movimiento(movimiento, "Recibo de mercancia")
+    return render_template_movimiento(movimiento, "Recibo de mercancia", CompraPedido.query.order_by(CompraPedido.fecha.desc()).limit(100).all(), CompraCotizacion.query.order_by(CompraCotizacion.fecha.desc()).limit(100).all())
 
 
 @main_bp.route("/inventario/despacho", methods=["GET", "POST"])
@@ -1496,7 +1649,7 @@ def inventario_despacho():
         flash("Despacho registrado correctamente.", "success")
         return redirect(url_for("main.inventario_movimientos"))
 
-    return render_template_movimiento(movimiento, "Despacho de mercancia")
+    return render_template_movimiento(movimiento, "Despacho de mercancia", VentaPedido.query.order_by(VentaPedido.fecha.desc()).limit(100).all(), VentaCotizacion.query.order_by(VentaCotizacion.fecha.desc()).limit(100).all())
 
 
 def guardar_cliente(cliente):
@@ -1948,7 +2101,17 @@ def guardar_movimiento(movimiento, lote, tipo, cantidad):
     movimiento.cliente_id = int(cliente_id) if cliente_id else None
     movimiento.cantidad = cantidad
     movimiento.costo_unitario = request.form.get("costo_unitario", "").strip() or None
-    movimiento.documento = request.form.get("documento", "").strip() or None
+    documento = request.form.get("documento", "").strip()
+    origen = request.form.get("origen_id", "").strip()
+    if request.form.get("origen_tipo") != "DIRECTO" and origen:
+        clase, origen_id = origen.split(":", 1)
+        if clase == "PEDIDO":
+            relacionado = (CompraPedido.query.get(origen_id) if tipo == "RECIBO" else VentaPedido.query.get(origen_id))
+        else:
+            relacionado = (CompraCotizacion.query.get(origen_id) if tipo == "RECIBO" else VentaCotizacion.query.get(origen_id))
+        if relacionado:
+            documento = relacionado.numero
+    movimiento.documento = documento or None
     movimiento.responsable = request.form.get("responsable", "").strip() or None
     movimiento.observaciones = request.form.get("observaciones", "").strip() or None
 
@@ -2119,7 +2282,14 @@ def actualizar_producto_proveedor(producto_id, proveedor_id, costo, detalle_pedi
     relacion.es_frecuente = True
 
 
-def render_template_movimiento(movimiento, modo):
+def render_template_movimiento(movimiento, modo, pedidos=None, cotizaciones=None):
+    if pedidos is None:
+        if movimiento.tipo == "RECIBO":
+            pedidos = CompraPedido.query.order_by(CompraPedido.fecha.desc()).limit(100).all()
+            cotizaciones = CompraCotizacion.query.order_by(CompraCotizacion.fecha.desc()).limit(100).all()
+        else:
+            pedidos = VentaPedido.query.order_by(VentaPedido.fecha.desc()).limit(100).all()
+            cotizaciones = VentaCotizacion.query.order_by(VentaCotizacion.fecha.desc()).limit(100).all()
     return render_template(
         "inventario/form.html",
         movimiento=movimiento,
@@ -2127,6 +2297,8 @@ def render_template_movimiento(movimiento, modo):
         lotes=obtener_lotes(),
         proveedores=obtener_proveedores(),
         clientes=obtener_clientes(),
+        pedidos=pedidos,
+        cotizaciones=cotizaciones,
     )
 
 

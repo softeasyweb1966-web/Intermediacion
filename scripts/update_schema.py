@@ -35,6 +35,12 @@ def main():
     with app.app_context():
         db.create_all()
         add_column_if_missing("productos", "maneja_lotes", "boolean not null default false")
+        add_column_if_missing("aplicaciones_pago", "retefuente_porcentaje", "numeric(8, 4) default 0")
+        add_column_if_missing("aplicaciones_pago", "retefuente_valor", "numeric(14, 2) default 0")
+        add_column_if_missing("aplicaciones_pago", "reteica_porcentaje", "numeric(8, 4) default 0")
+        add_column_if_missing("aplicaciones_pago", "reteica_valor", "numeric(14, 2) default 0")
+        add_column_if_missing("aplicaciones_pago", "valor_neto", "numeric(14, 2) default 0")
+        add_column_if_missing("comprobantes_pago", "forma_pago", "varchar(30)")
         add_column_if_missing(
             "productos", "maneja_presentaciones", "boolean not null default false"
         )

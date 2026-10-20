@@ -399,6 +399,7 @@ class ComprobantePago(db.Model, TimestampMixin, EstadoMixin):
     proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedores.id"), index=True)
     fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
     valor = db.Column(db.Numeric(14, 2), nullable=False, default=0)
+    forma_pago = db.Column(db.String(30))
     observaciones = db.Column(db.Text)
 
     cliente = db.relationship("Cliente")
@@ -414,6 +415,11 @@ class AplicacionPago(db.Model, TimestampMixin):
     prefactura_id = db.Column(db.Integer, db.ForeignKey("venta_prefacturas.id"), index=True)
     factura_compra_id = db.Column(db.Integer, db.ForeignKey("compra_facturas.id"), index=True)
     valor_aplicado = db.Column(db.Numeric(14, 2), nullable=False, default=0)
+    retefuente_porcentaje = db.Column(db.Numeric(8, 4), default=0)
+    retefuente_valor = db.Column(db.Numeric(14, 2), default=0)
+    reteica_porcentaje = db.Column(db.Numeric(8, 4), default=0)
+    reteica_valor = db.Column(db.Numeric(14, 2), default=0)
+    valor_neto = db.Column(db.Numeric(14, 2), default=0)
 
     comprobante = db.relationship("ComprobantePago", back_populates="aplicaciones")
     prefactura = db.relationship("VentaPrefactura")
