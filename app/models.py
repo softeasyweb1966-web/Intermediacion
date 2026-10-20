@@ -389,6 +389,37 @@ class Auditoria(db.Model):
     creado_en = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
 
+class ComprobantePago(db.Model, TimestampMixin, EstadoMixin):
+    __tablename__ = "comprobantes_pago"
+
+    id = db.Column(db.Integer, primary_key=True)
+    numero = db.Column(db.String(40), unique=True, nullable=False, index=True)
+    tipo = db.Column(db.String(20), nullable=False, index=True)  # RECIBO_CAJA / EGRESO
+    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"), index=True)
+    proveedor_id = db.Column(db.Integer, db.ForeignKey("proveedores.id"), index=True)
+    fecha = db.Column(db.Date, default=datetime.utcnow, nullable=False, index=True)
+    valor = db.Column(db.Numeric(14, 2), nullable=False, default=0)
+    observaciones = db.Column(db.Text)
+
+    cliente = db.relationship("Cliente")
+    proveedor = db.relationship("Proveedor")
+    aplicaciones = db.relationship("AplicacionPago", cascade="all, delete-orphan", back_populates="comprobante")
+
+
+class AplicacionPago(db.Model, TimestampMixin):
+    __tablename__ = "aplicaciones_pago"
+
+    id = db.Column(db.Integer, primary_key=True)
+    comprobante_id = db.Column(db.Integer, db.ForeignKey("comprobantes_pago.id"), nullable=False, index=True)
+    prefactura_id = db.Column(db.Integer, db.ForeignKey("venta_prefacturas.id"), index=True)
+    factura_compra_id = db.Column(db.Integer, db.ForeignKey("compra_facturas.id"), index=True)
+    valor_aplicado = db.Column(db.Numeric(14, 2), nullable=False, default=0)
+
+    comprobante = db.relationship("ComprobantePago", back_populates="aplicaciones")
+    prefactura = db.relationship("VentaPrefactura")
+    factura_compra = db.relationship("CompraFactura")
+
+
 class CompraFactura(db.Model, TimestampMixin, EstadoMixin):
     __tablename__ = "compra_facturas"
 
