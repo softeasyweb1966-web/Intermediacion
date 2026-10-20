@@ -1625,6 +1625,7 @@ def guardar_recepcion_compra(recepcion, pedido=None):
         presentacion_id = request.form.get(f"presentacion_id_{indice}", "").strip()
         numero_lote = request.form.get(f"numero_lote_{indice}", "").strip()
         fecha_vencimiento = obtener_fecha(f"fecha_vencimiento_{indice}")
+        validar_fecha_vencimiento(int(producto_id), fecha_vencimiento)
         lote = obtener_o_crear_lote(
             int(producto_id),
             int(presentacion_id) if presentacion_id else (detalle_pedido.presentacion_id if detalle_pedido else None),
@@ -1675,6 +1676,7 @@ def guardar_recepcion_factura(recepcion, factura):
             raise ValueError(f"La cantidad recibida de {detalle_factura.producto.nombre} supera el pendiente.")
         numero_lote = request.form.get(f"numero_lote_{indice}", "").strip()
         fecha_vencimiento = obtener_fecha(f"fecha_vencimiento_{indice}")
+        validar_fecha_vencimiento(detalle_factura.producto_id, fecha_vencimiento)
         lote = obtener_o_crear_lote(
             detalle_factura.producto_id,
             detalle_factura.presentacion_id,
@@ -2165,6 +2167,14 @@ def convertir_a_unidad_interna(cantidad_proveedor, factor_conversion):
     if factor <= 0:
         raise ValueError("El factor de conversión debe ser mayor que cero.")
     return cantidad * factor
+
+
+def validar_fecha_vencimiento(producto_id, fecha_vencimiento):
+    if not fecha_vencimiento:
+        return
+    producto = Producto.query.get(producto_id)
+    if producto and producto.maneja_vencimiento and fecha_vencimiento < datetime.utcnow().date():
+        raise ValueError(f"El lote de {producto.nombre} tiene una fecha de vencimiento ya vencida.")
 
 
 def obtener_productos():
