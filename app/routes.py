@@ -2222,11 +2222,6 @@ def convertir_a_unidad_interna(cantidad_proveedor, factor_conversion):
 
 def formatear_indicador_monetario(valor):
     valor = Decimal(valor or 0)
-    absoluto = abs(valor)
-    if absoluto >= Decimal("1000000"):
-        return f"${valor / Decimal('1000000'):.2f} M"
-    if absoluto >= Decimal("1000"):
-        return f"${valor / Decimal('1000'):.1f} K"
     return f"${valor:,.2f}"
 
 
