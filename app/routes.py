@@ -132,11 +132,11 @@ def ayuda():
 def compras():
     opciones = [
         {"nombre": "Solicitudes", "detalle": "Pedir precio a varios proveedores", "icono": "history", "url": "main.compra_solicitudes"},
-        {"nombre": "Cotizaciones", "detalle": "Respuestas de proveedores", "icono": "history", "url": "main.compra_cotizaciones"},
+        {"nombre": "Cotizaciones", "detalle": "Respuestas de proveedores", "icono": "quote", "url": "main.compra_cotizaciones"},
         {"nombre": "Pedidos", "detalle": "Solicitudes a proveedor", "icono": "truck", "url": "main.compra_pedidos"},
         {"nombre": "Facturas", "detalle": "Documentos recibidos del proveedor", "icono": "document", "url": "main.compra_facturas"},
         {"nombre": "Recepciones", "detalle": "Entradas parciales o directas", "icono": "warehouse", "url": "main.compra_recepciones"},
-        {"nombre": "Manual", "detalle": "Pendiente para pruebas", "icono": "history"},
+        {"nombre": "Manual", "detalle": "Pendiente para pruebas", "icono": "book"},
     ]
     return render_template("compras/modulo.html", opciones=opciones)
 
