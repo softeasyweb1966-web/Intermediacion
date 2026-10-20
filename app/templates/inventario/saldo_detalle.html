@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Detalle de saldo | Intermediacion{% endblock %}
+{% block page_title %}Detalle de saldo: {{ producto.nombre }}{% endblock %}
+{% block content %}
+<section class="toolbar"><a class="secondary-action icon-button" href="{{ url_for('main.inventario_saldos') }}">Volver a saldos</a></section>
+<section class="data-card"><div class="card-heading"><h2>{{ producto.nombre }}</h2><p>Código: {{ producto.codigo }} · Saldo total: <strong>{{ saldo }} {{ producto.unidad }}</strong></p></div>
+<div class="table-wrap"><table><thead><tr><th>Lote</th><th>Presentación / clasificación</th><th>Vencimiento</th><th>Saldo</th></tr></thead><tbody>
+{% for lote in lotes %}<tr><td>{{ lote.numero_lote }}</td><td>{{ lote.presentacion.nombre if lote.presentacion else "-" }}</td><td>{{ lote.fecha_vencimiento.strftime('%Y-%m-%d') if lote.fecha_vencimiento else '-' }}</td><td>{{ lote.cantidad_actual }} {{ producto.unidad }}</td></tr>
+{% else %}<tr><td colspan="4" class="empty-state">Este producto no tiene lotes activos.</td></tr>{% endfor %}
+</tbody></table></div></section>
+<section class="data-card"><div class="card-heading"><h2>Movimientos del producto</h2></div><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Lote</th><th>Cantidad</th><th>Documento</th></tr></thead><tbody>
+{% for movimiento in movimientos %}<tr><td>{{ movimiento.fecha.strftime('%Y-%m-%d') }}</td><td>{{ movimiento.tipo.title() }}</td><td>{{ movimiento.lote.numero_lote }}</td><td>{{ movimiento.cantidad }}</td><td>{{ movimiento.documento or '-' }}</td></tr>
+{% else %}<tr><td colspan="5" class="empty-state">No hay movimientos para mostrar.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

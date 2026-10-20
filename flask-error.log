@@ -44,3 +44,935 @@ Press CTRL+C to quit
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 20:03:07] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:03:07] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:03:12] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:03:12] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:03:17] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:03:18] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:03:21] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:03:21] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:03:44] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:03:44] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 20:05:43] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:05:43] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:05:53] "GET /compras/facturas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:05:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:01] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:01] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:09] "GET /proveedores HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:09] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:13] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:13] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:15] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:15] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:23] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:23] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:29] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:29] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:32] "GET /proveedores HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:34] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:34] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:37] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:37] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:41] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:41] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:06:44] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:06:44] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\models.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\models.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\scripts\\update_schema.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\scripts\\update_schema.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\models.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\models.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 20:25:47] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:25:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:25:53] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:25:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:25:58] "GET /clientes/nuevo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:25:58] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:27:06] "POST /clientes/nuevo HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 20:27:06] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:27:06] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:27:14] "GET /proveedores HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:27:14] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:27:18] "GET /proveedores/2/editar HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:27:18] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:27:24] "POST /proveedores/2/editar HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 20:27:24] "GET /proveedores HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:27:24] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:27:36] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:27:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:27:38] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:27:38] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:27:47] "GET /productos/9/editar HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:27:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:27:54] "POST /productos/9/editar HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 20:27:54] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:27:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:28:25] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:28:25] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:28:29] "GET /compras/cotizaciones HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:28:29] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:28:39] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:28:39] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:28:42] "GET /compras/cotizaciones HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:28:42] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:28:45] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:28:45] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:28:47] "GET /compras/pedidos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:28:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:28:50] "GET /compras/pedidos/nuevo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:28:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:29:41] "POST /compras/pedidos/nuevo HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 20:29:41] "GET /compras/pedidos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:29:41] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:29:46] "GET /compras/pedidos/nuevo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:29:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:30:20] "POST /compras/pedidos/nuevo HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 20:30:20] "GET /compras/pedidos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:30:20] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:30:42] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:30:43] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:30:45] "GET /compras/facturas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:30:45] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:30:47] "GET /compras/facturas/nueva HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:30:48] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:32:06] "POST /compras/facturas/nueva HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 20:32:06] "GET /compras/facturas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:32:06] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:32:32] "GET /compras/facturas/1/recibir HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:32:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:32:50] "POST /compras/facturas/1/recibir HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 20:32:50] "GET /compras/facturas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:32:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:52:31] "GET /compras/facturas/1/recibir HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:52:31] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:53:08] "POST /compras/facturas/1/recibir HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 20:53:08] "GET /compras/facturas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:53:08] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 20:54:36] "GET /compras/facturas/nueva HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 20:54:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 22:35:52] "GET /compras/facturas/nueva HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:35:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:37:13] "POST /compras/facturas/nueva HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 22:37:13] "GET /compras/facturas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:37:13] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:37:24] "GET /compras/facturas/2/recibir HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:37:24] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:39:15] "POST /compras/facturas/2/recibir HTTP/1.1" 302 -
+127.0.0.1 - - [19/Oct/2026 22:39:15] "GET /compras/facturas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:39:15] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 22:40:39] "GET /compras/facturas/nueva HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:40:39] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:40:47] "POST /compras/facturas/nueva HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:40:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:41:29] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:41:29] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:42:36] "GET /inventario/movimientos?q=&tipo=RECIBO HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:42:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:42:53] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:42:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:06] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:06] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:13] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:13] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:15] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:15] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:16] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:17] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:18] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:18] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:22] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:22] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:36] "GET /ayuda?q=pedid HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:37] "GET /ayuda?q=pedid HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:37] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:43] "GET /ayuda?q=compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:43] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:43:47] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:43:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:46:36] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:46:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:46:38] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:46:38] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:46:49] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:46:49] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:48:17] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:48:17] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:48:20] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:48:20] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:48:22] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:48:23] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:48:26] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:48:26] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:48:33] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:48:33] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:48:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:48:35] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:48:53] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:48:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:50:31] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:50:31] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:50:48] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:50:48] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 22:51:40] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:51:40] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:51:43] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:51:43] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:51:50] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:51:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:51:52] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:51:52] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:51:53] "GET /proveedores HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:51:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:52:00] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:52:00] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:52:02] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:52:02] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:52:47] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:52:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:52:50] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:52:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:53:40] "GET /proveedores HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:53:40] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:53:53] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:53:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:53:54] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:53:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:53:56] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:53:56] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:54:40] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:54:40] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:55:06] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:55:06] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:55:08] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:55:08] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:55:10] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:55:10] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:55:12] "GET /proveedores HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:55:12] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:55:14] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:55:14] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:55:15] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:55:15] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:55:17] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:55:17] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 22:56:16] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:17] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:56:19] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:19] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:56:21] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:21] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:56:23] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:23] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:56:25] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:25] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:56:26] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:26] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:56:32] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:56:33] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:33] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:56:35] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:35] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:56:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:56:39] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 22:58:17] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:58:17] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 22:59:38] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 22:59:38] "GET /static/css/styles.css HTTP/1.1" 200 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:00:33] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:00:33] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:04:05] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:04:05] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:06:05] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:06:05] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:07:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:07:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:09:16] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:09:16] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:10:04] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:10:04] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:11:02] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:02] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:28] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:28] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:11:34] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:34] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:11:35] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:35] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:11:37] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:37] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:11:38] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:38] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:11:39] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:39] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:11:42] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:42] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:11:50] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:11:54] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:11:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:12:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:12:03] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:18:37] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:18:38] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:18:43] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:18:43] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:18:47] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:18:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:19:08] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:19:08] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:19:27] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:19:27] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:27:12] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:27:12] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:27:14] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:27:14] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:27:17] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:27:17] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:27:22] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:27:22] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:27:46] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:27:46] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:27:56] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:27:56] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:28:04] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:28:04] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:28:12] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:28:12] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:28:20] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:28:20] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:10] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:10] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:13] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:13] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:15] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:15] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:17] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:17] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:18] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:18] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:19] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:19] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:20] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:20] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:21] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:21] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:31] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:31] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:32] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:32] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:33] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:33] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:33] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:33] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:33] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:33] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:33] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:33] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:34] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:34] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:34] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:34] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:34] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:34] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:34] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:34] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:34] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:35] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:35] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:35] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:36] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:29:38] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:29:38] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:30:51] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:30:51] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:31:09] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:31:09] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:35:30] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:35:30] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:35:33] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:35:33] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:35:35] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:35:35] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:37:18] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:37:18] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:37:25] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:37:25] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:38:42] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:38:42] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:38:45] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:38:45] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:38:49] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:38:49] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:40:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:40:08] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:40:21] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:40:21] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:40:27] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:40:27] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:40:31] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:40:31] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:40:33] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:40:33] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:40:41] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:40:41] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:40:46] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:40:46] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:40:56] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:40:56] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:40:59] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:40:59] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:41:20] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:41:20] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:41:32] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:41:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:41:36] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:41:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:41:54] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:41:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:42:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:42:03] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:42:06] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:42:06] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:42:21] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:42:21] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:42:29] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:42:30] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:42:38] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:42:38] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:42:48] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:42:49] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:42:56] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:42:56] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:43:48] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:43:48] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:44:43] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:44:44] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:44:47] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:44:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:44:51] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:44:51] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:44:53] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:44:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:44:54] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:44:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:44:55] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:44:55] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:44:56] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:44:56] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:21] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:21] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:25] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:25] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:26] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:26] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:27] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:27] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:29] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:29] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:32] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:35] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:41] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:41] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:50] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:53] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:46:54] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:46:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:47:04] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:47:04] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:47:07] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:47:07] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:47:10] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:47:10] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:49:00] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:49:01] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:49:03] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:49:03] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:50:35] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:50:35] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:50:39] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:50:39] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:50:42] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:50:42] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:50:47] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:50:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:50:50] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:50:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:50:57] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:50:57] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:01] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:01] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:04] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:04] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:05] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:05] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:06] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:06] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:08] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:08] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:09] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:09] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:09] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:09] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:10] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:10] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:11] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:11] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:24] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:24] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:28] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:28] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:51:31] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:51:31] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:52:06] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:52:06] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [19/Oct/2026 23:58:05] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:58:06] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:58:41] "GET /cuentas-por-cobrar HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:58:41] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [19/Oct/2026 23:58:44] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 23:58:44] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [20/Oct/2026 00:01:32] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:01:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:02:02] "GET /cuentas-por-cobrar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:02:02] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:02:56] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:02:56] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [20/Oct/2026 00:04:14] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:14] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:04:36] "GET /cuentas-por-cobrar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:04:41] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:41] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:04:43] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:43] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:04:45] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:45] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:04:48] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:48] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:04:49] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:49] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:04:50] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:04:53] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:04:55] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:04:55] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:05:51] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:05:51] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:04] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:04] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:06:07] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:07] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:06:25] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:25] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:06:27] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:27] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:06:31] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:31] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:06:36] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:06:38] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:38] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:06:40] "GET /productos/unidades HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:40] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:06:52] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:52] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:06:53] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:06:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:07:20] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:07:20] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:08:52] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:08:52] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:08:59] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:08:59] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:09:00] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:09:00] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:14] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:14] "GET /static/css/styles.css HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:24] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:24] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:26] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:26] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:32] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:33] "GET /productos/unidades HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:33] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:39] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:39] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:41] "GET /productos/presentaciones HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:41] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:45] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:45] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:53] "GET /productos/lotes HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:55] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:55] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:10:56] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:10:57] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:11:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:11:08] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:11:10] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:11:10] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:11:11] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:11:11] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:11:15] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:11:15] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:11:18] "GET /productos/unidades HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:11:18] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:16] "GET /productos/unidades HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:16] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:21] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:21] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:22] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:22] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:24] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:24] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:25] "GET /productos/unidades HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:25] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:26] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:26] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:27] "GET /productos/presentaciones HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:27] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:28] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:28] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:37] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:37] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:13:42] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:13:42] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:16:30] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:16:30] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [20/Oct/2026 00:17:49] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:17:49] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:17:51] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:17:51] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:17:54] "GET /productos/catalogo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:17:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:17:55] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:17:55] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:17:56] "GET /productos/unidades HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:17:56] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:17:57] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:17:57] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:17:58] "GET /productos/presentaciones HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:17:58] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:18:00] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:18:00] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:18:02] "GET /productos/lotes HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:18:02] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:18:04] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:18:04] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [20/Oct/2026 00:20:46] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:20:46] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:20:48] "GET /productos/historial HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:20:48] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:20:54] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:20:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:20:56] "GET /productos/historial HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:20:56] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:21:00] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:21:00] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:21:01] "GET /productos/alertas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:21:01] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:21:14] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:21:14] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:21:15] "GET /productos/historial HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:21:15] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:22:21] "GET /productos/historial HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:22:21] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:22:24] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:22:24] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:22:25] "GET /productos/alertas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:22:25] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:22:27] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:22:27] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:22:28] "GET /productos/historial HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:22:28] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:22:29] "GET /productos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:22:29] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:22:31] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:22:31] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:22:34] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:22:34] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:37] "GET /clientes HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:37] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:40] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:40] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:41] "GET /clientes/nuevo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:41] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:43] "GET /clientes/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:43] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:45] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:45] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:47] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:47] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:48] "GET /proveedores HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:48] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:52] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:52] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:53] "GET /proveedores/nuevo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:54] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:55] "GET /proveedores HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:55] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:57] "GET /proveedores/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:57] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:25:58] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:25:58] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:01] "GET /compras/solicitudes HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:01] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:03] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:03] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:04] "GET /compras/cotizaciones HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:04] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:05] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:05] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:06] "GET /compras/pedidos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:06] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:07] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:07] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:08] "GET /compras/facturas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:08] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:09] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:09] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:10] "GET /compras/recepciones HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:10] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:12] "GET /compras HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:12] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:14] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:14] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:15] "GET /ventas/cotizaciones HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:15] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:17] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:17] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:17] "GET /ventas/pedidos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:17] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:18] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:18] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:19] "GET /ventas/prefacturas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:19] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:20] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:20] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:21] "GET /ventas/despachos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:21] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:22] "GET /ventas HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:22] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:26] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:26] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:27] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:27] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:28] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:28] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:29] "GET /inventario/recibo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:29] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:30] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:30] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:31] "GET /inventario/despacho HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:31] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:32] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:34] "GET /cuentas-por-cobrar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:34] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:26:40] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:26:40] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\models.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619
+127.0.0.1 - - [20/Oct/2026 00:39:57] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:39:57] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:40:08] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:40:08] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:40:11] "GET /cuentas-por-cobrar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:40:11] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:40:12] "GET /cuentas-por-cobrar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:40:12] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:40:12] "GET /cuentas-por-cobrar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:40:12] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:40:13] "GET /cuentas-por-pagar HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:40:13] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:40:20] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:40:20] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:40:22] "GET /inventario/movimientos HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:40:22] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [20/Oct/2026 00:40:25] "GET /inventario/modulo HTTP/1.1" 200 -
+127.0.0.1 - - [20/Oct/2026 00:40:25] "GET /static/css/styles.css HTTP/1.1" 304 -
+ * Detected change in 'C:\\python\\Intermediación\\app\\routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 412-570-619

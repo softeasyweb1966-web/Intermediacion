@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Saldos por producto | Intermediacion{% endblock %}
+{% block page_title %}Saldos por producto{% endblock %}
+{% block content %}
+<section class="toolbar">
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar producto o código">
+        <button class="icon-button" type="submit">Buscar</button>
+    </form>
+    <a class="secondary-action icon-button" href="{{ url_for('main.inventario_modulo') }}">Inventario</a>
+</section>
+<section class="data-card"><div class="table-wrap"><table>
+    <thead><tr><th>Producto</th><th>Saldo total</th><th>Lotes</th><th>Clasificación / control</th><th>Detalle</th></tr></thead>
+    <tbody>
+    {% for item in saldos %}
+    <tr>
+        <td><strong>{{ item.producto.nombre }}</strong><small>{{ item.producto.codigo }}</small></td>
+        <td><strong>{{ item.saldo }}</strong> {{ item.producto.unidad }}</td>
+        <td>{{ item.lotes|length }}</td>
+        <td>
+            {% if item.producto.maneja_presentaciones %}Presentaciones {% endif %}
+            {% if item.producto.maneja_lotes %}· Lotes {% endif %}
+            {% if item.producto.maneja_vencimiento %}· Vencimientos{% endif %}
+            {% if not (item.producto.maneja_presentaciones or item.producto.maneja_lotes or item.producto.maneja_vencimiento) %}-{% endif %}
+        </td>
+        <td><a class="table-action" href="{{ url_for('main.inventario_saldo_detalle', producto_id=item.producto.id) }}">Ver detalle</a></td>
+    </tr>
+    {% else %}<tr><td colspan="5" class="empty-state">No hay productos para mostrar.</td></tr>{% endfor %}
+    </tbody>
+</table></div></section>
+{% endblock %}

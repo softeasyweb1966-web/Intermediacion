@@ -193,11 +193,47 @@ def proveedores_modulo():
 @main_bp.route("/inventario/modulo")
 def inventario_modulo():
     opciones = [
+        {"nombre": "Saldos por producto", "detalle": "Consultar existencias y detalle de lotes", "icono": "layers", "url": "main.inventario_saldos"},
         {"nombre": "Movimientos", "detalle": "Consultar entradas y salidas", "icono": "history", "url": "main.inventario_movimientos"},
         {"nombre": "Recibo", "detalle": "Registrar una entrada de mercancía", "icono": "warehouse", "url": "main.inventario_recibo"},
         {"nombre": "Despacho", "detalle": "Registrar una salida de mercancía", "icono": "truck", "url": "main.inventario_despacho"},
     ]
     return render_template("modulo_generico.html", titulo="Inventario", opciones=opciones)
+
+
+@main_bp.route("/inventario/saldos")
+def inventario_saldos():
+    busqueda = request.args.get("q", "").strip()
+    consulta = Producto.query.filter(Producto.activo.is_(True))
+    if busqueda:
+        patron = f"%{busqueda}%"
+        consulta = consulta.filter(or_(Producto.nombre.ilike(patron), Producto.codigo.ilike(patron)))
+
+    productos = consulta.order_by(Producto.nombre.asc()).all()
+    saldos = []
+    for producto in productos:
+        lotes = ProductoLote.query.filter_by(producto_id=producto.id, activo=True).all()
+        saldo = sum((Decimal(lote.cantidad_actual or 0) for lote in lotes), Decimal("0"))
+        saldos.append({
+            "producto": producto,
+            "saldo": saldo,
+            "lotes": lotes,
+            "tiene_detalle": producto.maneja_lotes or producto.maneja_vencimiento or producto.maneja_presentaciones or bool(lotes),
+        })
+    return render_template("inventario/saldos.html", saldos=saldos, busqueda=busqueda)
+
+
+@main_bp.route("/inventario/saldos/<int:producto_id>")
+def inventario_saldo_detalle(producto_id):
+    producto = Producto.query.get_or_404(producto_id)
+    lotes = ProductoLote.query.filter_by(producto_id=producto.id, activo=True).order_by(
+        ProductoLote.fecha_vencimiento.asc(), ProductoLote.numero_lote.asc()
+    ).all()
+    movimientos = InventarioMovimiento.query.filter_by(producto_id=producto.id).order_by(
+        InventarioMovimiento.fecha.desc(), InventarioMovimiento.id.desc()
+    ).all()
+    saldo = sum((Decimal(lote.cantidad_actual or 0) for lote in lotes), Decimal("0"))
+    return render_template("inventario/saldo_detalle.html", producto=producto, lotes=lotes, movimientos=movimientos, saldo=saldo)
 
 
 @main_bp.route("/ventas/cotizaciones")
