@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Alertas de productos | Intermediación{% endblock %}
+{% block page_title %}Alertas de productos{% endblock %}
+{% block content %}
+<section class="toolbar"><a class="secondary-action icon-button" href="{{ url_for('main.productos') }}">Productos</a></section>
+<section class="data-card"><div class="table-wrap"><table><thead><tr><th>Tipo</th><th>Producto</th><th>Lote</th><th>Detalle</th></tr></thead><tbody>
+{% for lote in lotes_vencidos %}<tr><td>Vencimiento</td><td>{{ lote.producto.nombre }}</td><td>{{ lote.numero_lote }}</td><td>Venció el {{ lote.fecha_vencimiento.strftime('%Y-%m-%d') }}</td></tr>{% endfor %}
+{% for producto, existencia in productos_minimo %}<tr><td>Stock mínimo</td><td>{{ producto.nombre }}</td><td>-</td><td>Existencia: {{ existencia }} / mínimo: {{ producto.stock_minimo }}</td></tr>{% endfor %}
+{% if not lotes_vencidos and not productos_minimo %}<tr><td colspan="4" class="empty-state">No hay alertas activas.</td></tr>{% endif %}
+</tbody></table></div></section>
+{% endblock %}

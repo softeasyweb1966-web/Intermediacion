@@ -960,10 +960,40 @@ def productos():
         {"nombre": "Unidades", "detalle": "Medidas y equivalencias", "icono": "ruler", "url": "main.unidades"},
         {"nombre": "Presentaciones", "detalle": "Empaques, tallas y colores", "icono": "layers", "url": "main.presentaciones"},
         {"nombre": "Lotes", "detalle": "Vencimientos y trazabilidad", "icono": "calendar", "url": "main.lotes"},
-        {"nombre": "Historial", "detalle": "Ultimas compras", "icono": "history"},
-        {"nombre": "Alertas", "detalle": "Minimos y vencimientos", "icono": "alert"},
+        {"nombre": "Historial", "detalle": "Últimas compras", "icono": "history", "url": "main.productos_historial"},
+        {"nombre": "Alertas", "detalle": "Mínimos y vencimientos", "icono": "alert", "url": "main.productos_alertas"},
     ]
     return render_template("productos/modulo.html", opciones=opciones)
+
+
+@main_bp.route("/productos/historial")
+def productos_historial():
+    detalles = (
+        CompraFacturaDetalle.query
+        .join(CompraFactura)
+        .join(Producto)
+        .filter(CompraFactura.estado != "ANULADA")
+        .order_by(CompraFactura.fecha.desc(), CompraFacturaDetalle.id.desc())
+        .all()
+    )
+    return render_template("productos/historial.html", detalles=detalles)
+
+
+@main_bp.route("/productos/alertas")
+def productos_alertas():
+    hoy = datetime.utcnow().date()
+    lotes_vencidos = (
+        ProductoLote.query.join(Producto)
+        .filter(ProductoLote.activo.is_(True), ProductoLote.fecha_vencimiento.isnot(None), ProductoLote.fecha_vencimiento < hoy)
+        .order_by(ProductoLote.fecha_vencimiento.asc())
+        .all()
+    )
+    productos_minimo = []
+    for producto in Producto.query.filter_by(activo=True).all():
+        existencia = sum((Decimal(lote.cantidad_actual or 0) for lote in ProductoLote.query.filter_by(producto_id=producto.id, activo=True).all()), Decimal("0"))
+        if existencia <= Decimal(producto.stock_minimo or 0):
+            productos_minimo.append((producto, existencia))
+    return render_template("productos/alertas.html", lotes_vencidos=lotes_vencidos, productos_minimo=productos_minimo, hoy=hoy)
 
 
 @main_bp.route("/productos/catalogo")
