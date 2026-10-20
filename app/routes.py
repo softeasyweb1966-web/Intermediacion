@@ -155,8 +155,8 @@ def ventas():
 @main_bp.route("/clientes/modulo")
 def clientes_modulo():
     opciones = [
-        {"nombre": "Listado", "detalle": "Consultar y administrar clientes", "icono": "client", "url": "main.clientes"},
-        {"nombre": "Nuevo cliente", "detalle": "Registrar un cliente", "icono": "client", "url": "main.cliente_nuevo"},
+        {"nombre": "Listado", "detalle": "Consultar y administrar clientes", "icono": "layers", "url": "main.clientes"},
+        {"nombre": "Nuevo cliente", "detalle": "Registrar un cliente", "icono": "plus", "url": "main.cliente_nuevo"},
     ]
     return render_template("modulo_generico.html", titulo="Clientes", opciones=opciones)
 
@@ -164,8 +164,8 @@ def clientes_modulo():
 @main_bp.route("/proveedores/modulo")
 def proveedores_modulo():
     opciones = [
-        {"nombre": "Listado", "detalle": "Consultar y administrar proveedores", "icono": "truck", "url": "main.proveedores"},
-        {"nombre": "Nuevo proveedor", "detalle": "Registrar un proveedor", "icono": "truck", "url": "main.proveedor_nuevo"},
+        {"nombre": "Listado", "detalle": "Consultar y administrar proveedores", "icono": "layers", "url": "main.proveedores"},
+        {"nombre": "Nuevo proveedor", "detalle": "Registrar un proveedor", "icono": "plus", "url": "main.proveedor_nuevo"},
     ]
     return render_template("modulo_generico.html", titulo="Proveedores", opciones=opciones)
 
@@ -173,9 +173,9 @@ def proveedores_modulo():
 @main_bp.route("/inventario/modulo")
 def inventario_modulo():
     opciones = [
-        {"nombre": "Movimientos", "detalle": "Consultar entradas y salidas", "icono": "warehouse", "url": "main.inventario_movimientos"},
+        {"nombre": "Movimientos", "detalle": "Consultar entradas y salidas", "icono": "history", "url": "main.inventario_movimientos"},
         {"nombre": "Recibo", "detalle": "Registrar una entrada de mercancía", "icono": "warehouse", "url": "main.inventario_recibo"},
-        {"nombre": "Despacho", "detalle": "Registrar una salida de mercancía", "icono": "warehouse", "url": "main.inventario_despacho"},
+        {"nombre": "Despacho", "detalle": "Registrar una salida de mercancía", "icono": "truck", "url": "main.inventario_despacho"},
     ]
     return render_template("modulo_generico.html", titulo="Inventario", opciones=opciones)
 
@@ -2222,6 +2222,11 @@ def convertir_a_unidad_interna(cantidad_proveedor, factor_conversion):
 
 def formatear_indicador_monetario(valor):
     valor = Decimal(valor or 0)
+    absoluto = abs(valor)
+    if absoluto >= Decimal("1000000"):
+        return f"${valor / Decimal('1000000'):.2f} M"
+    if absoluto >= Decimal("1000"):
+        return f"${valor / Decimal('1000'):.1f} K"
     return f"${valor:,.2f}"
 
 
