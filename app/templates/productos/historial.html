@@ -2,7 +2,6 @@
 {% block title %}Historial de productos | Intermediación{% endblock %}
 {% block page_title %}Historial de productos{% endblock %}
 {% block content %}
-<section class="toolbar"><a class="secondary-action icon-button" href="{{ url_for('main.productos') }}">Productos</a></section>
 <section class="data-card"><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Proveedor</th><th>Documento</th><th>Cantidad</th><th>Costo</th></tr></thead><tbody>
 {% for detalle in detalles %}<tr><td>{{ detalle.factura.fecha.strftime('%Y-%m-%d') }}</td><td>{{ detalle.producto.nombre }}</td><td>{{ detalle.factura.proveedor.nombre }}</td><td>{{ detalle.factura.numero }}</td><td>{{ detalle.cantidad_facturada }}</td><td>{{ detalle.costo_unitario }}</td></tr>{% else %}<tr><td colspan="6" class="empty-state">No hay compras registradas.</td></tr>{% endfor %}
 </tbody></table></div></section>
