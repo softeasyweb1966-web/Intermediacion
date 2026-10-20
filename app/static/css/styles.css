@@ -906,11 +906,15 @@ td small {
     stroke: #8b4f9f;
 }
 
-.module-tile strong,
 .module-tile small {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.module-tile strong {
+    overflow-wrap: anywhere;
+    line-height: 1.15;
 }
 
 .module-tile small {
