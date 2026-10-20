@@ -136,7 +136,6 @@ def compras():
         {"nombre": "Pedidos", "detalle": "Solicitudes a proveedor", "icono": "truck", "url": "main.compra_pedidos"},
         {"nombre": "Facturas", "detalle": "Documentos recibidos del proveedor", "icono": "document", "url": "main.compra_facturas"},
         {"nombre": "Recepciones", "detalle": "Entradas parciales o directas", "icono": "warehouse", "url": "main.compra_recepciones"},
-        {"nombre": "Manual", "detalle": "Pendiente para pruebas", "icono": "book"},
     ]
     return render_template("compras/modulo.html", opciones=opciones)
 
