@@ -845,13 +845,12 @@ td small {
 
 .module-tile {
     display: grid;
-    grid-template-columns: 46px minmax(0, 1fr);
-    grid-template-rows: auto auto;
-    column-gap: 12px;
-    row-gap: 3px;
+    grid-template-columns: 46px;
+    grid-template-rows: 46px;
     align-items: center;
-    min-height: 88px;
-    padding: 14px;
+    min-height: 64px;
+    padding: 8px;
+    justify-content: center;
     border: 1px solid var(--line);
     border-radius: 8px;
     background: var(--panel);
@@ -908,9 +907,15 @@ td small {
 
 .module-tile strong,
 .module-tile small {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
     overflow: hidden;
-    text-overflow: ellipsis;
+    clip: rect(0, 0, 0, 0);
     white-space: nowrap;
+    border: 0;
 }
 
 .module-tile small {
