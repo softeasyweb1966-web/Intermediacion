@@ -17,7 +17,7 @@
 
 <section class="module-grid" aria-label="Opciones del módulo de productos">
     {% for item in opciones %}
-    <a class="module-tile {{ 'disabled' if item.url is not defined }}" href="{{ url_for(item.url) if item.url is defined else '#' }}" title="{{ item.nombre }}{% if item.detalle %} — {{ item.detalle }}{% endif %}" data-tooltip="{{ item.nombre }}{% if item.detalle %} — {{ item.detalle }}{% endif %}" aria-label="{{ item.nombre }}{% if item.detalle %}: {{ item.detalle }}{% endif %}">
+    <a class="module-tile {{ 'disabled' if item.url is not defined }}" href="{{ url_for(item.url) if item.url is defined else '#' }}" title="{{ item.nombre }}" aria-label="{{ item.nombre }}">
         <span class="module-icon {{ item.icono }}">
             {% if item.icono == "box" %}
             <svg viewBox="0 0 24 24" aria-hidden="true">
