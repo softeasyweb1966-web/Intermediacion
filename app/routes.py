@@ -91,7 +91,6 @@ def cuentas_por_cobrar():
     opciones = [
         {"nombre": "Estados de cuenta", "detalle": "Consultar saldos y vencimientos por cliente", "icono": "client"},
         {"nombre": "Movimientos", "detalle": "Consultar cargos, abonos y saldos", "icono": "history"},
-        {"nombre": "Recaudos", "detalle": "Registrar y consultar recaudos de clientes", "icono": "quote"},
         {"nombre": "Recibos de caja", "detalle": "Registrar comprobantes de recaudo", "icono": "document"},
     ]
     return render_template("modulo_generico.html", titulo="Cuentas por cobrar", opciones=opciones)
@@ -102,7 +101,6 @@ def cuentas_por_pagar():
     opciones = [
         {"nombre": "Estados de cuenta", "detalle": "Consultar saldos y vencimientos por proveedor", "icono": "supplier"},
         {"nombre": "Movimientos", "detalle": "Consultar cargos, abonos y saldos", "icono": "history"},
-        {"nombre": "Pagos", "detalle": "Registrar y consultar pagos a proveedores", "icono": "purchase"},
         {"nombre": "Comprobantes de egreso", "detalle": "Registrar comprobantes de pago", "icono": "document"},
     ]
     return render_template("modulo_generico.html", titulo="Cuentas por pagar", opciones=opciones)
