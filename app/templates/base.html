@@ -39,14 +39,27 @@
                         {% block page_title_extra %}{% endblock %}
                     </div>
                 </div>
-                {% block page_action %}<a class="user-chip icon-button" href="{{ url_for('main.login') }}">
+                {% block page_action %}
+                {% if request.endpoint == 'main.dashboard' %}
+                <a class="user-chip icon-button" href="{{ url_for('main.login') }}">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                         <path d="M10 17l5-5-5-5"></path>
                         <path d="M15 12H3"></path>
                     </svg>
                     <span>Ingresar</span>
-                </a>{% endblock %}
+                </a>
+                {% else %}
+                <a class="user-chip icon-button" href="{{ url_for('main.dashboard') }}" title="Regresar al menú principal">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m3 11 9-8 9 8"></path>
+                        <path d="M5 10v10h14V10"></path>
+                        <path d="M9 20v-6h6v6"></path>
+                    </svg>
+                    <span>Menú principal</span>
+                </a>
+                {% endif %}
+                {% endblock %}
             </header>
 
             {% block content %}{% endblock %}
