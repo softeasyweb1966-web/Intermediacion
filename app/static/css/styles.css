@@ -180,14 +180,19 @@ h1 {
 }
 
 .metric-card p {
+    flex: 1 1 auto;
+    min-width: 0;
     margin-bottom: 0;
     color: var(--muted);
 }
 
 .metric-card strong {
     display: block;
-    flex: 0 0 auto;
-    font-size: 1.9rem;
+    flex: 0 1 auto;
+    max-width: 62%;
+    overflow-wrap: anywhere;
+    text-align: right;
+    font-size: clamp(1.15rem, 2vw, 1.75rem);
 }
 
 .section-heading p {
