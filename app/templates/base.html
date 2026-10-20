@@ -25,7 +25,8 @@
                 <a class="nav-item {{ 'active' if endpoint.startswith('main.compra') or endpoint == 'main.compras' else '' }}" href="{{ url_for('main.compras') }}">Compras</a>
                 <a class="nav-item {{ 'active' if endpoint.startswith('main.venta') else '' }}" href="{{ url_for('main.ventas') }}">Ventas</a>
                 <a class="nav-item {{ 'active' if endpoint.startswith('main.inventario') else '' }}" href="{{ url_for('main.inventario_modulo') }}">Inventario</a>
-                <a class="nav-item" href="#">Cartera</a>
+                <a class="nav-item {{ 'active' if endpoint == 'main.cuentas_por_cobrar' else '' }}" href="{{ url_for('main.cuentas_por_cobrar') }}">Cuentas por cobrar</a>
+                <a class="nav-item {{ 'active' if endpoint == 'main.cuentas_por_pagar' else '' }}" href="{{ url_for('main.cuentas_por_pagar') }}">Cuentas por pagar</a>
             </nav>
         </aside>
 

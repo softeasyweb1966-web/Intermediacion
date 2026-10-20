@@ -85,6 +85,22 @@ def dashboard():
     return render_template("dashboard.html", indicadores=indicadores, accesos=accesos)
 
 
+@main_bp.route("/cuentas-por-cobrar")
+def cuentas_por_cobrar():
+    opciones = [
+        {"nombre": "Prefacturas", "detalle": "Consultar valores pendientes de clientes", "icono": "prefactura", "url": "main.venta_prefacturas"},
+    ]
+    return render_template("modulo_generico.html", titulo="Cuentas por cobrar", opciones=opciones)
+
+
+@main_bp.route("/cuentas-por-pagar")
+def cuentas_por_pagar():
+    opciones = [
+        {"nombre": "Facturas de compra", "detalle": "Consultar valores pendientes a proveedores", "icono": "document", "url": "main.compra_facturas"},
+    ]
+    return render_template("modulo_generico.html", titulo="Cuentas por pagar", opciones=opciones)
+
+
 @main_bp.route("/ayuda")
 def ayuda():
     busqueda = request.args.get("q", "").strip()
