@@ -2,6 +2,14 @@
 
 {% block title %}Dashboard | Intermediación{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
+{% block page_title_extra %}
+<div class="dashboard-access-inline">
+    <span>Accesos de trabajo</span>
+    <div class="quick-actions">
+        {% for item in accesos %}<a class="quick-action {{ item.clase }}" href="{{ url_for(item.url) if item.url is defined else '#' }}" title="{{ item.nombre }}" aria-label="{{ item.nombre }}"><span class="dashboard-access-symbol">{{ item.nombre[0] }}</span></a>{% endfor %}
+    </div>
+</div>
+{% endblock %}
 
 {% block content %}
 <section class="toolbar">

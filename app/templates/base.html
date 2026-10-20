@@ -31,9 +31,10 @@
 
         <main class="main-content">
             <header class="topbar">
-                <div>
+                <div class="topbar-title">
                     <p class="eyebrow">Panel gerencial</p>
                     <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+                    {% block page_title_extra %}{% endblock %}
                 </div>
                 <a class="user-chip icon-button" href="{{ url_for('main.login') }}">
                     <svg viewBox="0 0 24 24" aria-hidden="true">

@@ -225,6 +225,39 @@ h1 {
     gap: 8px;
 }
 
+.topbar-title {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.dashboard-access-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.dashboard-access-inline .quick-actions {
+    gap: 6px;
+}
+
+.dashboard-access-inline .quick-action {
+    width: 30px;
+    height: 30px;
+}
+
+.dashboard-access-symbol {
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.dashboard-access {
+    display: none;
+}
+
 .quick-action {
     display: grid;
     width: 42px;
