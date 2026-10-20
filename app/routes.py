@@ -1656,6 +1656,8 @@ def guardar_recepcion_factura(recepcion, factura):
     recepcion.proveedor_id = factura.proveedor_id
     recepcion.factura = factura
     recepcion.fecha = obtener_fecha("fecha") or datetime.utcnow().date()
+    if recepcion.fecha > datetime.utcnow().date():
+        raise ValueError("La fecha de recepción no puede ser futura.")
     recepcion.documento = request.form.get("documento", "").strip() or factura.numero_proveedor or factura.numero
     recepcion.responsable = request.form.get("responsable", "").strip() or None
     recepcion.observaciones = request.form.get("observaciones", "").strip() or None
@@ -2149,6 +2151,7 @@ def render_template_recepcion_factura(recepcion, factura):
         recepcion=recepcion,
         factura=factura,
         proveedores=obtener_proveedores(),
+        today=datetime.utcnow().date().isoformat(),
     )
 
 

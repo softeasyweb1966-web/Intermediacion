@@ -12,7 +12,7 @@
     <div class="form-grid">
         <label>Número de recepción<input name="numero" value="{{ recepcion.numero }}" required></label>
         <label>Proveedor<input value="{{ factura.proveedor.nombre }}" readonly></label>
-        <label>Fecha<input type="date" name="fecha" value="{{ recepcion.fecha.strftime('%Y-%m-%d') }}"></label>
+        <label>Fecha<input type="date" name="fecha" max="{{ today if today is defined else '' }}" value="{{ recepcion.fecha.strftime('%Y-%m-%d') }}"></label>
         <label>Documento<input name="documento" value="{{ factura.numero_proveedor or factura.numero }}"></label>
         <label>Responsable<input name="responsable"></label>
         <label class="span-2">Observaciones<textarea name="observaciones" rows="2"></textarea></label>

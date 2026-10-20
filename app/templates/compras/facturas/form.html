@@ -34,7 +34,7 @@
         <table class="line-table"><thead><tr><th>Producto interno</th><th>Presentación</th><th>Cantidad</th><th>Costo unitario</th><th>Código proveedor</th><th>Descripción proveedor</th></tr></thead>
         <tbody>{% for i in range(1, 9) %}{% set detalle = factura.detalles[i - 1] if factura.detalles|length >= i else none %}<tr>
             <td><select name="producto_id_{{ i }}"><option value="">Producto</option>{% for producto in productos %}<option value="{{ producto.id }}" {% if detalle and detalle.producto_id == producto.id %}selected{% endif %}>{{ producto.nombre }}</option>{% endfor %}</select></td>
-            <td><select name="presentacion_id_{{ i }}"><option value="">Sin presentación</option>{% for presentacion in presentaciones %}<option value="{{ presentacion.id }}" {% if detalle and detalle.presentacion_id == presentacion.id %}selected{% endif %}>{{ presentacion.producto.nombre }} - {{ presentacion.nombre }}</option>{% endfor %}</select></td>
+<td><select name="presentacion_id_{{ i }}"><option value="">Sin presentación</option>{% for presentacion in presentaciones %}<option value="{{ presentacion.id }}" data-producto-id="{{ presentacion.producto_id }}" {% if detalle and detalle.presentacion_id == presentacion.id %}selected{% endif %}>{{ presentacion.producto.nombre }} - {{ presentacion.nombre }}</option>{% endfor %}</select></td>
             <td><input type="number" step="0.0001" min="0" name="cantidad_{{ i }}" value="{{ detalle.cantidad_facturada if detalle else '' }}"></td>
             <td><input type="number" step="0.01" min="0" name="costo_unitario_{{ i }}" value="{{ detalle.costo_unitario if detalle else '' }}"></td>
             <td><input name="referencia_proveedor_{{ i }}" value="{{ detalle.referencia_proveedor if detalle else '' }}"></td>
@@ -42,4 +42,21 @@
         </tr>{% endfor %}</tbody></table>
     </div>
 </form>
+<script>
+document.querySelectorAll('tr').forEach((row) => {
+    const producto = row.querySelector('select[name^="producto_id_"]');
+    const presentacion = row.querySelector('select[name^="presentacion_id_"]');
+    if (!producto || !presentacion) return;
+    const opciones = [...presentacion.options].map((option) => option.cloneNode(true));
+    const filtrar = () => {
+        const valor = producto.value;
+        const actual = presentacion.value;
+        presentacion.innerHTML = '';
+        opciones.filter((option) => !option.value || !valor || option.dataset.productoId === valor).forEach((option) => presentacion.appendChild(option.cloneNode(true)));
+        presentacion.value = [...presentacion.options].some((option) => option.value === actual) ? actual : '';
+    };
+    producto.addEventListener('change', filtrar);
+    filtrar();
+});
+</script>
 {% endblock %}
