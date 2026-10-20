@@ -15,6 +15,7 @@ from .models import (
     CompraCotizacionDetalle,
     CompraFactura,
     CompraFacturaDetalle,
+    CompraFacturaPedido,
     CompraPedido,
     CompraPedidoDetalle,
     CompraRecepcion,
@@ -55,6 +56,45 @@ def dashboard():
     ]
 
     return render_template("dashboard.html", indicadores=indicadores, accesos=accesos)
+
+
+@main_bp.route("/ayuda")
+def ayuda():
+    busqueda = request.args.get("q", "").strip()
+    resultados = []
+    if busqueda:
+        patron = f"%{busqueda}%"
+        resultados.extend(
+            [
+                {"tipo": "Módulo", "nombre": "Productos", "url": url_for("main.productos")},
+                {"tipo": "Módulo", "nombre": "Compras", "url": url_for("main.compras")},
+                {"tipo": "Módulo", "nombre": "Inventario", "url": url_for("main.inventario_movimientos")},
+                {"tipo": "Módulo", "nombre": "Clientes", "url": url_for("main.clientes")},
+                {"tipo": "Módulo", "nombre": "Proveedores", "url": url_for("main.proveedores")},
+            ]
+        )
+        resultados = [item for item in resultados if busqueda.lower() in item["nombre"].lower()]
+        resultados.extend(
+            {"tipo": "Producto", "nombre": item.nombre, "detalle": item.codigo, "url": url_for("main.producto_editar", producto_id=item.id)}
+            for item in Producto.query.filter(or_(Producto.nombre.ilike(patron), Producto.codigo.ilike(patron))).limit(10).all()
+        )
+        resultados.extend(
+            {"tipo": "Cliente", "nombre": item.nombre, "detalle": item.documento, "url": url_for("main.cliente_editar", cliente_id=item.id)}
+            for item in Cliente.query.filter(or_(Cliente.nombre.ilike(patron), Cliente.documento.ilike(patron))).limit(10).all()
+        )
+        resultados.extend(
+            {"tipo": "Proveedor", "nombre": item.nombre, "detalle": item.nit, "url": url_for("main.proveedor_editar", proveedor_id=item.id)}
+            for item in Proveedor.query.filter(or_(Proveedor.nombre.ilike(patron), Proveedor.nit.ilike(patron))).limit(10).all()
+        )
+        for modelo, tipo, endpoint in [
+            (CompraFactura, "Factura de compra", "main.compra_facturas"),
+            (CompraPedido, "Pedido de compra", "main.compra_pedidos"),
+        ]:
+            resultados.extend(
+                {"tipo": tipo, "nombre": item.numero, "url": url_for(endpoint)}
+                for item in modelo.query.filter(modelo.numero.ilike(patron)).limit(10).all()
+            )
+    return render_template("ayuda.html", busqueda=busqueda, resultados=resultados)
 
 
 @main_bp.route("/compras")
@@ -1708,6 +1748,7 @@ def render_template_factura_compra(factura, modo):
         proveedores=obtener_proveedores(),
         productos=obtener_productos(),
         presentaciones=obtener_presentaciones(),
+        pedidos=CompraPedido.query.order_by(CompraPedido.fecha.desc(), CompraPedido.id.desc()).limit(100).all(),
         estados=["BORRADOR", "REGISTRADA", "PARCIAL", "COMPLETA", "ANULADA"],
     )
 
@@ -1725,6 +1766,10 @@ def guardar_factura_compra(factura):
     factura.impuestos = Decimal("0")
     factura.total = Decimal("0")
     factura.detalles.clear()
+    factura.pedidos.clear()
+    for pedido_id in request.form.getlist("pedido_ids"):
+        if pedido_id:
+            factura.pedidos.append(CompraFacturaPedido(pedido_id=int(pedido_id)))
 
     for i in range(1, 9):
         producto_id = request.form.get(f"producto_id_{i}")

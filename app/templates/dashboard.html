@@ -4,6 +4,13 @@
 {% block page_title %}Dashboard{% endblock %}
 
 {% block content %}
+<section class="toolbar">
+    <form class="search-form" method="get" action="{{ url_for('main.ayuda') }}">
+        <input type="search" name="q" placeholder="Buscar módulo, documento, producto, cliente o proveedor" aria-label="Buscar en el aplicativo">
+        <button class="primary-action icon-button" type="submit"><span>Buscar</span></button>
+    </form>
+</section>
+
 <section class="card-grid metrics-grid" aria-label="Indicadores principales">
     {% for item in indicadores %}
     <article class="card metric-card">

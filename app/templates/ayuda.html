@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Ayuda | Intermediacion{% endblock %}
+{% block page_title %}Ayuda y búsqueda{% endblock %}
+
+{% block content %}
+<section class="toolbar">
+    <a class="secondary-action icon-button" href="{{ url_for('main.dashboard') }}"><span>Regresar</span></a>
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ busqueda }}" placeholder="Buscar módulo, documento, producto, cliente o proveedor" autofocus>
+        <button class="primary-action icon-button" type="submit"><span>Buscar</span></button>
+    </form>
+</section>
+<section class="data-card">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Tipo</th><th>Resultado</th><th>Detalle</th><th>Acción</th></tr></thead>
+            <tbody>
+                {% for item in resultados %}
+                <tr><td>{{ item.tipo }}</td><td><strong>{{ item.nombre }}</strong></td><td>{{ item.detalle or "-" }}</td><td><a class="table-action" href="{{ item.url }}">Abrir</a></td></tr>
+                {% else %}
+                <tr><td colspan="4" class="empty-state">{{ "Escriba una búsqueda para encontrar opciones." if not busqueda else "No se encontraron resultados." }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

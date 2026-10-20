@@ -23,6 +23,12 @@
         <label>Estado<select name="estado">{% for opcion in estados %}<option value="{{ opcion }}" {% if factura.estado == opcion %}selected{% endif %}>{{ opcion.title() }}</option>{% endfor %}</select></label>
         <label class="span-2">Observaciones<textarea name="observaciones" rows="3">{{ factura.observaciones or '' }}</textarea></label>
     </div>
+    <h2 class="subsection-title">Pedidos relacionados <small>(opcional)</small></h2>
+    <div class="check-grid">
+        {% for pedido in pedidos %}
+        <label><input type="checkbox" name="pedido_ids" value="{{ pedido.id }}" {% if factura.pedidos and factura.pedidos|selectattr('pedido_id', 'equalto', pedido.id)|list %}checked{% endif %}> {{ pedido.numero }} - {{ pedido.proveedor.nombre }}</label>
+        {% else %}<span>No hay pedidos registrados.</span>{% endfor %}
+    </div>
     <h2 class="subsection-title">Productos de la factura</h2>
     <div class="line-table-wrap">
         <table class="line-table"><thead><tr><th>Producto interno</th><th>Presentación</th><th>Cantidad</th><th>Costo unitario</th><th>Código proveedor</th><th>Descripción proveedor</th></tr></thead>
