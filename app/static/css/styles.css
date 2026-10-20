@@ -172,27 +172,28 @@ h1 {
 
 .metric-card {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    min-height: 86px;
-    padding: 18px;
+    justify-content: center;
+    gap: 3px;
+    min-height: 68px;
+    padding: 10px 14px;
 }
 
 .metric-card p {
-    flex: 1 1 auto;
-    min-width: 0;
     margin-bottom: 0;
     color: var(--muted);
+    text-align: center;
+    line-height: 1.15;
 }
 
 .metric-card strong {
     display: block;
-    flex: 0 1 auto;
-    max-width: 68%;
+    order: -1;
+    max-width: 100%;
     white-space: nowrap;
-    text-align: right;
-    font-size: clamp(1.15rem, 2vw, 1.75rem);
+    text-align: center;
+    font-size: clamp(1.25rem, 2vw, 1.7rem);
 }
 
 .section-heading p {
