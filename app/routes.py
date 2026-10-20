@@ -226,11 +226,17 @@ def _movimientos_cuenta(tipo, busqueda=""):
     cobrar = tipo == "cobrar"
     filas, pagos = _cuenta_data(tipo, busqueda)
     movimientos = [{"fecha": f["factura"].fecha, "tipo": "Cargo", "tercero": f["tercero"].nombre, "documento": f["factura"].numero, "valor": f["total"], "saldo": f["saldo"]} for f in filas]
+    saldos = {f["factura"].id: f["saldo"] for f in filas}
     for pago in pagos:
         tercero = pago.cliente if cobrar else pago.proveedor
         if not tercero or (busqueda and busqueda.lower() not in tercero.nombre.lower() and busqueda.lower() not in pago.numero.lower()):
             continue
-        movimientos.append({"fecha": pago.fecha, "tipo": "Abono", "tercero": tercero.nombre, "documento": pago.numero, "valor": Decimal(pago.valor or 0), "saldo": None})
+        aplicaciones = [a for a in pago.aplicaciones if (a.prefactura_id if cobrar else a.factura_compra_id)]
+        for aplicacion in aplicaciones:
+            factura = aplicacion.prefactura if cobrar else aplicacion.factura_compra
+            movimientos.append({"fecha": pago.fecha, "tipo": "Abono", "tercero": tercero.nombre, "documento": pago.numero, "relacionado": factura.numero if factura else "-", "valor": Decimal(aplicacion.valor_aplicado or 0), "retefuente": Decimal(aplicacion.retefuente_valor or 0), "reteica": Decimal(aplicacion.reteica_valor or 0), "neto": Decimal(aplicacion.valor_neto or aplicacion.valor_aplicado or 0), "saldo": saldos.get(factura.id) if factura else None})
+        if not aplicaciones:
+            movimientos.append({"fecha": pago.fecha, "tipo": "Abono", "tercero": tercero.nombre, "documento": pago.numero, "relacionado": "-", "valor": Decimal(pago.valor or 0), "retefuente": Decimal("0"), "reteica": Decimal("0"), "neto": Decimal(pago.valor or 0), "saldo": None})
     return sorted(movimientos, key=lambda m: m["fecha"], reverse=True)
 
 
